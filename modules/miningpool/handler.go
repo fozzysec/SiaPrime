@@ -34,7 +34,6 @@ type Handler struct {
 	closed chan bool
 	notify chan bool
 	p      *Pool
-	log    *persist.Logger
 	s      *Session
 }
 
@@ -70,7 +69,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			// 	break
 			// }
 			if h.s.DetectDisconnected() {
-				h.log.Println("Non-responsive disconnect detected!")
 				return nil, errors.New("Non-responsive disconnect detected")
 			}
 
@@ -80,12 +78,10 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			if h.s.checkDiffOnNewShare() {
 				err = h.sendSetDifficulty(h.s.CurrentDifficulty())
 				if err != nil {
-					h.log.Println("Error sending SetDifficulty")
 					return nil, err
 				}
 				err = h.sendStratumNotify(true)
 				if err != nil {
-					h.log.Println("Error sending stratum notify")
 					return nil, err
 				}
 			}
@@ -93,13 +89,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			return nil, nil
 			// if we don't timeout but have some other error
 		} else if err != nil {
-			if err == io.EOF {
-				//fmt.Println("End connection")
-				h.log.Println("End connection")
-			} else {
-				h.log.Println("Unusual error")
-				h.log.Println(err)
-			}
 			return nil, err
 		} else {
 			// NOTE: we were getting weird cases where the buffer would read a full
@@ -116,9 +105,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			dec := json.NewDecoder(strings.NewReader(str))
 			err = dec.Decode(&m)
 			if err != nil {
-				h.log.Println("Decoding error")
-				h.log.Println(err)
-				h.log.Println(str)
 				//return nil, err
 				// don't disconnect here, just treat it like a harmless timeout
 				return nil, nil
@@ -138,8 +124,6 @@ func (h *Handler) handleRequest(m *types.StratumRequest) error {
 	case "mining.authorize":
 		err = h.handleStratumAuthorize(m)
 		if err != nil {
-			h.log.Printf("Failed to authorize client\n")
-			h.log.Println(err)
 			return err
 		}
 		return h.sendStratumNotify(true)
@@ -148,10 +132,8 @@ func (h *Handler) handleRequest(m *types.StratumRequest) error {
 	case "mining.submit":
 		return h.handleStratumSubmit(m)
 	case "mining.notify":
-		h.log.Printf("mining.notify:New block to mine on\n")
 		return h.sendStratumNotify(true)
 	default:
-		h.log.Debugln("Unknown stratum method: ", m.Method)
 	}
 	return nil
 }
@@ -166,7 +148,6 @@ func (h *Handler) Listen() {
 			h.s.CurrentWorker.deleteWorkerRecord()
 			// when we shut down the pool we get an error here because the log
 			// is already closed... TODO
-			h.s.log.Printf("Closed worker: %d\n", h.s.CurrentWorker.wr.workerID)
 		}
 	}()
 	err := h.p.tg.Add()
@@ -177,11 +158,9 @@ func (h *Handler) Listen() {
 	}
 	defer h.p.tg.Done()
 
-	h.log.Println("New connection from " + h.conn.RemoteAddr().String())
 	h.mu.Lock()
 	h.s, _ = newSession(h.p, h.conn.RemoteAddr().String())
 	h.mu.Unlock()
-	h.log.Println("New session: " + sPrintID(h.s.SessionID))
 	for {
 		m, err := h.parseRequest()
 		h.conn.SetReadDeadline(time.Time{})
@@ -192,12 +171,10 @@ func (h *Handler) Listen() {
 		} else if m != nil {
 			err = h.handleRequest(m)
 			if err != nil {
-				h.log.Println(err)
 				return
 			}
 			// else if we got an error
 		} else if err != nil {
-			h.log.Println(err)
 			return
 		}
 	}
@@ -207,13 +184,11 @@ func (h *Handler) sendResponse(r types.StratumResponse) error {
 	b, err := json.Marshal(r)
 	//fmt.Printf("SERVER: %s\n", b)
 	if err != nil {
-		h.log.Debugln("json marshal failed for id: ", r.ID, err)
 		return err
 	}
 	b = append(b, '\n')
 	_, err = h.conn.Write(b)
 	if err != nil {
-		h.log.Debugln("connection write failed for id: ", r.ID, err)
 		return err
 	}
 	return nil
@@ -222,14 +197,11 @@ func (h *Handler) sendResponse(r types.StratumResponse) error {
 func (h *Handler) sendRequest(r types.StratumRequest) error {
 	b, err := json.Marshal(r)
 	if err != nil {
-		h.log.Debugln("json marshal failed for id: ", r.ID, err)
 		return err
 	}
 	b = append(b, '\n')
 	_, err = h.conn.Write(b)
-	h.log.Debugln("sending request: ", string(b))
 	if err != nil {
-		h.log.Debugln("connection write failed for id: ", r.ID, err)
 		return err
 	}
 	return nil
@@ -241,7 +213,6 @@ func (h *Handler) sendRequest(r types.StratumRequest) error {
 // TODO: Pull the appropriate data from either in memory or persistent store as required
 func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
 	if len(m.Params) > 0 {
-		h.log.Printf("Client subscribe name:%s", m.Params[0].(string))
 		h.s.SetClientVersion(m.Params[0].(string))
 	}
 
@@ -284,7 +255,6 @@ func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
 
 	//	diff := "b4b6693b72a50c7116db18d6497cac52"
 	t, _ := h.p.persist.Target.Difficulty().Uint64()
-	h.log.Debugf("Block Difficulty: %x\n", t)
 	tb := make([]byte, 8)
 	binary.LittleEndian.PutUint64(tb, t)
 	diff := hex.EncodeToString(tb)
@@ -313,19 +283,16 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 		c, err = newClient(h.p, client)
 		if err != nil {
 			//fmt.Println("Failed to create a new Client")
-			h.p.log.Printf("Failed to create a new Client: %s\n", err)
 			return nil, err
 		}
 		err = h.p.AddClientDB(c)
 		if err != nil {
-			h.p.log.Printf("Failed to add client to DB: %s\n", err)
 			return nil, err
 		}
 	} else {
 		//fmt.Printf("Found client: %s\n", client)
 	}
 	if h.p.Client(client) == nil {
-		h.p.log.Printf("Adding client in memory: %s\n", client)
 		h.p.AddClient(c)
 	}
 	return c, nil
@@ -334,19 +301,14 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
 	w, err := newWorker(c, workerName, h.s)
 	if err != nil {
-		c.log.Printf("Failed to add worker: %s\n", err)
 		return nil, err
 	}
 
 	err = c.addWorkerDB(w)
 	if err != nil {
-		c.log.Printf("Failed to add worker: %s\n", err)
 		return nil, err
 	}
 	h.s.log = w.log
-	c.log.Printf("Adding new worker: %s, %d\n", workerName, w.wr.workerID)
-	w.log.Printf("Adding new worker: %s, %d\n", workerName, w.wr.workerID)
-	h.log.Debugln("client = " + c.Name() + ", worker = " + workerName)
 	return w, nil
 }
 
@@ -373,7 +335,6 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
 	if err != nil {
 		r.Result = false
 		r.Error = interfaceify([]string{"Client Name must be valid wallet address"})
-		h.log.Println("Client Name must be valid wallet address. Client name is: " + clientName)
 		err = errors.New("Client name must be a valid wallet address")
 		h.sendResponse(r)
 		return err
@@ -413,7 +374,6 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
 // handleStratumNonceSubscribe tells the pool that this client can handle the extranonce info
 // TODO: Not sure we have to anything if all our clients support this.
 func (h *Handler) handleStratumNonceSubscribe(m *types.StratumRequest) error {
-	h.p.log.Debugln("ID = "+strconv.FormatUint(m.ID, 10)+", Method = "+m.Method+", params = ", m.Params)
 
 	// not sure why 3 is right, but ccminer expects it to be 3
 	r := types.StratumResponse{ID: 3}
@@ -455,7 +415,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
 	if h.s.CurrentWorker == nil {
 		// worker failed to authorize
-		h.log.Printf("Worker failed to authorize - dropping\n")
 		return errors.New("Worker failed to authorize - dropping")
 	}
 
@@ -467,12 +426,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 	}
 
 	// h.log.Debugln("name = " + name + ", jobID = " + fmt.Sprintf("%X", jobID) + ", extraNonce2 = " + extraNonce2 + ", nTime = " + nTime + ", nonce = " + nonce)
-	if h.s.log != nil {
-		// h.s.log.Debugln("name = " + name + ", jobID = " + fmt.Sprintf("%X", jobID) + ", extraNonce2 = " + extraNonce2 + ", nTime = " + nTime + ", nonce = " + nonce)
-	} else {
-		h.log.Debugln("session log not ready")
-	}
-
 	var b types.Block
 	j, err := h.s.getJob(jobID, nonce)
 	if err != nil {
@@ -533,15 +486,12 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 	// 		printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
 	if bytes.Compare(t[:], blockHash[:]) < 0 {
 		// h.s.CurrentWorker.log.Printf("Block hash is greater than block target\n")
-		h.s.CurrentWorker.log.Printf("Share Accepted\n")
 		h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
 		h.s.CurrentWorker.SetLastShareTime(time.Now())
 		return h.sendResponse(r)
 	}
 	err = h.p.managedSubmitBlock(b)
 	if err != nil && err != modules.ErrBlockUnsolved {
-		h.log.Printf("Failed to SubmitBlock(): %v\n", err)
-		h.log.Printf(sPrintBlock(b))
 		panic(fmt.Sprintf("Failed to SubmitBlock(): %v\n", err))
 		/*r.Result = false //json.RawMessage(`false`)
 		r.Error = interfaceify([]string{"20", "Stale share"})
@@ -549,19 +499,14 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 		return h.sendResponse(r)*/
 	}
 
-	h.s.CurrentWorker.log.Printf("Share Accepted\n")
 	h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
 	h.s.CurrentWorker.SetLastShareTime(time.Now())
 
 	// TODO: why not err == nil ?
 	if err != modules.ErrBlockUnsolved {
-		h.s.CurrentWorker.Parent().log.Printf("Yay!!! Solved a block!!\n")
 		// h.s.CurrentWorker.log.Printf("Yay!!! Solved a block!!\n")
 		h.s.clearJobs()
 		err = h.s.CurrentWorker.addFoundBlock(&b)
-		if err != nil {
-			h.s.CurrentWorker.log.Printf("Failed to update block in database: %s\n", err)
-		}
 		h.p.shiftChan <- true
 	}
 	return h.sendResponse(r)
@@ -594,7 +539,6 @@ func (h *Handler) sendStratumNotify(cleanJobs bool) error {
 	encoding.Unmarshal(job.MarshalledBlock, &b)
 	job.MerkleRoot = b.MerkleRoot()
 	mbj := b.MerkleBranches()
-	h.log.Debugf("merkleBranch: %s\n", mbj)
 
 	version := ""
 	nbits := fmt.Sprintf("%08x", BigToCompact(h.p.persist.Target.Int()))
@@ -615,6 +559,5 @@ func (h *Handler) sendStratumNotify(cleanJobs bool) error {
 	r.Params[7] = ntime
 	r.Params[8] = cleanJobs
 	//h.log.Debugf("send.notify: %s\n", raw)
-	h.log.Debugf("send.notify: %s\n", r.Params)
 	return h.sendRequest(r)
 }

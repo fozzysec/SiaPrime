@@ -56,7 +56,6 @@ type Session struct {
 	sessionStartTimestamp time.Time
 	lastHeartbeat         time.Time
 	// utility
-	log            *persist.Logger
 	disableVarDiff bool
 	clientVersion  string
 	remoteAddr     string
@@ -105,27 +104,15 @@ func (s *Session) addJob(j *Job) {
 	}
 
 	s.CurrentJobs = append(s.CurrentJobs, j)
-	if s.log != nil && s.CurrentJobs != nil {
-		if j != nil {
-			s.log.Printf("after new job len:%d, (id: %d)\n", len(s.CurrentJobs), j.JobID)
-		}
-		l := ""
-		for i, j := range s.CurrentJobs {
-			l += fmt.Sprintf("%d,%d;", i, j.JobID)
-		}
-		s.log.Println(l)
-	}
 	s.lastJobTimestamp = time.Now()
 }
 
 func (s *Session) getJob(jobID uint64, nonce string) (*Job, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.log.Printf("submit id:%d, before pop len:%d\n", jobID, len(s.CurrentJobs))
 	for _, j := range s.CurrentJobs {
 		// s.log.Printf("i: %d, array id: %d\n", i, j.JobID)
 		if jobID == j.JobID {
-			s.log.Printf("get job len:%d\n", len(s.CurrentJobs))
 			if _, ok := j.SubmitedNonce[nonce]; ok {
 				return nil, errors.New("already submited nonce for this job")
 			}
@@ -139,9 +126,6 @@ func (s *Session) getJob(jobID uint64, nonce string) (*Job, error) {
 func (s *Session) clearJobs() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.log != nil && s.CurrentJobs != nil {
-		s.log.Printf("Before job clear:%d\n-----------Job clear---------\n", len(s.CurrentJobs))
-	}
 	s.CurrentJobs = nil
 }
 
@@ -177,9 +161,6 @@ func (s *Session) SetLastShareTimestamp(t time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.log != nil {
-		s.log.Printf("Shares index: %d %s\n", s.lastShareSpot, t)
-	}
 	s.shareTimes[s.lastShareSpot] = t
 	s.lastShareSpot++
 	if s.lastShareSpot == s.vardiff.bufSize {
@@ -237,7 +218,6 @@ func (s *Session) IsStable() bool {
 	if s.shareTimes[s.vardiff.bufSize-1].IsZero() {
 		return false
 	}
-	s.log.Printf("is stable!")
 	return true
 }
 
@@ -294,15 +274,8 @@ func (s *Session) HighestDifficulty() float64 {
 func (s *Session) DetectDisconnected() bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.log != nil {
-		s.log.Printf("time now: %s, last beat: %s, disconnect: %t\n", time.Now(),
-			s.lastHeartbeat, time.Now().After(s.lastHeartbeat.Add(heartbeatTimeout)))
-	}
 	// disconnect if we haven't heard from the worker for a long time
 	if time.Now().After(s.lastHeartbeat.Add(heartbeatTimeout)) {
-		if s.log != nil {
-			s.log.Printf("Disconnect because heartbeat time")
-		}
 		return true
 	}
 	// disconnect if the worker's difficulty has dropped too far from it's historical diff

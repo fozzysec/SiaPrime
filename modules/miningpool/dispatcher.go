@@ -18,7 +18,6 @@ type Dispatcher struct {
 	ln                net.Listener
 	mu                deadlock.RWMutex
 	p                 *Pool
-	log               *persist.Logger
 	connectionsOpened uint64
 }
 
@@ -56,7 +55,6 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 		closed: make(chan bool, 2),
 		notify: make(chan bool, numPendingNotifies),
 		p:      d.p,
-		log:    d.log,
 	}
 	d.mu.Lock()
 	d.handlers[addr] = handler
@@ -85,7 +83,6 @@ func (d *Dispatcher) ListenHandlers(port string) {
 
 	d.ln, err = net.Listen("tcp", ":"+port)
 	if err != nil {
-		d.log.Println(err)
 		panic(err)
 		// TODO: add error chan to report this
 		//return
@@ -108,7 +105,6 @@ func (d *Dispatcher) ListenHandlers(port string) {
 			conn, err = d.ln.Accept() // accept connection
 			d.IncrementConnectionsOpened()
 			if err != nil {
-				d.log.Println(err)
 				continue
 			}
 		}
@@ -130,7 +126,6 @@ func (d *Dispatcher) ListenHandlers(port string) {
 func (d *Dispatcher) NotifyClients() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	d.log.Printf("Notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
 		h.notify <- true
 	}
@@ -141,19 +136,16 @@ func (d *Dispatcher) NotifyClients() {
 func (d *Dispatcher) ClearJobAndNotifyClients() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	d.log.Printf("Clear jobs and Notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
 		if h != nil && h.s != nil {
 			if h.s.CurrentWorker == nil {
 				// this will happen when handler init, session init,
 				// no mining.authorize happen yet, so worker is nil,
 				// at this time, no stratum notify ever happen, no need to clear or notify
-				d.log.Printf("Clear jobs and Notifying client: worker is nil\n")
 				continue
 			}
 		} else {
 			// this will happen when handler init, seesion is not
-			d.log.Printf("Clear jobs and Notifying client: handler or session nil\n")
 			continue
 		}
 		h.s.clearJobs()
