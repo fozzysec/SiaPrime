@@ -148,7 +148,6 @@ func (h *Handler) handleRequest(m *types.StratumRequest) error {
 	case "mining.submit":
 		return h.handleStratumSubmit(m)
 	case "mining.notify":
-		h.log.Printf("mining.notify:New block to mine on\n")
 		return h.sendStratumNotify(true)
 	default:
 		h.log.Debugln("Unknown stratum method: ", m.Method)
@@ -166,7 +165,6 @@ func (h *Handler) Listen() {
 			h.s.CurrentWorker.deleteWorkerRecord()
 			// when we shut down the pool we get an error here because the log
 			// is already closed... TODO
-			h.s.log.Printf("Closed worker: %d\n", h.s.CurrentWorker.wr.workerID)
 		}
 	}()
 	err := h.p.tg.Add()
@@ -177,11 +175,9 @@ func (h *Handler) Listen() {
 	}
 	defer h.p.tg.Done()
 
-	h.log.Println("New connection from " + h.conn.RemoteAddr().String())
 	h.mu.Lock()
 	h.s, _ = newSession(h.p, h.conn.RemoteAddr().String())
 	h.mu.Unlock()
-	h.log.Println("New session: " + sPrintID(h.s.SessionID))
 	for {
 		m, err := h.parseRequest()
 		h.conn.SetReadDeadline(time.Time{})
@@ -227,7 +223,6 @@ func (h *Handler) sendRequest(r types.StratumRequest) error {
 	}
 	b = append(b, '\n')
 	_, err = h.conn.Write(b)
-	h.log.Debugln("sending request: ", string(b))
 	if err != nil {
 		h.log.Debugln("connection write failed for id: ", r.ID, err)
 		return err

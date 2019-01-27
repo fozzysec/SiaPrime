@@ -34,7 +34,7 @@ var (
 	// persistMetadata is the header that gets written to the persist file, and is
 	// used to recognize other persist files.
 	persistMetadata = persist.Metadata{
-		Header:  "Sia Pool",
+		Header:  "SiaPrime Pool",
 		Version: "0.0.1",
 	}
 
@@ -265,7 +265,7 @@ func (p *Pool) startServer() {
 			p.sourceBlock.Timestamp, _ = p.cs.MinimumValidChildTimestamp(parentID)
 			p.mu.Unlock()
 
-			p.log.Printf("      Starting Stratum Server\n")
+			p.log.Printf("Starting Stratum Server\n")
 
 			port := fmt.Sprintf("%d", p.InternalSettings().PoolNetworkPort)
 			go p.dispatcher.ListenHandlers(port)
