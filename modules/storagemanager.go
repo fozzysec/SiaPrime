@@ -1,7 +1,7 @@
 package modules
 
 import (
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 )
 
 const (

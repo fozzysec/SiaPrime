@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/node"
-	"gitlab.com/SiaPrime/Sia/siatest"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/node"
+	"SiaPrime/siatest"
+	"SiaPrime/types"
 )
 
 // TestTransactionReorg makes sure that a processedTransaction isn't returned

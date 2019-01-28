@@ -3,9 +3,9 @@ package proto
 import (
 	"fmt"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // Dependencies.

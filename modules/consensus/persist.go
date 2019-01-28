@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
 
 	"github.com/coreos/bbolt"
 )

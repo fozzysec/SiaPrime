@@ -3,7 +3,7 @@ package modules
 import (
 	"io"
 
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/types"
 )
 
 const (

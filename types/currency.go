@@ -12,7 +12,7 @@ import (
 	"math"
 	"math/big"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 type (

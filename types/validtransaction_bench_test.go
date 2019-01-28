@@ -3,8 +3,8 @@ package types
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
 )
 
 // BenchmarkStandaloneValid times how long it takes to verify a single

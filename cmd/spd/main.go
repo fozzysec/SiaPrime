@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/config"
+	"SiaPrime/build"
+	"SiaPrime/config"
 )
 
 var (

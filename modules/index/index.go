@@ -9,11 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/config"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/config"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	siasync "SiaPrime/sync"
+	"SiaPrime/types"
 )
 
 const (

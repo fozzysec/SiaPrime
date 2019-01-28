@@ -3,9 +3,9 @@ package transactionpool
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 // Consts related to the persisting structures of the transactoin pool.

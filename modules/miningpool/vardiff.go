@@ -3,7 +3,7 @@ package pool
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 var (

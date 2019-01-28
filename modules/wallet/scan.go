@@ -3,10 +3,10 @@ package wallet
 import (
 	"fmt"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 const scanMultiplier = 4 // how many more keys to generate after each scan iteration

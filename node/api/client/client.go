@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"gitlab.com/SiaPrime/Sia/node/api"
+	"SiaPrime/node/api"
 	"gitlab.com/SiaPrime/errors"
 )
 

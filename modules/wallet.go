@@ -6,8 +6,8 @@ import (
 
 	"gitlab.com/SiaPrime/entropy-mnemonics"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 )
 
 const (

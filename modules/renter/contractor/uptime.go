@@ -3,9 +3,9 @@ package contractor
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // uptimeMinScans is the minimum number of scans required to judge whether a

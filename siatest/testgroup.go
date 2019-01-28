@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/node"
-	"gitlab.com/SiaPrime/Sia/node/api/client"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/node"
+	"SiaPrime/node/api/client"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/errors"
 )
 

@@ -3,9 +3,9 @@ package modules
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 const (

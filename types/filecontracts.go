@@ -4,7 +4,7 @@ package types
 // contracts.
 
 import (
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 )
 
 var (

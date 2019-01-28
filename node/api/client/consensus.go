@@ -3,8 +3,8 @@ package client
 import (
 	"fmt"
 
-	"gitlab.com/SiaPrime/Sia/node/api"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/node/api"
+	"SiaPrime/types"
 )
 
 // ConsensusGet requests the /consensus api resource

@@ -5,9 +5,9 @@ import (
 	"io"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
 )

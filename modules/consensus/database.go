@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/encoding"
+	"SiaPrime/persist"
 
 	"github.com/coreos/bbolt"
 )

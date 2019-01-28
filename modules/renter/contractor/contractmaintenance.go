@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter/proto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter/proto"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
 )

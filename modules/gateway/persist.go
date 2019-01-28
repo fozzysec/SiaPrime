@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
 )
 
 const (

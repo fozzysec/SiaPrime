@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 )
 
 // TestTargetAdd probes the Add function of the target type.

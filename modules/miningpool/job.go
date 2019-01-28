@@ -1,7 +1,7 @@
 package pool
 
 import (
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 )
 
 //

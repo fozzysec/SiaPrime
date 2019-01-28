@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/persist"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

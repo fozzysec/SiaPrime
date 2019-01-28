@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/SiaPrime/Sia/node/api"
+	"SiaPrime/node/api"
 )
 
 var (

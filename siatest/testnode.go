@@ -3,10 +3,10 @@ package siatest
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/node"
-	"gitlab.com/SiaPrime/Sia/node/api/client"
-	"gitlab.com/SiaPrime/Sia/node/api/server"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/node"
+	"SiaPrime/node/api/client"
+	"SiaPrime/node/api/server"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
 )

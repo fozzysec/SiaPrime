@@ -3,7 +3,7 @@ package miner
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/modules"
 )
 
 // TestIntegrationBlockHeightReorg checks that the miner has the correct block

@@ -1,8 +1,8 @@
 package renter
 
 import (
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/siatest"
+	"SiaPrime/modules"
+	"SiaPrime/siatest"
 )
 
 // dependencyBlockScan blocks the scan progress of the hostdb until Scan is

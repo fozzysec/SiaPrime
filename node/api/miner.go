@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/types"
 
 	"github.com/julienschmidt/httprouter"
 )

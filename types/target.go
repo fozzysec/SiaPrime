@@ -7,8 +7,8 @@ import (
 	"errors"
 	"math/big"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
 )
 
 type (

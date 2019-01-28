@@ -3,9 +3,9 @@ package wallet
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // sortedOutputs is a struct containing a slice of siacoin outputs and their

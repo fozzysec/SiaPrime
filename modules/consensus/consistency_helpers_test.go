@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 
 	"github.com/coreos/bbolt"
 )

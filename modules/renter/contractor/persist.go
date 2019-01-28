@@ -4,10 +4,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter/proto"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter/proto"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
 )

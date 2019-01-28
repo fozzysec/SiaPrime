@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter/hostdb/hosttree"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter/hostdb/hosttree"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/threadgroup"
 
 	"gitlab.com/SiaPrime/errors"

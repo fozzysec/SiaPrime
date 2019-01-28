@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
 
 	"gitlab.com/SiaPrime/errors"
 )

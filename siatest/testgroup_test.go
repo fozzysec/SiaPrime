@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/node"
+	"SiaPrime/build"
+	"SiaPrime/node"
 )
 
 // TestCreateTestGroup tests the behavior of NewGroup.

@@ -18,12 +18,12 @@ import (
 
 	"github.com/sasha-s/go-deadlock"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/config"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/config"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/threadgroup"
 
 	// blank to load the sql driver for mysql

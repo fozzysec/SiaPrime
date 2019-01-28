@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strings"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/node"
-	"gitlab.com/SiaPrime/Sia/node/api"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/node"
+	"SiaPrime/node/api"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
 )

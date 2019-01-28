@@ -8,7 +8,7 @@ package renter
 import (
 	"sync"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 // memoryManager can handle requests for memory and returns of memory. The

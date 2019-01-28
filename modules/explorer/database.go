@@ -3,8 +3,8 @@ package explorer
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/types"
 
 	"github.com/coreos/bbolt"
 )
