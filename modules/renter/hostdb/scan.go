@@ -15,7 +15,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
 	"SiaPrime/modules/renter/hostdb/hosttree"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // equalIPNets checks if two slices of IP subnets contain the same subnets.

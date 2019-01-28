@@ -12,7 +12,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/modules/miner"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // postEncryptionTesting runs a series of checks on the wallet after it has

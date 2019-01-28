@@ -10,7 +10,7 @@ import (
 
 	"SiaPrime/crypto"
 	"SiaPrime/encoding"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 func hashStr(v interface{}) string {

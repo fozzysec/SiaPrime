@@ -9,7 +9,7 @@ import (
 
 	"SiaPrime/build"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestParallelFileAccess using a single file handle + ReadAt and WriteAt to

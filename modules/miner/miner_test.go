@@ -14,7 +14,7 @@ import (
 	"SiaPrime/modules/transactionpool"
 	"SiaPrime/modules/wallet"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // A minerTester is the helper object for miner testing.

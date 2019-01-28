@@ -8,7 +8,7 @@ import (
 
 	"SiaPrime/build"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // findUnfinishedStorageFolderAdditions will scroll through a set of state

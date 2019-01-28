@@ -106,7 +106,7 @@ import (
 	"SiaPrime/persist"
 	siasync "SiaPrime/sync"
 	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 var (

@@ -9,7 +9,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/encoding"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 
 	"github.com/coreos/bbolt"
 )

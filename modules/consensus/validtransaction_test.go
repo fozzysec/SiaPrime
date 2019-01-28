@@ -6,7 +6,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/crypto"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 
 	"github.com/coreos/bbolt"
 )

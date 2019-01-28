@@ -9,7 +9,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/crypto"
 	"SiaPrime/persist"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 type (

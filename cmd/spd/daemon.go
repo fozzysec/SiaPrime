@@ -18,7 +18,7 @@ import (
 	"SiaPrime/profile"
 	mnemonics "gitlab.com/SiaPrime/entropy-mnemonics"
 	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

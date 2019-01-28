@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/go-upnp"
+	"gitlab.com/NebulousLabs/go-upnp"
 
 	"SiaPrime/build"
 	"SiaPrime/modules"

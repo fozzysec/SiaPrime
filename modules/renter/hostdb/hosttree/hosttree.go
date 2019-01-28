@@ -9,7 +9,7 @@ import (
 	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 var (

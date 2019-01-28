@@ -13,7 +13,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // dummyConn implements the net.Conn interface, but does not carry any actual
