@@ -20,7 +20,7 @@ import (
 
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // randSector creates a random sector that can be added to the contract

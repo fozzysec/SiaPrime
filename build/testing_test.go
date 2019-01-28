@@ -9,7 +9,7 @@ import (
 	"sort"
 	"testing"
 
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestCopyDir checks that CopyDir copies directories as expected.

@@ -12,7 +12,7 @@ import (
 	"SiaPrime/modules/transactionpool"
 	"SiaPrime/modules/wallet"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // A consensusSetTester is the helper object for consensus set testing,

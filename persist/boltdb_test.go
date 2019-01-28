@@ -8,7 +8,7 @@ import (
 
 	"github.com/coreos/bbolt"
 	"SiaPrime/build"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // testInputs and testFilenames are global variables because most tests require

@@ -21,7 +21,7 @@ import (
 	"SiaPrime/modules/transactionpool"
 	modWallet "SiaPrime/modules/wallet"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // newTestingWallet is a helper function that creates a ready-to-use wallet

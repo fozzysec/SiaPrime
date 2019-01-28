@@ -7,7 +7,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestScanLargeIndex tests the limits of the seedScanner.scan function.

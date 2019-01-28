@@ -3,7 +3,7 @@ package gateway
 import (
 	"SiaPrime/build"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // managedPeerManagerConnect is a blocking function which tries to connect to

@@ -14,7 +14,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/persist"
 
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // newTestingFile initializes a file object with random parameters.

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"SiaPrime/build"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestIntegrationRandomSuffix checks that the random suffix creator creates

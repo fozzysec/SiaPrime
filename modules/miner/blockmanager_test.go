@@ -7,7 +7,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // solveHeader takes a block header as input and returns a solved block header

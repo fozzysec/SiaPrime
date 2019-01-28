@@ -11,7 +11,7 @@ import (
 
 	"SiaPrime/build"
 	"SiaPrime/persist"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // ProdDependencies act as a global instance of the production dependencies to

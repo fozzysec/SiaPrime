@@ -5,7 +5,7 @@ import (
 
 	"SiaPrime/crypto"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestImmediateBlockFacts grabs the block facts object from the block explorer

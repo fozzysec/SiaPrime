@@ -12,17 +12,38 @@ all: release
 # dependencies installs all of the dependencies that are required for building
 # SiaPrime.
 dependencies:
+	#replace golang.org with github mirrors to solve connection problem in China
+	if [ -d ${GOPATH}/src/golang.org/x/crypto ];then \
+		rm -rf "${GOPATH}/src/golang.org/x/crypto"; \
+	fi
+	mkdir -p ${GOPATH}/src/golang.org/x/crypto
+	git clone https://github.com/golang/crypto.git ${GOPATH}/src/golang.org/x/crypto
+	if [ -d ${GOPATH}/src/golang.org/x/lint ];then \
+		rm -rf "${GOPATH}/src/golang.org/x/lint"; \
+	fi
+	mkdir -p ${GOPATH}/src/golang.org/x/lint
+	git clone https://github.com/golang/lint.git ${GOPATH}/src/golang.org/x/lint
+	if [ -d ${GOPATH}/src/golang.org/x/text ];then \
+		rm -rf "${GOPATH}/src/golang.org/x/text"; \
+	fi
+	mkdir -p ${GOPATH}/src/golang.org/x/text
+	git clone https://github.com/golang/text.git ${GOPATH}/src/golang.org/x/text
+	if [ -d ${GOPATH}/src/golang.org/x/net ];then \
+		rm -rf "${GOPATH}/src/golang.org/x/net"; \
+	fi
+	mkdir -p ${GOPATH}/src/golang.org/x/net
+	git clone https://github.com/golang/net.git ${GOPATH}/src/golang.org/x/net
 	# Consensus Dependencies
 	go get -u gitlab.com/SiaPrime/demotemutex
-	go get -u gitlab.com/SiaPrime/fastrand
+	go get -u gitlab.com/NebulousLabs/fastrand
 	go get -u gitlab.com/SiaPrime/merkletree
 	go get -u gitlab.com/SiaPrime/bolt
-	go get -u golang.org/x/crypto/blake2b
-	go get -u golang.org/x/crypto/ed25519
+	#go get -u golang.org/x/crypto/blake2b
+	#go get -u golang.org/x/crypto/ed25519
 	# Module + Daemon Dependencies
 	go get -u gitlab.com/SiaPrime/entropy-mnemonics
 	go get -u gitlab.com/SiaPrime/errors
-	go get -u gitlab.com/SiaPrime/go-upnp
+	go get -u gitlab.com/NebulousLabs/go-upnp
 	go get -u gitlab.com/SiaPrime/ratelimit
 	go get -u gitlab.com/SiaPrime/threadgroup
 	go get -u gitlab.com/SiaPrime/writeaheadlog
@@ -35,14 +56,14 @@ dependencies:
 	go get -u github.com/lib/pq
 	go get github.com/sasha-s/go-deadlock/...
 	# Frontend Dependencies
-	go get -u golang.org/x/crypto/ssh/terminal
+	#go get -u golang.org/x/crypto/ssh/terminal
 	go get -u github.com/spf13/cobra/...
 	go get -u github.com/spf13/viper
 	go get -u github.com/inconshreveable/mousetrap
 	# Developer Dependencies
 	#go install -race std
 	go get -u github.com/client9/misspell/cmd/misspell
-	go get -u golang.org/x/lint/golint
+	#go get -u golang.org/x/lint/golint
 	go get -u gitlab.com/SiaPrime/glyphcheck
 
 # pkgs changes which packages the makefile calls operate on. run changes which

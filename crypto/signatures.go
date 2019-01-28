@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"SiaPrime/encoding"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 
 	"golang.org/x/crypto/ed25519"
 )

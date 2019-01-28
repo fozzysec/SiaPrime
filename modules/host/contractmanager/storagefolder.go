@@ -11,7 +11,7 @@ import (
 
 	"SiaPrime/modules"
 	"SiaPrime/sync"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 var (

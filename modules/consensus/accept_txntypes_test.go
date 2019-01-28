@@ -5,7 +5,7 @@ import (
 
 	"SiaPrime/crypto"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // testBlockSuite tests a wide variety of blocks.

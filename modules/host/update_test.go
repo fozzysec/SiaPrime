@@ -8,7 +8,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestStorageProof checks that the host can create and submit a storage proof.

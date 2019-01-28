@@ -7,7 +7,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestSignTransaction constructs a valid, signed transaction using the

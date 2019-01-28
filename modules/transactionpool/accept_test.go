@@ -5,7 +5,7 @@ import (
 
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // TestAcceptTransactionSet probes the AcceptTransactionSet method

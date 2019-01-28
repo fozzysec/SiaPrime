@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"SiaPrime/persist"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 // Fake errors that get returned when a simulated failure of a dependency is

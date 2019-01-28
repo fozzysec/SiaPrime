@@ -10,7 +10,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/fastrand"
+	"gitlab.com/NebulousLabs/fastrand"
 )
 
 const dummyNode = "111.111.111.111:1111"
