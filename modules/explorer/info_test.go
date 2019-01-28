@@ -3,8 +3,8 @@ package explorer
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

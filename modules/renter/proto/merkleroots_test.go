@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
 	"gitlab.com/SiaPrime/errors"
 	"gitlab.com/SiaPrime/fastrand"
 )

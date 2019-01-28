@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/types"
 )
 
 // KeyPairSiag_1_0 matches the KeyPair struct of the siag 1.0 code.

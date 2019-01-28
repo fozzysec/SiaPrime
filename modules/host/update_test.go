@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

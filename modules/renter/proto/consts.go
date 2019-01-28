@@ -3,9 +3,9 @@ package proto
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
 )
 
 const (

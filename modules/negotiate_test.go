@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 )
 
 // TestAnnouncementHandling checks that CreateAnnouncement and

@@ -17,10 +17,10 @@ import (
 
 	"github.com/sasha-s/go-deadlock"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 const (

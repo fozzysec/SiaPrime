@@ -3,7 +3,7 @@ package renter
 import (
 	"os"
 
-	"gitlab.com/SiaPrime/Sia/siatest"
+	"SiaPrime/siatest"
 )
 
 // renterTestDir creates a temporary testing directory for a renter test. This

@@ -3,7 +3,7 @@ package hostdb
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 const (

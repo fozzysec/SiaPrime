@@ -70,13 +70,13 @@ import (
 	"path/filepath"
 	"sync"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/host/contractmanager"
-	"gitlab.com/SiaPrime/Sia/persist"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/modules/host/contractmanager"
+	"SiaPrime/persist"
+	siasync "SiaPrime/sync"
+	"SiaPrime/types"
 )
 
 const (

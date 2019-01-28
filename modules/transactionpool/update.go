@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sort"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // findSets takes a bunch of transactions (presumably from a block) and finds

@@ -3,7 +3,7 @@ package wallet
 import (
 	"os"
 
-	"gitlab.com/SiaPrime/Sia/siatest"
+	"SiaPrime/siatest"
 )
 
 // walletTestDir creates a temporary testing directory for a wallet test. This

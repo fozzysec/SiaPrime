@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

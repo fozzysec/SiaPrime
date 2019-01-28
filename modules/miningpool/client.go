@@ -5,8 +5,8 @@ import (
 
 	"github.com/sasha-s/go-deadlock"
 
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 //

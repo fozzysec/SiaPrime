@@ -10,8 +10,8 @@ import (
 	"bytes"
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
 )
 
 var (

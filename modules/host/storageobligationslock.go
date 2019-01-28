@@ -3,8 +3,8 @@ package host
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/sync"
+	"SiaPrime/types"
 )
 
 var (

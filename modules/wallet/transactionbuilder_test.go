@@ -4,8 +4,8 @@ import (
 	"sync"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // addBlockNoPayout adds a block to the wallet tester that does not have any

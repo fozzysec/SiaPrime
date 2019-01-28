@@ -30,11 +30,11 @@ import (
 	"path/filepath"
 	"sync/atomic"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	siasync "SiaPrime/sync"
 )
 
 // ContractManager is responsible for managing contracts that the host has with

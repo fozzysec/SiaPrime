@@ -3,9 +3,9 @@ package transactionpool
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // standard.go adds extra rules to transactions which help preserve network

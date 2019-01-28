@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"sync"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
 )
 
 type (

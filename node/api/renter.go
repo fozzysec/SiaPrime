@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/errors"
 
 	"github.com/julienschmidt/httprouter"

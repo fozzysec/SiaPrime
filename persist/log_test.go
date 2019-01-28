@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 // TestLogger checks that the basic functions of the file logger work as

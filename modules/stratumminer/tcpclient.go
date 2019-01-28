@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	//"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/types"
+	//"SiaPrime/build"
+	"SiaPrime/types"
 
 	"gitlab.com/SiaPrime/threadgroup"
 )

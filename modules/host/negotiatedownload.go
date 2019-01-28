@@ -6,9 +6,9 @@ import (
 	"net"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 var (

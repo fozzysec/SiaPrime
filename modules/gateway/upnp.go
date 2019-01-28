@@ -14,8 +14,8 @@ import (
 	"gitlab.com/SiaPrime/errors"
 	"gitlab.com/SiaPrime/go-upnp"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/modules"
 )
 
 // myExternalIP discovers the gateway's external IP by querying a centralized

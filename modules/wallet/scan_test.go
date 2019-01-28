@@ -3,10 +3,10 @@ package wallet
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

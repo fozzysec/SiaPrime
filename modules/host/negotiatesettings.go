@@ -4,9 +4,9 @@ import (
 	"net"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
 )
 
 // capacity returns the amount of storage still available on the machine. The

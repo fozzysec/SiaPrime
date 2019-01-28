@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/modules"
 )
 
 // quitAfterLoadDeps will quit startup in newHostDB

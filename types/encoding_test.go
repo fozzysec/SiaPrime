@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

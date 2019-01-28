@@ -18,8 +18,8 @@ import (
 	"sync"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

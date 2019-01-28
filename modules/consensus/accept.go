@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 
 	"github.com/coreos/bbolt"
 )

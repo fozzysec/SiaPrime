@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 
 	"gitlab.com/SiaPrime/errors"
 )

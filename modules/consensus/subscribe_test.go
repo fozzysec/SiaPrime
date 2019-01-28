@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	bolt "github.com/coreos/bbolt"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/modules"
 )
 
 // mockSubscriber receives and holds changes to the consensus set, remembering

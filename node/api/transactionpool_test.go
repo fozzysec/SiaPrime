@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/encoding"
+	"SiaPrime/types"
 )
 
 // TestTransactionPoolRawHandler verifies that the transaction pools' raw

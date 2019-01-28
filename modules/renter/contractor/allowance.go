@@ -4,7 +4,7 @@ import (
 	"errors"
 	"reflect"
 
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/modules"
 )
 
 var (

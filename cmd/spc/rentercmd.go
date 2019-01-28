@@ -16,9 +16,9 @@ import (
 	"github.com/spf13/cobra"
 	"gitlab.com/SiaPrime/errors"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/node/api"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/node/api"
+	"SiaPrime/types"
 )
 
 var (

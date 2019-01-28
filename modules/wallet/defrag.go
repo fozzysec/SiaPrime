@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sort"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 )
 
 var (

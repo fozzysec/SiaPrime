@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
 )
 
 func TestRPCID(t *testing.T) {

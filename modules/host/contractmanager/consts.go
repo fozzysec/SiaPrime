@@ -3,8 +3,8 @@ package contractmanager
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/persist"
 )
 
 const (

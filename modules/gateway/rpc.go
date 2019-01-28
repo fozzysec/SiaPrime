@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
 )
 
 // rpcID is an 8-byte signature that is added to all RPCs to tell the gatway

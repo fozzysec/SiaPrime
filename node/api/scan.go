@@ -4,8 +4,8 @@ import (
 	"math/big"
 
 	"errors"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/types"
 )
 
 // scanAmount scans a types.Currency from a string.

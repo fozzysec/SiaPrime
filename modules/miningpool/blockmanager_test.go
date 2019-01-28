@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 	"gitlab.com/SiaPrime/errors"
 )
 

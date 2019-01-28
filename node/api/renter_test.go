@@ -14,11 +14,11 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter"
-	"gitlab.com/SiaPrime/Sia/modules/renter/contractor"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter"
+	"SiaPrime/modules/renter/contractor"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

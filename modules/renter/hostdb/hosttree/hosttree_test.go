@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	siasync "SiaPrime/sync"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

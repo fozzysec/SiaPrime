@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
+	"SiaPrime/encoding"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

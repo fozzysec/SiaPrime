@@ -3,7 +3,7 @@ package miner
 import (
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 // threadedMine starts a gothread that does CPU mining. threadedMine is the

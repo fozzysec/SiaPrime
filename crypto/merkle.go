@@ -3,7 +3,7 @@ package crypto
 import (
 	"bytes"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
+	"SiaPrime/encoding"
 
 	"gitlab.com/SiaPrime/merkletree"
 )

@@ -7,10 +7,10 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 type (

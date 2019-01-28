@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
+	"SiaPrime/crypto"
 	"gitlab.com/SiaPrime/errors"
 	"gitlab.com/SiaPrime/fastrand"
 )

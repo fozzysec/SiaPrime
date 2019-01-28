@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 // buildHttpRoutes sets up and returns an * httprouter.Router.

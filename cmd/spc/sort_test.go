@@ -4,8 +4,8 @@ import (
 	"sort"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/node/api"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/node/api"
+	"SiaPrime/types"
 )
 
 // TestSortByValue tests that byValue sorts contracts correctly.

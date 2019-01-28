@@ -7,9 +7,9 @@ import (
 	"encoding/binary"
 	"encoding/json"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 
 	"github.com/coreos/bbolt"
 )

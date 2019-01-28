@@ -8,11 +8,11 @@ package consensus
 
 import (
 	"errors"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	siasync "SiaPrime/sync"
+	"SiaPrime/types"
 
 	"github.com/coreos/bbolt"
 	"gitlab.com/SiaPrime/demotemutex"

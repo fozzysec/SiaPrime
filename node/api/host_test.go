@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/host/contractmanager"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/modules/host/contractmanager"
+	"SiaPrime/types"
 )
 
 var (

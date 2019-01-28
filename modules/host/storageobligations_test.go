@@ -3,7 +3,7 @@ package host
 import (
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/types"
 )
 
 // TestStorageObligationID checks that the return function of the storage

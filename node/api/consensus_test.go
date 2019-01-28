@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/types"
 )
 
 // TestConsensusGet probes the GET call to /consensus.

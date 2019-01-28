@@ -5,9 +5,9 @@ package explorer
 import (
 	"errors"
 
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 const (

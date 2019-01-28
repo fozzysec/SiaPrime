@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/modules"
 )
 
 type stratumminerTester struct {

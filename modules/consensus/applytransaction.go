@@ -4,9 +4,9 @@ package consensus
 // There is an assumption that the transaction has already been verified.
 
 import (
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 
 	"github.com/coreos/bbolt"
 )

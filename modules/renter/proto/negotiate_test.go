@@ -5,10 +5,10 @@ import (
 	"net"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // TestNegotiateRevisionStopResponse tests that when the host sends

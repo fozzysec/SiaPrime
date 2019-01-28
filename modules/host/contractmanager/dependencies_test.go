@@ -7,8 +7,8 @@ import (
 	"sync"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/modules"
 	"gitlab.com/SiaPrime/fastrand"
 )
 

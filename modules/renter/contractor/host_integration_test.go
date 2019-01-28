@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/consensus"
-	"gitlab.com/SiaPrime/Sia/modules/gateway"
-	"gitlab.com/SiaPrime/Sia/modules/host"
-	"gitlab.com/SiaPrime/Sia/modules/miner"
-	"gitlab.com/SiaPrime/Sia/modules/renter/hostdb"
-	"gitlab.com/SiaPrime/Sia/modules/transactionpool"
-	modWallet "gitlab.com/SiaPrime/Sia/modules/wallet"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/modules/consensus"
+	"SiaPrime/modules/gateway"
+	"SiaPrime/modules/host"
+	"SiaPrime/modules/miner"
+	"SiaPrime/modules/renter/hostdb"
+	"SiaPrime/modules/transactionpool"
+	modWallet "SiaPrime/modules/wallet"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/fastrand"
 )
 
@@ -612,7 +612,7 @@ func TestIntegrationEditorCaching(t *testing.T) {
 
 // TestContractPresenceLeak tests that a renter can not tell from the response
 // of the host to RPCs if the host has the contract if the renter doesn't
-// own this contract. See https://gitlab.com/SiaPrime/Sia/issues/2327.
+// own this contract. See https://SiaPrime/issues/2327.
 func TestContractPresenceLeak(t *testing.T) {
 	if testing.Short() {
 		t.SkipNow()

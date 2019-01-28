@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/modules"
 )
 
 // TestHostContractCountPersistence checks that the host persists its contract

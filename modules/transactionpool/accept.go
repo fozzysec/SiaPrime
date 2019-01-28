@@ -9,11 +9,11 @@ import (
 	"math"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 var (

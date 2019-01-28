@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 // syncResources will call Sync on all resources that the WAL has open. The

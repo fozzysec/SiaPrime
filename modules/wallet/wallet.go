@@ -11,13 +11,13 @@ import (
 
 	"github.com/coreos/bbolt"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/persist"
-	siasync "gitlab.com/SiaPrime/Sia/sync"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
+	"SiaPrime/persist"
+	siasync "SiaPrime/sync"
+	"SiaPrime/types"
 	"gitlab.com/SiaPrime/errors"
 	"gitlab.com/SiaPrime/threadgroup"
 )

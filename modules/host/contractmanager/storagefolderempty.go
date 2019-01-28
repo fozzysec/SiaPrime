@@ -5,7 +5,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"gitlab.com/SiaPrime/Sia/build"
+	"SiaPrime/build"
 )
 
 var (

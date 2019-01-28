@@ -5,8 +5,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/build"
+	"SiaPrime/modules"
 )
 
 type (

@@ -3,8 +3,8 @@ package consensus
 import (
 	"sort"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/types"
 )
 
 // blockRuleHelper assists with block validity checks by calculating values

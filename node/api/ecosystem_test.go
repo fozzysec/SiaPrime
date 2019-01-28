@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/types"
 )
 
 // TestHostPoorConnectivity creates several full server testers and links them

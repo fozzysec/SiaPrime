@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	siasync "gitlab.com/SiaPrime/Sia/sync" // TODO: Replace with gitlab.com/NebulousLabs/trymutex
+	siasync "SiaPrime/sync" // TODO: Replace with gitlab.com/NebulousLabs/trymutex
 )
 
 const (

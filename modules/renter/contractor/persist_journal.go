@@ -25,12 +25,12 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/crypto"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/modules/renter/proto"
-	"gitlab.com/SiaPrime/Sia/persist"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/crypto"
+	"SiaPrime/modules"
+	"SiaPrime/modules/renter/proto"
+	"SiaPrime/persist"
+	"SiaPrime/types"
 )
 
 var journalMeta = persist.Metadata{

@@ -4,8 +4,8 @@ import (
 	"net"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/modules"
+	"SiaPrime/encoding"
+	"SiaPrime/modules"
 	"gitlab.com/SiaPrime/errors"
 )
 

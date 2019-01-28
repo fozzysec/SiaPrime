@@ -1,9 +1,9 @@
 package client
 
 import (
-	"gitlab.com/SiaPrime/Sia/encoding"
-	"gitlab.com/SiaPrime/Sia/node/api"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/encoding"
+	"SiaPrime/node/api"
+	"SiaPrime/types"
 )
 
 // MinerGet requests the /miner endpoint's resources.

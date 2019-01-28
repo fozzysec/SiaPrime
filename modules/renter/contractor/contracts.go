@@ -1,8 +1,8 @@
 package contractor
 
 import (
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // contractEndHeight returns the height at which the Contractor's contracts

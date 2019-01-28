@@ -1,9 +1,9 @@
 package contractor
 
 import (
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/modules"
-	"gitlab.com/SiaPrime/Sia/types"
+	"SiaPrime/build"
+	"SiaPrime/modules"
+	"SiaPrime/types"
 )
 
 // Constants related to contract formation parameters.

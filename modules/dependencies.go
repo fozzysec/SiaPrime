@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/SiaPrime/Sia/build"
-	"gitlab.com/SiaPrime/Sia/persist"
+	"SiaPrime/build"
+	"SiaPrime/persist"
 	"gitlab.com/SiaPrime/fastrand"
 )
 
