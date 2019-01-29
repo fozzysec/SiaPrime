@@ -143,13 +143,11 @@ func (w *Worker) deleteWorkerRecord() error {
 		WHERE id = ?
 	`)
 	if err != nil {
-		w.log.Printf("Error preparing to update worker: %s\n", err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(w.wr.workerID)
 	if err != nil {
-		w.log.Printf("Error deleting record: %s\n", err)
 		return err
 	}
 	return nil
@@ -186,7 +184,6 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	defer tx.Rollback()
 
 	bh := pool.persist.GetBlockHeight()
-	w.log.Printf("New block to mine on %d\n", uint64(bh)+1)
 	// reward := b.CalculateSubsidy(bh).String()
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
@@ -245,13 +242,9 @@ func (s *Shift) SaveShift() error {
 		rows.Close()
 	}
 	if err != nil {
-		worker.log.Println(buffer.String())
-		worker.log.Printf("Error saving shares: %s\n, Try to reconnect", err)
 		fmt.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
-			worker.log.Println(buffer.String())
-			worker.log.Printf("Error saving shares: %s\n, Try to reconnect", err)
 			fmt.Println(err)
 			return err
 		}
@@ -260,8 +253,6 @@ func (s *Shift) SaveShift() error {
 			rows2.Close()
 		}
 		if err2 != nil {
-			worker.log.Println(buffer.String())
-			worker.log.Printf("Error adding record of last shift: %s\n", err2)
 			return err2
 		}
 	}
@@ -274,7 +265,6 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
 	tx, err := c.pool.sqldb.Begin()
 	if err != nil {
 		return err
@@ -295,12 +285,6 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	if err != nil {
 		return err
 	}
-
-	affectedRows, err := rs.RowsAffected()
-	if err != nil {
-		return err
-	}
-	w.log.Printf("Rows affected insert workers %d", affectedRows)
 
 	id, err := rs.LastInsertId()
 	if err != nil {

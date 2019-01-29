@@ -8,10 +8,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	// "math/big"
 	"net"
-	"strconv"
 	"strings"
 	"time"
 
@@ -19,7 +17,6 @@ import (
 
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
-	"SiaPrime/persist"
 	"SiaPrime/types"
 )
 
@@ -308,7 +305,6 @@ func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
 	if err != nil {
 		return nil, err
 	}
-	h.s.log = w.log
 	return w, nil
 }
 
@@ -441,7 +437,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 	if len(b.MinerPayouts) == 0 {
 		r.Result = false
 		r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-		h.s.CurrentWorker.log.Printf("Stale Share rejected - old/unknown job\n")
 		h.s.CurrentWorker.IncrementInvalidShares()
 		return h.sendResponse(r)
 	}
@@ -474,7 +469,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 	if bytes.Compare(sessionPoolTarget[:], blockHash[:]) < 0 {
 		r.Result = false
 		r.Error = interfaceify([]string{"22", "Submit nonce not reach pool diff target"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-		h.s.CurrentWorker.log.Printf("Submit nonce not reach pool diff target\n")
 		h.s.CurrentWorker.IncrementInvalidShares()
 		return h.sendResponse(r)
 	}

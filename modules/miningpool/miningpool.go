@@ -422,7 +422,6 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
 
 	p.runningMutex.Lock()
 	p.dispatcher = &Dispatcher{handlers: make(map[string]*Handler), mu: deadlock.RWMutex{}, p: p}
-	p.dispatcher.log, _ = dependencies.newLogger(filepath.Join(p.persistDir, "stratum.log"))
 	p.running = true
 	p.runningMutex.Unlock()
 

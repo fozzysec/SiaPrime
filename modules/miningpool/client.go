@@ -1,11 +1,9 @@
 package pool
 
 import (
-	"path/filepath"
 
 	"github.com/sasha-s/go-deadlock"
 
-	"SiaPrime/persist"
 	"SiaPrime/types"
 )
 

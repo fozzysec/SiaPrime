@@ -1,14 +1,11 @@
 package pool
 
 import (
-	// "fmt"
-
 	"net"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
 
-	"SiaPrime/persist"
 )
 
 // Dispatcher contains a map of ip addresses to handlers

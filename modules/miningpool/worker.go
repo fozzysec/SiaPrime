@@ -1,12 +1,9 @@
 package pool
 
 import (
-	"path/filepath"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
-
-	"SiaPrime/persist"
 )
 
 // A WorkerRecord is used to track worker information in memory
@@ -27,7 +24,6 @@ type Worker struct {
 }
 
 func newWorker(c *Client, name string, s *Session) (*Worker, error) {
-	p := c.Pool()
 	// id := p.newStratumID()
 	w := &Worker{
 		wr: WorkerRecord{

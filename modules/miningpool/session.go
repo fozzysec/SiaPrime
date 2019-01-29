@@ -4,13 +4,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/build"
-	"SiaPrime/persist"
 )
 
 const (
