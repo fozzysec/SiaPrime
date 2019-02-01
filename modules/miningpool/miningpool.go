@@ -34,7 +34,7 @@ var (
 	// persistMetadata is the header that gets written to the persist file, and is
 	// used to recognize other persist files.
 	persistMetadata = persist.Metadata{
-		Header:  "SiaPrime Pool",
+		Header:  "Sia Pool",
 		Version: "0.0.1",
 	}
 
