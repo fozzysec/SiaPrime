@@ -298,11 +298,6 @@ func (c *Client) addWorkerDB(w *Worker) error {
 		return err
 	}
 
-	affectedRows, err := rs.RowsAffected()
-	if err != nil {
-		return err
-	}
-
 	id, err := rs.LastInsertId()
 	if err != nil {
 		return err
