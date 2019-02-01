@@ -69,7 +69,6 @@ func (p *Pool) AddClientDB(c *Client) error {
 	defer func() {
 		p.mu.Unlock()
 	}()
-
 	tx, err := p.sqldb.Begin()
 	if err != nil {
 		return err
@@ -277,7 +276,10 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	defer c.mu.Unlock()
 
 	c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
-	tx, err := c.pool.sqldb.Begin()
+        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
+	defer cancel()
+	withCtx := c.pool.sqldb.WithContext(newCtx)
+	tx, err := withCtx.Begin()
 	if err != nil {
 		return err
 	}
@@ -292,9 +294,12 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	}
 	defer stmt.Close()
 
+	startTime := time.Now()
 	rs, err := stmt.Exec(c.cr.clientID, c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
 		c.pool.InternalSettings().PoolID, w.s.clientVersion, w.s.remoteAddr)
-	if err != nil {
+	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
+		return ErrQueryTimeout
+	} else if err != nil {
 		return err
 	}
 
