@@ -294,7 +294,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	defer stmt.Close()
 
 	startTime := time.Now()
-	rs, err := stmt.Exec(c.cr.clientID, c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
+	rs, err := stmt.ExecContext(newCtx, c.cr.clientID, c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
 		c.pool.InternalSettings().PoolID, w.s.clientVersion, w.s.remoteAddr)
 	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
 		return ErrQueryTimeout
