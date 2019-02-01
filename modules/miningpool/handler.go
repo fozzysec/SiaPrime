@@ -302,8 +302,7 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 	c, err := h.p.FindClientDB(client)
 	if err == ErrQueryTimeout {
 		return c, err
-	}
-	else if err != ErrNoUsernameInDatabase {
+	} else if err != ErrNoUsernameInDatabase {
 		return c, err
 	}
 	if c == nil {
