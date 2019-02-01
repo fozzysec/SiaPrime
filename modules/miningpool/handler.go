@@ -300,7 +300,10 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 	h.p.clientSetupMutex.Lock()
 	defer h.p.clientSetupMutex.Unlock()
 	c, err := h.p.FindClientDB(client)
-	if err != ErrNoUsernameInDatabase {
+	if err == ErrQueryTimeout {
+		return c, err
+	}
+	else if err != ErrNoUsernameInDatabase {
 		return c, err
 	}
 	if c == nil {

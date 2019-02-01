@@ -3,6 +3,7 @@ package pool
 import (
 	"bytes"
 	"database/sql"
+	"context"
 	"errors"
 	"fmt"
 	"time"
@@ -18,11 +19,13 @@ var (
 	ErrNoUsernameInDatabase = errors.New("user is not found in db")
 	// ErrCreateClient is an error when can't create a new client
 	ErrCreateClient = errors.New("Error when creating a new client")
+	ErrQueryTimeout = errors.New("DB query timeout")
 )
 
 const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
+	sqlQueryTimeout    = 5
 	confirmedButUnpaid = "Confirmed but unpaid"
 )
 
@@ -67,7 +70,6 @@ func (p *Pool) AddClientDB(c *Client) error {
 		p.mu.Unlock()
 	}()
 
-	p.yiilog.Printf("Adding user %s to yiimp account\n", c.Name())
 	tx, err := p.sqldb.Begin()
 	if err != nil {
 		return err
@@ -103,11 +105,14 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	var clientID int64
 	var Name, Wallet string
 	var coinid int
-
-	p.yiilog.Debugf("Searching for %s in existing accounts\n", name)
-	err := p.sqldb.QueryRow("SELECT id, username, username, coinid FROM accounts WHERE username = ?", name).Scan(&clientID, &Name, &Wallet, &coinid)
+        newCtx, cancel := context.Context(context.Background(), sqlQueryTimeout*time.Second)
+	defer cancel()
+	startTime := time.Now()
+	err := p.sqldb.QueryRowContext(newCtx, "SELECT id, username, username, coinid FROM accounts WHERE username = ?", name).Scan(&clientID, &Name, &Wallet, &coinid)
+	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
+		return nil, ErrQueryTimeout
+	}
 	if err != nil {
-		p.yiilog.Debugf("Search failed: %s\n", err)
 		return nil, ErrNoUsernameInDatabase
 	}
 	p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
@@ -246,12 +251,10 @@ func (s *Shift) SaveShift() error {
 	}
 	if err != nil {
 		worker.log.Println(buffer.String())
-		worker.log.Printf("Error saving shares: %s\n, Try to reconnect", err)
 		fmt.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
 			worker.log.Println(buffer.String())
-			worker.log.Printf("Error saving shares: %s\n, Try to reconnect", err)
 			fmt.Println(err)
 			return err
 		}
@@ -261,7 +264,6 @@ func (s *Shift) SaveShift() error {
 		}
 		if err2 != nil {
 			worker.log.Println(buffer.String())
-			worker.log.Printf("Error adding record of last shift: %s\n", err2)
 			return err2
 		}
 	}
@@ -300,7 +302,6 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	if err != nil {
 		return err
 	}
-	w.log.Printf("Rows affected insert workers %d", affectedRows)
 
 	id, err := rs.LastInsertId()
 	if err != nil {
