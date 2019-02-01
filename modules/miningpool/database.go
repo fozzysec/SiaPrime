@@ -105,7 +105,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	var clientID int64
 	var Name, Wallet string
 	var coinid int
-        newCtx, cancel := context.Context(context.Background(), sqlQueryTimeout*time.Second)
+        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
 	defer cancel()
 	startTime := time.Now()
 	err := p.sqldb.QueryRowContext(newCtx, "SELECT id, username, username, coinid FROM accounts WHERE username = ?", name).Scan(&clientID, &Name, &Wallet, &coinid)
