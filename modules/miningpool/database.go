@@ -276,16 +276,15 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	defer c.mu.Unlock()
 
 	c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
-        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
-	defer cancel()
-	withCtx := c.pool.sqldb.WithContext(newCtx)
-	tx, err := withCtx.Begin()
+	tx, err := c.pool.sqldb.Begin()
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 	// TODO: add ip etc info
-	stmt, err := tx.Prepare(`
+        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
+	defer cancel()
+	stmt, err := tx.PrepareContext(newCtx, `
 		INSERT INTO workers (userid, name, worker, algo, time, pid, version, ip)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 	`)
