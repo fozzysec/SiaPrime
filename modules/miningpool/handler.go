@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"sync"
 	// "math/big"
 	"net"
 	"strconv"
