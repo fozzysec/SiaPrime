@@ -14,6 +14,7 @@ import (
 	"net"
 	"path/filepath"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
@@ -222,7 +223,7 @@ func (p *Pool) monitorShifts() {
 			return
 		}
 		p.log.Debugf("Shift change - end of shift %d\n", p.shiftID)
-		sync.atomic.AddUint64(&p.shiftID, 1)
+		atomic.AddUint64(&p.shiftID, 1)
 		p.dispatcher.mu.RLock()
 		// TODO: switch to batched insert
 		for _, h := range p.dispatcher.handlers {
@@ -513,7 +514,7 @@ func (p *Pool) newStratumID() (f func() uint64) {
 			// p.log.Debugf("Unlocking pool\n")
 			p.mu.Unlock()
 		}()
-		sync.atomic.AddUint64(&p.stratumID, 1)
+		atomic.AddUint64(&p.stratumID, 1)
 		return p.stratumID
 	}
 	return
