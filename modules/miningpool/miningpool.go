@@ -13,7 +13,6 @@ import (
 	"math/rand"
 	"net"
 	"path/filepath"
-	"sync"
 	"sync/atomic"
 	"time"
 
@@ -167,7 +166,7 @@ type Pool struct {
 	shiftTimestamp time.Time
 	clients        map[string]*Client //client name to client pointer mapping
 
-	clientSetupMutex sync.Mutex
+	clientSetupMutex map[string]*deadlock.Mutex
 	runningMutex     deadlock.RWMutex
 	running          bool
 }
