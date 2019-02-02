@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sasha-s/go-deadlock"
+//	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/encoding"
 	"SiaPrime/modules"

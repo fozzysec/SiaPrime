@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/sasha-s/go-deadlock"
+//	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/build"
 	"SiaPrime/config"
