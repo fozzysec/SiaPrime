@@ -326,9 +326,10 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
 			minHeap:  false,
 		},
 
-		persistDir: persistDir,
-		stratumID:  rand.Uint64(),
-		clients:    make(map[string]*Client),
+		persistDir: 		persistDir,
+		stratumID:  		rand.Uint64(),
+		clients:    		make(map[string]*Client),
+		clientSetupMutex:	make(map[string]*deadlock.Mutex),
 	}
 	var err error
 
