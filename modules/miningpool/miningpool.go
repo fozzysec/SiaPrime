@@ -13,10 +13,10 @@ import (
 	"math/rand"
 	"net"
 	"path/filepath"
-	"sync/atomic"
+	"sync"
 	"time"
 
-//	"github.com/sasha-s/go-deadlock"
+	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/build"
 	"SiaPrime/config"
@@ -166,7 +166,7 @@ type Pool struct {
 	shiftTimestamp time.Time
 	clients        map[string]*Client //client name to client pointer mapping
 
-	clientSetupMutex deadlock.Mutex
+	clientSetupMutex sync.Mutex
 	runningMutex     deadlock.RWMutex
 	running          bool
 }

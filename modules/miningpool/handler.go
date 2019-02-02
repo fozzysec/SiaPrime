@@ -9,13 +9,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sync"
 	// "math/big"
 	"net"
 	"strconv"
 	"strings"
 	"time"
 
-//	"github.com/sasha-s/go-deadlock"
+	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/encoding"
 	"SiaPrime/modules"

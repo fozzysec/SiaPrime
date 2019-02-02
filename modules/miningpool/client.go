@@ -1,7 +1,8 @@
 package pool
 
 import (
-	"github.com/sasha-s/go-deadlock"
+	//"github.com/sasha-s/go-deadlock"
+	"sync"
 
 	"SiaPrime/persist"
 	"SiaPrime/types"
@@ -22,7 +23,7 @@ type ClientRecord struct {
 //
 type Client struct {
 	cr   ClientRecord
-	mu   deadlock.RWMutex
+	mu   sync.RWMutex
 	pool *Pool
 	log  *persist.Logger
 }
