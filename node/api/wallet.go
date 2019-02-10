@@ -14,7 +14,7 @@ import (
 	"SiaPrime/types"
 
 	"github.com/julienschmidt/httprouter"
-	"gitlab.com/SiaPrime/entropy-mnemonics"
+	"gitlab.com/NebulousLabs/entropy-mnemonics"
 )
 
 type (

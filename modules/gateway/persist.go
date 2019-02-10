@@ -30,7 +30,7 @@ var nodePersistMetadata = persist.Metadata{
 // gateway persist file.
 var persistMetadata = persist.Metadata{
 	Header:  "Gateway Persistence",
-	Version: "1.3.5",
+	Version: "1.3.8",
 }
 
 type (

@@ -2,6 +2,7 @@ package consensus
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"os"
@@ -118,6 +119,14 @@ func (cs *ConsensusSet) validateHeader(tx dbTx, h types.BlockHeader) error {
 		return err
 	}
 
+	// Check that the nonce is a legal nonce.
+	//
+	// It's parentHeight > types.ASICHardforkHeight, because in another place in
+	// the code we use 'height >= types.ASICHardforkHeight'. This keeps the
+	// trigger on the same block.
+	if parent.Height > types.ASICHardforkHeight && binary.LittleEndian.Uint64(h.Nonce[:])%types.ASICHardforkFactor != 0 {
+		return errors.New("block does not meet nonce requirements")
+	}
 	// Check that the target of the new block is sufficient.
 	if !checkHeaderTarget(h, parent.ChildTarget) {
 		return modules.ErrBlockUnsolved
@@ -302,7 +311,6 @@ func (cs *ConsensusSet) managedAcceptBlocks(blocks []types.Block) (blockchainExt
 	}
 	if setErr != nil {
 		if len(changes) == 0 {
-			fmt.Println("Received an invalid block set.")
 			cs.log.Println("Consensus received an invalid block:", setErr)
 		} else {
 			fmt.Println("Received a partially valid block set.")

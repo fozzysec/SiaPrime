@@ -136,7 +136,7 @@ import (
 	"SiaPrime/persist"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 type (

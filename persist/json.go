@@ -17,7 +17,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/crypto"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // verifyChecksum will disregard the metadata of the saved file, and just verify

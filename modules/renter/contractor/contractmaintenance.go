@@ -13,7 +13,7 @@ import (
 	"SiaPrime/modules/renter/proto"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 var (

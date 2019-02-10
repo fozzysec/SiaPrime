@@ -194,7 +194,7 @@ numhosts
       "uploadbandwidthprice": "3000000000000", // hastings / byte
 
       // The version of the host.
-      "version": "1.3.4",
+      "version": "1.3.8",
 
       // A storage proof window is the number of blocks that the host has to
       // get a storage proof onto the blockchain. The window size is the
@@ -353,7 +353,7 @@ any particular order, and the order may change in subsequent calls.
       "uploadbandwidthprice": "3000000000000", // hastings / byte
 
       // The version of the host.
-      "version": "1.3.4",
+      "version": "1.3.8",
 
       // A storage proof window is the number of blocks that the host has to
       // get a storage proof onto the blockchain. The window size is the
@@ -522,7 +522,7 @@ overall.
     "uploadbandwidthprice": "3000000000000", // hastings / byte
 
     // The version of the host.
-    "version": "1.3.4",
+    "version": "1.3.8",
 
     // A storage proof window is the number of blocks that the host has to
     // get a storage proof onto the blockchain. The window size is the
@@ -677,7 +677,7 @@ Examples
       "totalstorage": 35000000000,
       "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
       "uploadbandwidthprice": "3000000000000",
-      "version": "1.3.4",
+      "version": "1.3.8",
       "windowsize": 144
     },
     {
@@ -724,7 +724,7 @@ Examples
       "totalstorage": 35000000000,
       "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
       "uploadbandwidthprice": "3000000000000",
-      "version": "1.3.4",
+      "version": "1.3.8",
       "windowsize": 144
     }
   ]
@@ -791,7 +791,7 @@ Examples
       "totalstorage": 35000000000,
       "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
       "uploadbandwidthprice": "3000000000000",
-      "version": "1.3.4",
+      "version": "1.3.8",
       "windowsize": 144
     },
     {
@@ -838,7 +838,7 @@ Examples
       "totalstorage": 35000000000,
       "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
       "uploadbandwidthprice": "3000000000000",
-      "version": "1.3.4",
+      "version": "1.3.8",
       "windowsize": 144
     },
     {
@@ -885,7 +885,7 @@ Examples
       "totalstorage": 35000000000,
       "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
       "uploadbandwidthprice": "3000000000000",
-      "version": "1.3.4",
+      "version": "1.3.8",
       "windowsize": 144
     }
   ]
@@ -951,7 +951,7 @@ Examples
     "totalstorage": 35000000000,
     "unlockhash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab",
     "uploadbandwidthprice": "3000000000000", 
-    "version": "1.3.4",
+    "version": "1.3.8",
     "windowsize": 144
   },
   "scorebreakdown": {

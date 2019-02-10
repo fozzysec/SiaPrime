@@ -12,7 +12,7 @@ import (
 	"SiaPrime/node/api"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // A Server is a collection of siad modules that can be communicated with over

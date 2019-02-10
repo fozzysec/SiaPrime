@@ -8,7 +8,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // Renew negotiates a new contract for data already stored with a host, and
@@ -154,21 +154,28 @@ func (cs *ContractSet) Renew(oldContract *SafeContract, params ContractParams, t
 	if err = modules.ReadNegotiationAcceptance(conn); err != nil {
 		return modules.RenterContract{}, errors.New("host did not accept our proposed contract: " + err.Error())
 	}
-	// host now sends any new parent transactions and inputs that
+	// host now sends any new parent transactions, inputs and outputs that
 	// were added to the transaction
 	var newParents []types.Transaction
 	var newInputs []types.SiacoinInput
+	var newOutputs []types.SiacoinOutput
 	if err = encoding.ReadObject(conn, &newParents, types.BlockSizeLimit); err != nil {
 		return modules.RenterContract{}, errors.New("couldn't read the host's added parents: " + err.Error())
 	}
 	if err = encoding.ReadObject(conn, &newInputs, types.BlockSizeLimit); err != nil {
 		return modules.RenterContract{}, errors.New("couldn't read the host's added inputs: " + err.Error())
 	}
+	if err = encoding.ReadObject(conn, &newOutputs, types.BlockSizeLimit); err != nil {
+		return modules.RenterContract{}, errors.New("couldn't read the host's added outputs: " + err.Error())
+	}
 
 	// merge txnAdditions with txnSet
 	txnBuilder.AddParents(newParents)
 	for _, input := range newInputs {
 		txnBuilder.AddSiacoinInput(input)
+	}
+	for _, output := range newOutputs {
+		txnBuilder.AddSiacoinOutput(output)
 	}
 
 	// sign the txn

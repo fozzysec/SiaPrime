@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 
 	"SiaPrime/modules"
 	"SiaPrime/node/api"

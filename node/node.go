@@ -28,7 +28,7 @@ import (
 	"SiaPrime/modules/wallet"
 	"SiaPrime/persist"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // NodeParams contains a bunch of parameters for creating a new test node. As

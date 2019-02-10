@@ -1,9 +1,9 @@
-# [![SiaPrime Logo](https://siaprime.net/imagestore/primelogo_cb_256x256.png)](http://siaprime.net) v1.3.5.2
+# [![SiaPrime Logo](https://siaprime.net/imagestore/primelogo_cb_256x256.png)](http://siaprime.net) v1.3.8
 
-[![Build Status](https://gitlab.com/SiaPrime/Sia/badges/master/build.svg)](https://gitlab.com/SiaPrime/Sia/commits/master)
-[![Coverage Report](https://gitlab.com/SiaPrime/Sia/badges/master/coverage.svg)](https://gitlab.com/SiaPrime/Sia/commits/master)
-[![GoDoc](https://godoc.org/gitlab.com/SiaPrime/Sia?status.svg)](https://godoc.org/gitlab.com/SiaPrime/Sia)
-[![Go Report Card](https://goreportcard.com/badge/gitlab.com/SiaPrime/Sia)](https://goreportcard.com/report/gitlab.com/SiaPrime/Sia)
+[![Build Status](https://gitlab.com/SiaPrime/SiaPrime/badges/master/build.svg)](https://gitlab.com/SiaPrime/SiaPrime/commits/master)
+[![Coverage Report](https://gitlab.com/SiaPrime/SiaPrime/badges/master/coverage.svg)](https://gitlab.com/SiaPrime/SiaPrime/commits/master)
+[![GoDoc](https://godoc.org/gitlab.com/SiaPrime/SiaPrime?status.svg)](https://godoc.org/gitlab.com/SiaPrime/SiaPrime)
+[![Go Report Card](https://goreportcard.com/badge/gitlab.com/SiaPrime/SiaPrime)](https://goreportcard.com/report/gitlab.com/SiaPrime/SiaPrime)
 [![License MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
 SiaPrime is a decentralized cloud storage platform based on the Sia core 
@@ -21,7 +21,7 @@ support them. As they build key features into the network, we'll extend
 into an easy-to-use application suite with versions geared at different
 customer profiles and market verticals.
 
-![UI](https://gitlab.com/SiaPrime/Sia/raw/master/doc/assets/prime_wallet.png)
+![UI](https://gitlab.com/SiaPrime/SiaPrime/raw/master/doc/assets/prime_wallet.png)
 
 Traditional cloud storage is dominated by a small number of companies, with
 most based in Silicon Valley. China is also dominated by a few entities
@@ -84,9 +84,9 @@ suite, the core application should still exist but be less useful:
 
 Check out the guides below:
 
-- [How to Store Data on Sia](https://blog.sia.tech/getting-started-with-private-decentralized-cloud-storage-c9565dc8c854)
-- [How to Become a Sia Host](https://blog.sia.tech/how-to-run-a-host-on-sia-2159ebc4725)
-- [Using the Sia API](https://blog.sia.tech/api-quickstart-guide-f1d160c05235)
+- [How to Store Data on SiaPrime](https://blog.sia.tech/getting-started-with-private-decentralized-cloud-storage-c9565dc8c854)
+- [How to Become a SiaPrime Host](https://blog.sia.tech/how-to-run-a-host-on-sia-2159ebc4725)
+- [Using the SiaPrime API](https://blog.sia.tech/api-quickstart-guide-f1d160c05235)
 
 
 Usage
@@ -113,7 +113,7 @@ To build from source, [Go 1.10 must be installed](https://golang.org/doc/install
 on the system. Make sure your `$GOPATH` is set, and then simply use `go get`:
 
 ```
-go get -u gitlab.com/SiaPrime/Sia/...
+go get -u gitlab.com/SiaPrime/SiaPrime/...
 ```
 
 This will download the SiaPrime repo to your `$GOPATH/src` folder and install 

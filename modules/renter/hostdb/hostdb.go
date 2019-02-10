@@ -19,7 +19,7 @@ import (
 	"SiaPrime/types"
 	"gitlab.com/SiaPrime/threadgroup"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/coreos/bbolt"
-	"gitlab.com/SiaPrime/demotemutex"
+	"gitlab.com/NebulousLabs/demotemutex"
 
 	"SiaPrime/crypto"
 	"SiaPrime/modules"

@@ -8,7 +8,7 @@ import (
 	"SiaPrime/node/api/server"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // TestNode is a helper struct for testing that contains a server and a client

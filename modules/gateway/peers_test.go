@@ -431,6 +431,7 @@ func TestUnitAcceptableVersion(t *testing.T) {
 	validVersions := []string{
 		minimumAcceptablePeerVersion,
 		"1.4.0",
+		"1.3.8",
 		"1.3.5.2",
 		"1.6.0",
 		"1.6.1",

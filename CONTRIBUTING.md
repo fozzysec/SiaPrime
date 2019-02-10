@@ -47,7 +47,7 @@ To build SiaPrime on your machine, enter the following on the command line:
 ```bash
 # Download Sia and its dependencies
 # Binaries will be installed in $GOPATH/bin
-$ go get -u gitlab.com/SiaPrime/Sia/...
+$ go get -u gitlab.com/SiaPrime/SiaPrime/...
 
 # Switch to directory containing Sia source code
 $ cd $GOPATH/src/gitlab.com/SiaPrime/Sia
@@ -258,11 +258,11 @@ Feel free to ask for help on the #core-dev channel on [discord][discord].
 [effective]: https://golang.org/doc/effective_go.html
 [siaprime]: https://gitlab.com/SiaPrime/Sia
 [branch]: http://blog.scottlowe.org/2015/01/27/using-fork-branch-git-workflow/
-[developers.md]: https://gitlab.com/SiaPrime/Sia/blob/master/doc/Developers.md
+[developers.md]: https://gitlab.com/SiaPrime/SiaPrime/blob/master/doc/Developers.md
 [gofmt]: https://golang.org/cmd/gofmt/
 [nutshell]: https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell
 [discord]: https://discord.gg/sia
 [install-git]: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-[test-doc]: https://gitlab.com/SiaPrime/Sia/blob/master/doc/Testing.md
+[test-doc]: https://gitlab.com/SiaPrime/SiaPrime/blob/master/doc/Testing.md
 [stashing]: https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning
 [remote]: https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes

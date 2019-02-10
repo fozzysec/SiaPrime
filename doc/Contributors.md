@@ -56,6 +56,6 @@
 * Google Inc.
 
 
-[developers]: https://gitlab.com/SiaPrime/Sia/blob/master/doc/Developers.md
-[doc]: https://gitlab.com/SiaPrime/Sia/tree/master/doc
+[developers]: https://gitlab.com/SiaPrime/SiaPrime/blob/master/doc/Developers.md
+[doc]: https://gitlab.com/SiaPrime/SiaPrime/tree/master/doc
 [discord]: https://discord.gg/Cvxj5pQ

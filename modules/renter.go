@@ -9,7 +9,7 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 var (

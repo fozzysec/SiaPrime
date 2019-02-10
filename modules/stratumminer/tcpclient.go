@@ -15,7 +15,7 @@ import (
 	//"SiaPrime/build"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/threadgroup"
 )
 
 //ErrorCallback is the type of function that be registered to be notified of errors requiring a client

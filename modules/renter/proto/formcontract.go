@@ -8,7 +8,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // FormContract forms a contract with a host and submits the contract
@@ -146,17 +146,24 @@ func (cs *ContractSet) FormContract(params ContractParams, txnBuilder transactio
 	// were added to the transaction.
 	var newParents []types.Transaction
 	var newInputs []types.SiacoinInput
+	var newOutputs []types.SiacoinOutput
 	if err = encoding.ReadObject(conn, &newParents, types.BlockSizeLimit); err != nil {
 		return modules.RenterContract{}, errors.New("couldn't read the host's added parents: " + err.Error())
 	}
 	if err = encoding.ReadObject(conn, &newInputs, types.BlockSizeLimit); err != nil {
 		return modules.RenterContract{}, errors.New("couldn't read the host's added inputs: " + err.Error())
 	}
+	if err = encoding.ReadObject(conn, &newOutputs, types.BlockSizeLimit); err != nil {
+		return modules.RenterContract{}, errors.New("couldn't read the host's added outputs: " + err.Error())
+	}
 
 	// Merge txnAdditions with txnSet.
 	txnBuilder.AddParents(newParents)
 	for _, input := range newInputs {
 		txnBuilder.AddSiacoinInput(input)
+	}
+	for _, output := range newOutputs {
+		txnBuilder.AddSiacoinOutput(output)
 	}
 
 	// Sign the txn.
