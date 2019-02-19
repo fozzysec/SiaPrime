@@ -298,8 +298,8 @@ func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
 func (h *Handler) setupClient(client, worker string) (*Client, error) {
 	var err error
 	h.p.mu.Lock()
-	lock, err := h.p.clientSetupMutex[client]
-	if err != nil {
+	lock, exists := h.p.clientSetupMutex[client]
+	if !exists {
 		lock = &deadlock.Mutex{}
 		h.p.clientSetupMutex[client] = lock
 	}
