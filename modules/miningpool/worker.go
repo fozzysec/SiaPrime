@@ -1,7 +1,6 @@
 package pool
 
 import (
-	"path/filepath"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
