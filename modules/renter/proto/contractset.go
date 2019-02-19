@@ -8,7 +8,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/ratelimit"
+	"gitlab.com/NebulousLabs/ratelimit"
 
 	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/writeaheadlog"

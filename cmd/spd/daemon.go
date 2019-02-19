@@ -16,8 +16,8 @@ import (
 	"SiaPrime/crypto"
 	"SiaPrime/modules"
 	"SiaPrime/profile"
-	mnemonics "gitlab.com/SiaPrime/entropy-mnemonics"
-	"gitlab.com/SiaPrime/errors"
+	mnemonics "gitlab.com/NebulousLabs/entropy-mnemonics"
+	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/fastrand"
 
 	"github.com/spf13/cobra"

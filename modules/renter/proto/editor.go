@@ -11,8 +11,8 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/ratelimit"
+	"gitlab.com/NebulousLabs/errors"
+	"gitlab.com/NebulousLabs/ratelimit"
 )
 
 // cachedMerkleRoot calculates the root of a set of existing Merkle roots.
