@@ -34,19 +34,19 @@ dependencies:
 	mkdir -p ${GOPATH}/src/golang.org/x/net
 	git clone https://github.com/golang/net.git ${GOPATH}/src/golang.org/x/net
 	# Consensus Dependencies
-	go get -u gitlab.com/SiaPrime/demotemutex
+	go get -u gitlab.com/NebulousLabs/demotemutex
 	go get -u gitlab.com/NebulousLabs/fastrand
-	go get -u gitlab.com/SiaPrime/merkletree
-	go get -u gitlab.com/SiaPrime/bolt
+	go get -u gitlab.com/NebulousLabs/merkletree
+	go get -u gitlab.com/NebulousLabs/bolt
 	#go get -u golang.org/x/crypto/blake2b
 	#go get -u golang.org/x/crypto/ed25519
 	# Module + Daemon Dependencies
-	go get -u gitlab.com/SiaPrime/entropy-mnemonics
-	go get -u gitlab.com/SiaPrime/errors
+	go get -u gitlab.com/NebulousLabs/entropy-mnemonics
+	go get -u gitlab.com/NebulousLabs/errors
 	go get -u gitlab.com/NebulousLabs/go-upnp
-	go get -u gitlab.com/SiaPrime/ratelimit
-	go get -u gitlab.com/SiaPrime/threadgroup
-	go get -u gitlab.com/SiaPrime/writeaheadlog
+	go get -u gitlab.com/NebulousLabs/ratelimit
+	go get -u gitlab.com/NebulousLabs/threadgroup
+	go get -u gitlab.com/NebulousLabs/writeaheadlog
 	go get -u github.com/klauspost/reedsolomon
 	go get -u github.com/julienschmidt/httprouter
 	go get -u github.com/inconshreveable/go-update
@@ -64,7 +64,7 @@ dependencies:
 	#go install -race std
 	go get -u github.com/client9/misspell/cmd/misspell
 	#go get -u golang.org/x/lint/golint
-	go get -u gitlab.com/SiaPrime/glyphcheck
+	go get -u gitlab.com/NebulousLabs/glyphcheck
 
 # pkgs changes which packages the makefile calls operate on. run changes which
 # tests are run during testing.
