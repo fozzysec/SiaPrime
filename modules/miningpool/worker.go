@@ -39,20 +39,9 @@ func newWorker(c *Client, name string, s *Session) (*Worker, error) {
 		s: s,
 	}
 
-	var err error
+    w.log = p.log
 
-	// Create the perist directory if it does not yet exist.
-	dirname := filepath.Join(p.persistDir, "clients", c.Name())
-	err = p.dependencies.mkdirAll(dirname, 0700)
-	if err != nil {
-		return nil, err
-	}
-
-	// Initialize the logger, and set up the stop call that will close the
-	// logger.
-	w.log, err = p.dependencies.newLogger(filepath.Join(dirname, name+".log"))
-
-	return w, err
+	return w, nil
 }
 
 func (w *Worker) printID() string {
