@@ -299,14 +299,14 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 	var err error
 	h.p.mu.Lock()
 	lock, err := h.p.clientSetupMutex[client]
-	if !err {
+	if err != nil {
 		lock = &deadlock.Mutex{}
 		h.p.clientSetupMutex[client] = lock
 	}
 	h.p.mu.Unlock()
 	lock.Lock()
 	defer lock.Unlock()
-	c, err = h.p.FindClientDB(client)
+    c, err := h.p.FindClientDB(client)
 	if err == ErrQueryTimeout {
 		return c, err
 	} else if err != ErrNoUsernameInDatabase {
