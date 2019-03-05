@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"SiaPrime/build"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 func TestBlockForWork(t *testing.T) {

@@ -105,7 +105,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/persist"
 	siasync "SiaPrime/sync"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/fastrand"
 )
 

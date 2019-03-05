@@ -9,7 +9,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // extendDeadline is a helper function for extending the connection timeout.

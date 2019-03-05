@@ -3,7 +3,7 @@ package client
 import (
 	"SiaPrime/modules"
 	"SiaPrime/node/api"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 var (

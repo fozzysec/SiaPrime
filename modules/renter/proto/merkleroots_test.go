@@ -9,7 +9,7 @@ import (
 
 	"SiaPrime/build"
 	"SiaPrime/crypto"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/fastrand"
 )
 

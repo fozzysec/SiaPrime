@@ -6,7 +6,7 @@ import (
 
 	"SiaPrime/build"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 var (

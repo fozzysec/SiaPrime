@@ -30,8 +30,8 @@ import (
 	"SiaPrime/persist"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/errors"
+	"gitlab.com/NebulousLabs/threadgroup"
 )
 
 // A Server is a collection of siad modules that can be communicated with over

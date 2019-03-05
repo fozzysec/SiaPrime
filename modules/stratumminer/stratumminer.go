@@ -12,7 +12,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/crypto"
 	"SiaPrime/persist"
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/threadgroup"
 )
 
 //miningWork is sent to the mining routines and defines what ranges should be searched for a matching nonce

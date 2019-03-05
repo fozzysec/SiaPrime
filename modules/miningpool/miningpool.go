@@ -24,7 +24,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/persist"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/threadgroup"
 
 	// blank to load the sql driver for mysql
 	_ "github.com/go-sql-driver/mysql"

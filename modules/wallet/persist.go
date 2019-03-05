@@ -11,7 +11,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/persist"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/fastrand"
 
 	"github.com/coreos/bbolt"

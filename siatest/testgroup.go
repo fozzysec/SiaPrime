@@ -14,7 +14,7 @@ import (
 	"SiaPrime/node/api/client"
 	"SiaPrime/persist"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 type (

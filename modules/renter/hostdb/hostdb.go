@@ -17,7 +17,7 @@ import (
 	"SiaPrime/modules/renter/hostdb/hosttree"
 	"SiaPrime/persist"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/threadgroup"
 
 	"gitlab.com/NebulousLabs/errors"
 )

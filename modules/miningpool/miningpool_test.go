@@ -21,7 +21,7 @@ import (
 	"SiaPrime/types"
 	"gitlab.com/NebulousLabs/fastrand"
 
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 
 	_ "github.com/go-sql-driver/mysql"
 )

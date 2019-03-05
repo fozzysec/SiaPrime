@@ -13,7 +13,7 @@ import (
 	"SiaPrime/node"
 	"SiaPrime/node/api/client"
 	"SiaPrime/siatest"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // TestInitialScanComplete tests if the initialScanComplete field is set

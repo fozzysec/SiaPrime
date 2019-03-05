@@ -6,7 +6,7 @@ import (
 
 	"SiaPrime/encoding"
 	"SiaPrime/modules"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // discoverPeerIP is the handler for the discoverPeer RPC. It returns the

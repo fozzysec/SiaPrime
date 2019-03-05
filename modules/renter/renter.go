@@ -35,8 +35,8 @@ import (
 	siasync "SiaPrime/sync"
 	"SiaPrime/types"
 
-	"gitlab.com/SiaPrime/errors"
-	"gitlab.com/SiaPrime/threadgroup"
+	"gitlab.com/NebulousLabs/errors"
+	"gitlab.com/NebulousLabs/threadgroup"
 )
 
 var (

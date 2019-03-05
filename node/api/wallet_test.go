@@ -18,7 +18,7 @@ import (
 	"SiaPrime/modules/transactionpool"
 	"SiaPrime/modules/wallet"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 	"gitlab.com/NebulousLabs/fastrand"
 )
 

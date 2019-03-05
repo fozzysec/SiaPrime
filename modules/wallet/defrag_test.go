@@ -8,7 +8,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/modules"
 	"SiaPrime/types"
-	"gitlab.com/SiaPrime/errors"
+	"gitlab.com/NebulousLabs/errors"
 )
 
 // TestDefragWallet mines many blocks and checks that the wallet's outputs are
