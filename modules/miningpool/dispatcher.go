@@ -132,7 +132,9 @@ func (d *Dispatcher) NotifyClients() {
 	defer d.mu.Unlock()
 	d.log.Printf("Notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
-		h.notify <- true
+        if len(h.notify) < numPendingNotifies {
+		    h.notify <- true
+        }
 	}
 }
 
