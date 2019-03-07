@@ -42,7 +42,7 @@ const (
 	blockTimeout = 5 * time.Second
 	// This should represent the max number of pending notifications (new blocks found) within blockTimeout seconds
 	// better to have too many, than not enough (causes a deadlock otherwise)
-	numPendingNotifies = 20
+	numPendingNotifies = 1
 )
 
 func (h *Handler) parseRequest() (*types.StratumRequest, error) {
@@ -54,9 +54,15 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 	select {
 	case <-h.p.tg.StopChan():
 		return nil, errors.New("Stopping handler")
-	case <-h.notify:
-		m.Method = "mining.notify"
 	default:
+        h.mu.Lock()
+        if len(h.notify) > 0 {
+            <-h.notify
+            m.Method = "mining.notify"
+            h.mu.Unlock()
+            break
+        }
+        h.mu.Unlock()
 		// try reading from the connection
 		//err = dec.Decode(&m)
 		str, err := buf.ReadString('\n')
