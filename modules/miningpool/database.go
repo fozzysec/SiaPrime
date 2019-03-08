@@ -116,7 +116,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	}
 	p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
 	if coinid != SiaCoinID {
-		p.yiilog.Debugf(ErrDuplicateUserInDifferentCoin.Error())
+		p.yiilog.Debugf(ErrDuplicateUserInDifferentCoin.Error(), Name)
 		return nil, ErrDuplicateUserInDifferentCoin
 	}
 	// if we're here, we found the client in the database
