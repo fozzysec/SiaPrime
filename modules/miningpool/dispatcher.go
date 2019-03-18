@@ -159,6 +159,8 @@ func (d *Dispatcher) ClearJobAndNotifyClients() {
 			continue
 		}
 		h.s.clearJobs()
-		h.notify <- true
+        if len(h.notify) < numPendingNotifies {
+		    h.notify <- true
+        }
 	}
 }

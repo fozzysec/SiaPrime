@@ -58,14 +58,14 @@ func (s *Session) checkDiffOnNewShare() bool {
 		return false
 	}
 	if s.log != nil {
-		s.log.Printf("Retargeted Duration: %f\n", time.Now().Sub(s.lastVardiffRetarget).Seconds())
+		//s.log.Printf("Retargeted Duration: %f\n", time.Now().Sub(s.lastVardiffRetarget).Seconds())
 	}
 	s.lastVardiffRetarget = time.Now()
 
 	unsubmitDuration, historyDuration := s.ShareDurationAverage()
 	if s.disableVarDiff {
 		if s.log != nil {
-			s.log.Printf("HistoryDuration: %f, var diff disabled, current diff: %f\n", historyDuration, s.currentDifficulty)
+			//s.log.Printf("HistoryDuration: %f, var diff disabled, current diff: %f\n", historyDuration, s.currentDifficulty)
 		}
 		return false
 	}
@@ -77,21 +77,21 @@ func (s *Session) checkDiffOnNewShare() bool {
 			s.SetCurrentDifficulty(s.CurrentDifficulty() * 1 / 2)
 		}
 		if s.log != nil {
-			s.log.Printf("UnsubmitDuration too long: %f, Set new difficulty to: %v\n", unsubmitDuration, s.currentDifficulty)
+			//s.log.Printf("UnsubmitDuration too long: %f, Set new difficulty to: %v\n", unsubmitDuration, s.currentDifficulty)
 		}
 		return true
 	}
 
 	if historyDuration == 0 {
 		if s.log != nil {
-			s.log.Printf("No historyDuration yet\n")
+			//s.log.Printf("No historyDuration yet\n")
 		}
 		return false
 	}
 
 	if historyDuration < s.vardiff.tmax && historyDuration > s.vardiff.tmin { // close enough
 		if s.log != nil {
-			s.log.Printf("HistoryDuration: %f is inside range\n", historyDuration)
+			//s.log.Printf("HistoryDuration: %f is inside range\n", historyDuration)
 		}
 		return false
 	}
@@ -112,15 +112,15 @@ func (s *Session) checkDiffOnNewShare() bool {
 	}
 
 	if s.log != nil {
-		s.log.Printf("HistoryDuration: %f Delta %f\n", historyDuration, deltaDiff)
+		//s.log.Printf("HistoryDuration: %f Delta %f\n", historyDuration, deltaDiff)
 	}
 
 	if s.log != nil {
-		s.log.Printf("Old difficulty was %v\n", s.currentDifficulty)
+		//s.log.Printf("Old difficulty was %v\n", s.currentDifficulty)
 	}
 	s.SetCurrentDifficulty(s.CurrentDifficulty() * deltaDiff)
 	if s.log != nil {
-		s.log.Printf("Set new difficulty to %v\n", s.currentDifficulty)
+		//s.log.Printf("Set new difficulty to %v\n", s.currentDifficulty)
 	}
 	return true
 }

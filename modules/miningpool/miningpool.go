@@ -221,7 +221,7 @@ func (p *Pool) monitorShifts() {
 		case <-p.tg.StopChan():
 			return
 		}
-		p.log.Debugf("Shift change - end of shift %d\n", p.shiftID)
+		//p.log.Debugf("Shift change - end of shift %d\n", p.shiftID)
 		atomic.AddUint64(&p.shiftID, 1)
 		p.dispatcher.mu.RLock()
 		// TODO: switch to batched insert
@@ -242,7 +242,7 @@ func (p *Pool) monitorShifts() {
 }
 
 func (p *Pool) startServer() {
-	p.log.Printf("      Waiting for consensus synchronization...\n")
+	p.log.Printf("Waiting for consensus synchronization...\n")
 	select {
 	// if we've received the stop message before this can even be spun up, just exit
 	case <-p.tg.StopChan():

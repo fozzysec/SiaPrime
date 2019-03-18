@@ -70,7 +70,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			// 	break
 			// }
 			if h.s.DetectDisconnected() {
-				h.log.Println("Non-responsive disconnect detected!")
+                h.log.Println(h.s.SessionID + ": Non-responsive disconnect detected!")
 				return nil, errors.New("Non-responsive disconnect detected")
 			}
 
@@ -80,12 +80,12 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			if h.s.checkDiffOnNewShare() {
 				err = h.sendSetDifficulty(h.s.CurrentDifficulty())
 				if err != nil {
-					h.log.Println("Error sending SetDifficulty")
+                    h.log.Println(h.s.SessionID + ": Error sending SetDifficulty")
 					return nil, err
 				}
 				err = h.sendStratumNotify(true)
 				if err != nil {
-					h.log.Println("Error sending stratum notify")
+                    h.log.Println(h.s.SessionID + ": Error sending stratum notify")
 					return nil, err
 				}
 			}
@@ -96,7 +96,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			if err == io.EOF {
 				//h.log.Println("End connection")
 			} else {
-				h.log.Println("Unusual error")
+				h.log.Println(h.s.SessionID + "Unusual error")
 				h.log.Println(err)
 			}
 			return nil, err
@@ -115,7 +115,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			dec := json.NewDecoder(strings.NewReader(str))
 			err = dec.Decode(&m)
 			if err != nil {
-				h.log.Println("Decoding error")
+				h.log.Println(h.s.SessionID + "Decoding error")
 				h.log.Println(err)
 				h.log.Println(str)
 				//return nil, err
@@ -347,7 +347,6 @@ func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
 		return nil, err
 	}
 	h.s.log = w.log
-	c.log.Printf("Adding new worker: %s, %d\n", workerName, w.wr.workerID)
 	w.log.Printf("Adding new worker: %s, %d\n", workerName, w.wr.workerID)
 	h.log.Debugln("client = " + c.Name() + ", worker = " + workerName)
 	return w, nil
@@ -536,7 +535,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 	// 		printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
 	if bytes.Compare(t[:], blockHash[:]) < 0 {
 		// h.s.CurrentWorker.log.Printf("Block hash is greater than block target\n")
-		h.s.CurrentWorker.log.Printf("Share Accepted\n")
 		h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
 		h.s.CurrentWorker.SetLastShareTime(time.Now())
 		return h.sendResponse(r)
@@ -552,7 +550,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 		return h.sendResponse(r)*/
 	}
 
-	h.s.CurrentWorker.log.Printf("Share Accepted\n")
 	h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
 	h.s.CurrentWorker.SetLastShareTime(time.Now())
 

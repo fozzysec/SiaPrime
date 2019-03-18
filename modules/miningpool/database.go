@@ -114,7 +114,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	if err != nil {
 		return nil, ErrNoUsernameInDatabase
 	}
-	p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
+	//p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
 	if coinid != SiaCoinID {
 		p.yiilog.Debugf(ErrDuplicateUserInDifferentCoin.Error(), Name)
 		return nil, ErrDuplicateUserInDifferentCoin
@@ -190,7 +190,7 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	defer tx.Rollback()
 
 	bh := pool.persist.GetBlockHeight()
-	w.log.Printf("New block to mine on %d\n", uint64(bh)+1)
+	//w.log.Printf("New block to mine on %d\n", uint64(bh)+1)
 	// reward := b.CalculateSubsidy(bh).String()
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
@@ -275,7 +275,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
+	//c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
 	tx, err := c.pool.sqldb.Begin()
 	if err != nil {
 		return err

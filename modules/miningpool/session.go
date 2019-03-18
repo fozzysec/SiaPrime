@@ -107,7 +107,7 @@ func (s *Session) addJob(j *Job) {
 	s.CurrentJobs = append(s.CurrentJobs, j)
 	if s.log != nil && s.CurrentJobs != nil {
 		if j != nil {
-			s.log.Printf("after new job len:%d, (id: %d)\n", len(s.CurrentJobs), j.JobID)
+			//s.log.Printf("after new job len:%d, (id: %d)\n", len(s.CurrentJobs), j.JobID)
 		}
 		l := ""
 		for i, j := range s.CurrentJobs {
@@ -125,7 +125,7 @@ func (s *Session) getJob(jobID uint64, nonce string) (*Job, error) {
 	for _, j := range s.CurrentJobs {
 		// s.log.Printf("i: %d, array id: %d\n", i, j.JobID)
 		if jobID == j.JobID {
-			s.log.Printf("get job len:%d\n", len(s.CurrentJobs))
+			//s.log.Printf("get job len:%d\n", len(s.CurrentJobs))
 			if _, ok := j.SubmitedNonce[nonce]; ok {
 				return nil, errors.New("already submited nonce for this job")
 			}
@@ -140,7 +140,7 @@ func (s *Session) clearJobs() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.log != nil && s.CurrentJobs != nil {
-		s.log.Printf("Before job clear:%d\n-----------Job clear---------\n", len(s.CurrentJobs))
+		//s.log.Printf("Before job clear:%d\n-----------Job clear---------\n", len(s.CurrentJobs))
 	}
 	s.CurrentJobs = nil
 }
@@ -178,7 +178,7 @@ func (s *Session) SetLastShareTimestamp(t time.Time) {
 	defer s.mu.Unlock()
 
 	if s.log != nil {
-		s.log.Printf("Shares index: %d %s\n", s.lastShareSpot, t)
+		//s.log.Printf("Shares index: %d %s\n", s.lastShareSpot, t)
 	}
 	s.shareTimes[s.lastShareSpot] = t
 	s.lastShareSpot++
@@ -237,7 +237,7 @@ func (s *Session) IsStable() bool {
 	if s.shareTimes[s.vardiff.bufSize-1].IsZero() {
 		return false
 	}
-	s.log.Printf("is stable!")
+	//s.log.Printf("is stable!")
 	return true
 }
 
@@ -295,13 +295,12 @@ func (s *Session) DetectDisconnected() bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.log != nil {
-		s.log.Printf("time now: %s, last beat: %s, disconnect: %t\n", time.Now(),
-			s.lastHeartbeat, time.Now().After(s.lastHeartbeat.Add(heartbeatTimeout)))
+		//s.log.Printf("time now: %s, last beat: %s, disconnect: %t\n", time.Now(),s.lastHeartbeat, time.Now().After(s.lastHeartbeat.Add(heartbeatTimeout)))
 	}
 	// disconnect if we haven't heard from the worker for a long time
 	if time.Now().After(s.lastHeartbeat.Add(heartbeatTimeout)) {
 		if s.log != nil {
-			s.log.Printf("Disconnect because heartbeat time")
+			//s.log.Printf("Disconnect because heartbeat time")
 		}
 		return true
 	}
