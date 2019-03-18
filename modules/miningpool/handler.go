@@ -192,7 +192,7 @@ func (h *Handler) Listen() {
 			}
 			// else if we got an error
 		} else if err != nil {
-			h.log.Println(err)
+			//h.log.Println(err)
 			return
 		}
 	}

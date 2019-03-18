@@ -109,11 +109,11 @@ func (s *Session) addJob(j *Job) {
 		if j != nil {
 			//s.log.Printf("after new job len:%d, (id: %d)\n", len(s.CurrentJobs), j.JobID)
 		}
-		l := ""
-		for i, j := range s.CurrentJobs {
-			l += fmt.Sprintf("%d,%d;", i, j.JobID)
-		}
-		s.log.Println(l)
+		//l := ""
+		//for i, j := range s.CurrentJobs {
+			//l += fmt.Sprintf("%d,%d;", i, j.JobID)
+		//}
+		//s.log.Println(l)
 	}
 	s.lastJobTimestamp = time.Now()
 }
@@ -121,7 +121,7 @@ func (s *Session) addJob(j *Job) {
 func (s *Session) getJob(jobID uint64, nonce string) (*Job, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.log.Printf("submit id:%d, before pop len:%d\n", jobID, len(s.CurrentJobs))
+	//s.log.Printf("submit id:%d, before pop len:%d\n", jobID, len(s.CurrentJobs))
 	for _, j := range s.CurrentJobs {
 		// s.log.Printf("i: %d, array id: %d\n", i, j.JobID)
 		if jobID == j.JobID {
