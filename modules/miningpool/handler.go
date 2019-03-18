@@ -94,8 +94,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			// if we don't timeout but have some other error
 		} else if err != nil {
 			if err == io.EOF {
-				//fmt.Println("End connection")
-				h.log.Println("End connection")
+				//h.log.Println("End connection")
 			} else {
 				h.log.Println("Unusual error")
 				h.log.Println(err)
@@ -236,7 +235,7 @@ func (h *Handler) sendRequest(r types.StratumRequest) error {
 // TODO: Pull the appropriate data from either in memory or persistent store as required
 func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
 	if len(m.Params) > 0 {
-		h.log.Printf("Client subscribe name:%s", m.Params[0].(string))
+		//h.log.Printf("Client subscribe name:%s", m.Params[0].(string))
 		h.s.SetClientVersion(m.Params[0].(string))
 	}
 

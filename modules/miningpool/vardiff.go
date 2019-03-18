@@ -58,7 +58,6 @@ func (s *Session) checkDiffOnNewShare() bool {
 		return false
 	}
 	if s.log != nil {
-		s.log.Printf("------------------------\n\n")
 		s.log.Printf("Retargeted Duration: %f\n", time.Now().Sub(s.lastVardiffRetarget).Seconds())
 	}
 	s.lastVardiffRetarget = time.Now()
