@@ -70,7 +70,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			// 	break
 			// }
 			if h.s.DetectDisconnected() {
-                h.log.Println(h.s.SessionID + ": Non-responsive disconnect detected!")
+                h.log.Printf("%s: Non-responsive disconnect detected!\n", h.s.SessionID)
 				return nil, errors.New("Non-responsive disconnect detected")
 			}
 
@@ -80,12 +80,12 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			if h.s.checkDiffOnNewShare() {
 				err = h.sendSetDifficulty(h.s.CurrentDifficulty())
 				if err != nil {
-                    h.log.Println(h.s.SessionID + ": Error sending SetDifficulty")
+                    h.log.Printf("%s: Error sending SetDifficulty\n", h.s.SessionID)
 					return nil, err
 				}
 				err = h.sendStratumNotify(true)
 				if err != nil {
-                    h.log.Println(h.s.SessionID + ": Error sending stratum notify")
+                    h.log.Printf("%s: Error sending stratum notify\n", h.s.SessionID)
 					return nil, err
 				}
 			}
@@ -96,7 +96,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			if err == io.EOF {
 				//h.log.Println("End connection")
 			} else {
-				h.log.Println(h.s.SessionID + "Unusual error")
+                h.log.Printf("%s: Unusual error\n", h.s.SessionID)
 				h.log.Println(err)
 			}
 			return nil, err
@@ -115,7 +115,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
 			dec := json.NewDecoder(strings.NewReader(str))
 			err = dec.Decode(&m)
 			if err != nil {
-				h.log.Println(h.s.SessionID + "Decoding error")
+                h.log.Printf("%s: Decode error\n", h.s.SessionID)
 				h.log.Println(err)
 				h.log.Println(str)
 				//return nil, err
