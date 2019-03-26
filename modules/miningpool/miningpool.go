@@ -330,7 +330,7 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
         persistDir: 		persistDir,
         stratumID:  		rand.Uint64(),
         clients:    		make(map[string]*Client),
-        clientSetupMutex:	make(map[string]*deadlock.Mutex),
+        clientSetupMutex:	make(map[string]*sync.Mutex),
     }
     var err error
 
