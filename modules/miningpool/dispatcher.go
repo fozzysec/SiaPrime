@@ -53,6 +53,7 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	addr := conn.RemoteAddr().String()
 	handler := &Handler{
 		conn:   conn,
+        ready:  make(chan bool, 1),
 		closed: make(chan bool, 2),
 		notify: make(chan bool, numPendingNotifies),
 		p:      d.p,
@@ -62,6 +63,7 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	d.handlers[addr] = handler
 	d.mu.Unlock()
 
+    go d.AddNotifier(handler)
 	// fmt.Printf("AddHandler listen() called: %s\n", addr)
 	handler.Listen()
 
@@ -70,6 +72,15 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	delete(d.handlers, addr)
 	//fmt.Printf("Exiting AddHandler, %d connections remaining\n", len(d.handlers))
 	d.mu.Unlock()
+}
+
+func (d *Dispatcher) AddNotifier(h Handler) {
+    d.log.Println("Notifier waiting for handler init.")
+    select {
+    case <-h.ready:
+        d.log.Println("Handler init done, Notifier spawning.")
+        h.setupNotifier()
+    }
 }
 
 // ListenHandlers listens on a passed port and upon accepting the incoming connection,

@@ -33,6 +33,7 @@ const (
 type Handler struct {
     mu     deadlock.RWMutex
     conn   net.Conn
+    ready  chan bool
     closed chan bool
     notify chan bool
     p      *Pool
@@ -44,8 +45,34 @@ const (
     blockTimeout = 5 * time.Second
     // This should represent the max number of pending notifications (new blocks found) within blockTimeout seconds
     // better to have too many, than not enough (causes a deadlock otherwise)
-    numPendingNotifies = 20
+    numPendingNotifies = 5
 )
+
+func (h *Handler) setupNotifier() {
+    err := d.p.tg.Add()
+	if err != nil {
+		// If this goroutine is not run before shutdown starts, this
+		// codeblock is reachable.
+		return
+	}
+
+    defer d.p.tg.Done()
+    for {
+        select {
+        case <-h.p.tg.StopChan():
+            return
+        case <-h.closed:
+            return
+        case <-h.notify:
+            var m types.StratumRequest
+            m.Method = "mining.notify"
+            err := h.handleRequest(&m)
+            if err != nil {
+                h.log.Printf("%s: error notifying worker %s.\n", h.s.Client.wallet.String(), h.s.Client.wallet.name)
+            }
+        }
+    }
+}
 
 func (h *Handler) parseRequest() (*types.StratumRequest, error) {
     var m types.StratumRequest
@@ -56,8 +83,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
     select {
     case <-h.p.tg.StopChan():
         return nil, errors.New("Stopping handler")
-    case <-h.notify:
-        m.Method = "mining.notify"
     default:
         // try reading from the connection
         //err = dec.Decode(&m)
@@ -179,6 +204,7 @@ func (h *Handler) Listen() {
     h.mu.Lock()
     h.s, _ = newSession(h.p, h.conn.RemoteAddr().String())
     h.mu.Unlock()
+    h.ready <- true
     for {
         m, err := h.parseRequest()
         h.conn.SetReadDeadline(time.Time{})
