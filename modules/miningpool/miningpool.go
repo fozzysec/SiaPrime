@@ -213,7 +213,10 @@ func (p *Pool) startupRescan() error {
 
 func (p *Pool) monitorShifts() {
     p.shiftChan = make(chan bool, 1)
-    p.tg.Add()
+    err := p.tg.Add()
+    if err != nil {
+        return
+    }
     defer p.tg.Done()
     for {
         select {
