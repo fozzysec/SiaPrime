@@ -253,7 +253,10 @@ func (p *Pool) startServer() {
         return
     default:
     }
-    p.tg.Add()
+    if err := p.tg.Add(); err != nil {
+        return
+    }
+
     defer p.tg.Done()
     for {
         if p.cs.Synced() {

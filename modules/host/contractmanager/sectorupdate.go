@@ -448,7 +448,10 @@ func (cm *ContractManager) AddSectorBatch(sectorRoots []crypto.Hash) error {
 // storage proofs. If the amount of data removed is small, the risk is small.
 // This operation will not destabilize the contract manager.
 func (cm *ContractManager) DeleteSector(root crypto.Hash) error {
-	cm.tg.Add()
+    if err := cm.tg.Add(); err != nil {
+        return
+    }
+
 	defer cm.tg.Done()
 	id := cm.managedSectorID(root)
 	cm.wal.managedLockSector(id)
@@ -460,7 +463,9 @@ func (cm *ContractManager) DeleteSector(root crypto.Hash) error {
 // RemoveSector will remove a sector from the contract manager. If multiple
 // copies of the sector exist, only one will be removed.
 func (cm *ContractManager) RemoveSector(root crypto.Hash) error {
-	cm.tg.Add()
+    if err := cm.tg.Add(); err != nil {
+        return
+    }
 	defer cm.tg.Done()
 	id := cm.managedSectorID(root)
 	cm.wal.managedLockSector(id)
