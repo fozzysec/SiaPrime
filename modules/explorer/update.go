@@ -8,7 +8,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // ProcessConsensusChange follows the most recent changes to the consensus set,

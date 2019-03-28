@@ -8,7 +8,7 @@ import (
 	"SiaPrime/types"
 	"gitlab.com/NebulousLabs/fastrand"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // TestTryValidTransactionSet submits a valid transaction set to the

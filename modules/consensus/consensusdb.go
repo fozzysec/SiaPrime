@@ -12,7 +12,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 var (

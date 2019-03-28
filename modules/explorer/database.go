@@ -6,7 +6,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 var (

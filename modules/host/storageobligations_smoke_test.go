@@ -16,7 +16,7 @@ import (
 	"SiaPrime/types"
 	"gitlab.com/NebulousLabs/fastrand"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // randSector creates a random sector, returning the sector along with the

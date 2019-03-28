@@ -10,7 +10,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/persist"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 const (

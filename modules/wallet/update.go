@@ -7,7 +7,7 @@ import (
 	"SiaPrime/types"
 	"gitlab.com/NebulousLabs/errors"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 type (

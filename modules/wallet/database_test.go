@@ -8,7 +8,7 @@ import (
 	"SiaPrime/build"
 	"SiaPrime/modules"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // TestDBOpen tests the wallet.openDB method.

@@ -8,7 +8,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // applySiacoinInputs takes all of the siacoin inputs in a transaction and

@@ -18,7 +18,7 @@ import (
 	"SiaPrime/modules/gateway"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // TestSynchronize tests that the consensus set can successfully synchronize

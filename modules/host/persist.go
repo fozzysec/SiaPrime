@@ -11,7 +11,7 @@ import (
 	"SiaPrime/persist"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // persistence is the data that is kept when the host is restarted.

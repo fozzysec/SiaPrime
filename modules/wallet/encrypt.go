@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 	"SiaPrime/build"
 	"SiaPrime/crypto"
 	"SiaPrime/encoding"

@@ -9,7 +9,7 @@ import (
 	"SiaPrime/modules"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // SurpassThreshold is a percentage that dictates how much heavier a competing

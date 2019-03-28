@@ -9,7 +9,7 @@ import (
 	"SiaPrime/persist"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // TestRescan triggers a rescan in the transaction pool, verifying that the

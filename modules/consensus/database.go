@@ -12,7 +12,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/persist"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 var (

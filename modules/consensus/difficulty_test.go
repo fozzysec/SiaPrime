@@ -6,7 +6,7 @@ import (
 
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // TestChildTargetOak checks the childTargetOak function, especially for edge

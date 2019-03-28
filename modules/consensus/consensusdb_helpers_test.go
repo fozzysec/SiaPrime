@@ -7,7 +7,7 @@ import (
 	"SiaPrime/encoding"
 	"SiaPrime/types"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 // dbBlockHeight is a convenience function allowing blockHeight to be called

@@ -3,7 +3,7 @@ package bolt_test
 import (
 	"testing"
 
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 )
 
 func TestSimulateNoFreeListSync_1op_1p(t *testing.T) {

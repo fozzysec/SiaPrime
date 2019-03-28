@@ -1,7 +1,7 @@
 package explorer
 
 import (
-	"github.com/coreos/bbolt"
+	"gitlab.com/NebulousLabs/bolt"
 	"SiaPrime/build"
 	"SiaPrime/modules"
 	"SiaPrime/types"
