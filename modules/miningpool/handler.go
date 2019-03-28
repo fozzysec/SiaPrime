@@ -97,7 +97,7 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             // 	break
             // }
             if h.s.DetectDisconnected() {
-                h.log.Printf("%s: Non-responsive disconnect detected!\n", h.s.SessionID)
+                //h.log.Printf("%s: Non-responsive disconnect detected!\n", h.s.SessionID)
                 return nil, errors.New("Non-responsive disconnect detected")
             }
 
@@ -107,12 +107,12 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             if h.s.checkDiffOnNewShare() {
                 err = h.sendSetDifficulty(h.s.CurrentDifficulty())
                 if err != nil {
-                    h.log.Printf("%s: Error sending SetDifficulty\n", h.s.SessionID)
+                    //h.log.Printf("%s: Error sending SetDifficulty\n", h.s.SessionID)
                     return nil, err
                 }
                 err = h.sendStratumNotify(true)
                 if err != nil {
-                    h.log.Printf("%s: Error sending stratum notify\n", h.s.SessionID)
+                    //h.log.Printf("%s: Error sending stratum notify\n", h.s.SessionID)
                     return nil, err
                 }
             }
@@ -123,8 +123,9 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             if err == io.EOF {
                 //h.log.Println("End connection")
             } else {
-                h.log.Printf("%s: Unusual error\n", h.s.SessionID)
-                h.log.Println(err)
+                //h.log.Printf("%s: Unusual error\n", h.s.SessionID)
+                //h.log.Println(err)
+                //reset by peer
             }
             return nil, err
         } else {
@@ -142,9 +143,9 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             dec := json.NewDecoder(strings.NewReader(str))
             err = dec.Decode(&m)
             if err != nil {
-                h.log.Printf("%s: Decode error\n", h.s.SessionID)
-                h.log.Println(err)
-                h.log.Println(str)
+                //h.log.Printf("%s: Decode error\n", h.s.SessionID)
+                //h.log.Println(err)
+                //h.log.Println(str)
                 //return nil, err
                 // don't disconnect here, just treat it like a harmless timeout
                 return nil, nil
@@ -403,7 +404,7 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
     if err != nil {
         r.Result = false
         r.Error = interfaceify([]string{"Client Name must be valid wallet address"})
-        h.log.Println("Client Name must be valid wallet address. Client name is: " + clientName)
+        h.log.Printf("Client Name must be valid wallet address. Client name is: %s\n", clientName)
         err = errors.New("Client name must be a valid wallet address")
         h.sendResponse(r)
         return err
@@ -485,7 +486,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
     if h.s.CurrentWorker == nil {
         // worker failed to authorize
-        h.log.Printf("Worker failed to authorize - dropping\n")
+        h.log.Printf("%s: Worker failed to authorize - dropping\n", h.s.Client.cr.name)
         return errors.New("Worker failed to authorize - dropping")
     }
 
@@ -518,7 +519,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     if len(b.MinerPayouts) == 0 {
         r.Result = false
         r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.s.CurrentWorker.log.Printf("Stale Share rejected - old/unknown job\n")
+        h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.Client.cr.name, h.s.CurrentWorker.wr.name)
         h.s.CurrentWorker.IncrementInvalidShares()
         return h.sendResponse(r)
     }
@@ -551,7 +552,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     if bytes.Compare(sessionPoolTarget[:], blockHash[:]) < 0 {
         r.Result = false
         r.Error = interfaceify([]string{"22", "Submit nonce not reach pool diff target"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.s.CurrentWorker.log.Printf("Submit nonce not reach pool diff target\n")
+        h.p.log.Printf("%s.%s: Submit nonce not reach pool diff target\n", h.s.Client.cr.name, h.s.CurrentWorker.wr.name)
         h.s.CurrentWorker.IncrementInvalidShares()
         return h.sendResponse(r)
     }
@@ -583,12 +584,12 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
     // TODO: why not err == nil ?
     if err != modules.ErrBlockUnsolved {
-        h.s.CurrentWorker.Parent().log.Printf("Yay!!! Solved a block!!\n")
+        h.p.log.Println("Yay!!! Solved a block!!\n")
         // h.s.CurrentWorker.log.Printf("Yay!!! Solved a block!!\n")
         h.s.clearJobs()
         err = h.s.CurrentWorker.addFoundBlock(&b)
         if err != nil {
-            h.s.CurrentWorker.log.Printf("Failed to update block in database: %s\n", err)
+            h.p.log.Printf("%s: Failed to update block in database: %s\n", h.s.Client.cr.name, err)
         }
         h.p.shiftChan <- true
     }
