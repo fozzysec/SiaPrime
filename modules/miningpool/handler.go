@@ -584,7 +584,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
     // TODO: why not err == nil ?
     if err != modules.ErrBlockUnsolved {
-        h.p.log.Println("Yay!!! Solved a block!!\n")
+        h.p.log.Println("Yay!!! Solved a block!!")
         // h.s.CurrentWorker.log.Printf("Yay!!! Solved a block!!\n")
         h.s.clearJobs()
         err = h.s.CurrentWorker.addFoundBlock(&b)
