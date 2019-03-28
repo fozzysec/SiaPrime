@@ -49,14 +49,14 @@ const (
 )
 
 func (h *Handler) setupNotifier() {
-    err := d.p.tg.Add()
+    err := h.p.tg.Add()
 	if err != nil {
 		// If this goroutine is not run before shutdown starts, this
 		// codeblock is reachable.
 		return
 	}
 
-    defer d.p.tg.Done()
+    defer h.p.tg.Done()
     for {
         select {
         case <-h.p.tg.StopChan():
@@ -68,7 +68,7 @@ func (h *Handler) setupNotifier() {
             m.Method = "mining.notify"
             err := h.handleRequest(&m)
             if err != nil {
-                h.log.Printf("%s: error notifying worker %s.\n", h.s.Client.wallet.String(), h.s.Client.wallet.name)
+                h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
             }
         }
     }

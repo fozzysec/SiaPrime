@@ -74,7 +74,7 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	d.mu.Unlock()
 }
 
-func (d *Dispatcher) AddNotifier(h Handler) {
+func (d *Dispatcher) AddNotifier(h *Handler) {
     d.log.Println("Notifier waiting for handler init.")
     select {
     case <-h.ready:
