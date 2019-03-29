@@ -49,7 +49,7 @@ func (wal *writeAheadLog) commitStorageFolderRemoval(sfr storageFolderRemoval) {
 // moving all of the sectors in the storage folder to new storage folders.
 func (cm *ContractManager) RemoveStorageFolder(index uint16, force bool) error {
     if err := cm.tg.Add(); err != nil {
-        return
+        return err
     }
 
 	defer cm.tg.Done()

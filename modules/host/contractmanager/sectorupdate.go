@@ -449,7 +449,7 @@ func (cm *ContractManager) AddSectorBatch(sectorRoots []crypto.Hash) error {
 // This operation will not destabilize the contract manager.
 func (cm *ContractManager) DeleteSector(root crypto.Hash) error {
     if err := cm.tg.Add(); err != nil {
-        return
+        return err
     }
 
 	defer cm.tg.Done()
@@ -464,7 +464,7 @@ func (cm *ContractManager) DeleteSector(root crypto.Hash) error {
 // copies of the sector exist, only one will be removed.
 func (cm *ContractManager) RemoveSector(root crypto.Hash) error {
     if err := cm.tg.Add(); err != nil {
-        return
+        return err
     }
 	defer cm.tg.Done()
 	id := cm.managedSectorID(root)
