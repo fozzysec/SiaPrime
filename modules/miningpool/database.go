@@ -147,13 +147,13 @@ func (w *Worker) deleteWorkerRecord() error {
 		WHERE id = ?
 	`)
 	if err != nil {
-		w.p.dblog.Printf("Error preparing to update worker: %s\n", err)
+		w.Client.pool.dblog.Printf("Error preparing to update worker: %s\n", err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(w.wr.workerID)
 	if err != nil {
-		w.p.dblog.Printf("Error deleting record: %s\n", err)
+		w.Client.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
 	}
 	return nil
@@ -253,8 +253,8 @@ func (s *Shift) SaveShift() error {
 		fmt.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
-			worker.p.dblog.Println(buffer.String())
-			worker.p.dblog.Println(err)
+			worker.Client.pool.dblog.Println(buffer.String())
+			worker.Client.pool.dblog.Println(err)
 			return err
 		}
 		rows2, err2 := pool.sqldb.Query(buffer.String())
@@ -262,7 +262,7 @@ func (s *Shift) SaveShift() error {
 			rows2.Close()
 		}
 		if err2 != nil {
-			worker.p.dblog.Println(buffer.String())
+			worker.Client.pool.dblog.Println(buffer.String())
 			return err2
 		}
 	}
