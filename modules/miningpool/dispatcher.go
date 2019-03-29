@@ -161,12 +161,12 @@ func (d *Dispatcher) ClearJobAndNotifyClients() {
 				// this will happen when handler init, session init,
 				// no mining.authorize happen yet, so worker is nil,
 				// at this time, no stratum notify ever happen, no need to clear or notify
-				d.log.Printf("Clear jobs and Notifying client: worker is nil\n")
+				//d.log.Printf("Clear jobs and Notifying client: worker is nil\n")
 				continue
 			}
 		} else {
 			// this will happen when handler init, seesion is not
-			d.log.Printf("Clear jobs and Notifying client: handler or session nil\n")
+			//d.log.Printf("Clear jobs and Notifying client: handler or session nil\n")
 			continue
 		}
 		h.s.clearJobs()

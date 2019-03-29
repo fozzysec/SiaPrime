@@ -11,7 +11,7 @@ const (
 	// Names of the various persistent files in the pool.
 	dbFilename   = modules.PoolDir + ".db"
 	logFile      = modules.PoolDir + ".log"
-	yiilogFile   = "yii.log"
+	dblogFile   = "db.log"
 	settingsFile = modules.PoolDir + ".json"
 	// MajorVersion is the significant version of the pool module
 	MajorVersion = 0

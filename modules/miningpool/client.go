@@ -36,7 +36,7 @@ func newClient(p *Pool, name string) (*Client, error) {
 			name: name,
 		},
 		pool: p,
-        log: p.yiilog,
+        log: p.log,
 	}
 	c.cr.wallet.LoadString(name)
 	// check if this worker instance is an original or copy

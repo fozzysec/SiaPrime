@@ -93,7 +93,7 @@ func (p *Pool) AddClientDB(c *Client) error {
 		return err
 	}
 	id, err := rs.LastInsertId()
-	p.yiilog.Printf("User %s account id is %d\n", c.Name(), id)
+	p.dblog.Printf("User %s account id is %d\n", c.Name(), id)
 	c.cr.clientID = id
 
 	return nil
@@ -116,7 +116,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	}
 	//p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
 	if coinid != SiaCoinID {
-		p.yiilog.Debugf(ErrDuplicateUserInDifferentCoin.Error(), Name)
+		p.dblog.Debugf(ErrDuplicateUserInDifferentCoin.Error(), Name)
 		return nil, ErrDuplicateUserInDifferentCoin
 	}
 	// if we're here, we found the client in the database
@@ -130,7 +130,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	// find workers and connect them to the in memory copy
 	c, err = newClient(p, name)
 	if err != nil {
-		p.log.Printf("Error when creating a new client %s: %s\n", name, err)
+		p.dblog.Printf("Error when creating a new client %s: %s\n", name, err)
 		return nil, ErrCreateClient
 	}
 	var wallet types.UnlockHash
@@ -147,13 +147,13 @@ func (w *Worker) deleteWorkerRecord() error {
 		WHERE id = ?
 	`)
 	if err != nil {
-		w.log.Printf("Error preparing to update worker: %s\n", err)
+		w.p.dblog.Printf("Error preparing to update worker: %s\n", err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(w.wr.workerID)
 	if err != nil {
-		w.log.Printf("Error deleting record: %s\n", err)
+		w.p.dblog.Printf("Error deleting record: %s\n", err)
 		return err
 	}
 	return nil
@@ -168,13 +168,13 @@ func (p *Pool) DeleteAllWorkerRecords() error {
 		WHERE pid = ?
 	`)
 	if err != nil {
-		p.log.Printf("Error preparing to delete all workers: %s\n", err)
+		p.dblog.Printf("Error preparing to delete all workers: %s\n", err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(p.InternalSettings().PoolID)
 	if err != nil {
-		p.log.Printf("Error deleting records: %s\n", err)
+		p.dblog.Printf("Error deleting records: %s\n", err)
 		return err
 	}
 	return nil
@@ -253,8 +253,8 @@ func (s *Shift) SaveShift() error {
 		fmt.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
-			worker.log.Println(buffer.String())
-			fmt.Println(err)
+			worker.p.dblog.Println(buffer.String())
+			worker.p.dblog.Println(err)
 			return err
 		}
 		rows2, err2 := pool.sqldb.Query(buffer.String())
@@ -262,7 +262,7 @@ func (s *Shift) SaveShift() error {
 			rows2.Close()
 		}
 		if err2 != nil {
-			worker.log.Println(buffer.String())
+			worker.p.dblog.Println(buffer.String())
 			return err2
 		}
 	}

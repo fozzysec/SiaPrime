@@ -153,7 +153,7 @@ type Pool struct {
     sqldb          *sql.DB
     listener       net.Listener
     log            *persist.Logger
-    yiilog         *persist.Logger
+    dblog          *persist.Logger
     mu             deadlock.RWMutex
     dbConnectionMu deadlock.RWMutex
     persistDir     string
@@ -353,10 +353,12 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
     if err != nil {
         return nil, err
     }
-    p.yiilog, err = dependencies.newLogger(filepath.Join(p.persistDir, yiilogFile))
+
+    p.dblog, err = dependencies.newLogger(filepath.Join(p.persistDir, dblogFile))
     if err != nil {
         return nil, err
     }
+
     p.tg.AfterStop(func() error {
         err = p.log.Close()
         if err != nil {
