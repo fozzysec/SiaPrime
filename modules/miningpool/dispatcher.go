@@ -77,6 +77,7 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 
 func (d *Dispatcher) AddNotifier(h *Handler) {
     d.log.Println("Notifier waiting for handler init.")
+    //case <-h.closed no need, won't fail when setup handler
     select {
     case <-h.ready:
         d.log.Println("Handler init done, Notifier spawning.")
@@ -144,6 +145,7 @@ func (d *Dispatcher) NotifyClients() {
 	defer d.mu.Unlock()
 	d.log.Printf("Block changed, notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
+        //with new notifier it is no longer needed to be that large(20), 5 is for sure that won't block for long
         if len(h.notify) < numPendingNotifies {
 		    h.notify <- true
         }
@@ -171,6 +173,7 @@ func (d *Dispatcher) ClearJobAndNotifyClients() {
 			continue
 		}
 		h.s.clearJobs()
+        //with new notifier it is no longer needed to be that large(20), 5 is for sure that won't block for long
         if len(h.notify) < numPendingNotifies {
 		    h.notify <- true
         }

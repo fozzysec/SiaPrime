@@ -67,6 +67,8 @@ func (h *Handler) setupNotifier() {
             var m types.StratumRequest
             m.Method = "mining.notify"
             err := h.handleRequest(&m)
+
+            //connection already broken, giving up
             if err != nil {
                 h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
                 return

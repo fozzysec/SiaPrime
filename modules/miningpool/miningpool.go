@@ -154,7 +154,7 @@ type Pool struct {
     listener       net.Listener
     log            *persist.Logger
     dblog          *persist.Logger
-    mu             sync.RWMutex
+    mu             sync.RWMutex //deadlock.RWMutex would cause deadlock error and abort the daemon when large number of miners subscribe to pool in short time
     dbConnectionMu deadlock.RWMutex
     persistDir     string
     port           string
