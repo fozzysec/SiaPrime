@@ -147,13 +147,13 @@ func (w *Worker) deleteWorkerRecord() error {
 		WHERE id = ?
 	`)
 	if err != nil {
-		w.wr.Client.pool.dblog.Printf("Error preparing to update worker: %s\n", err)
+		w.wr.parent.pool.dblog.Printf("Error preparing to update worker: %s\n", err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(w.wr.workerID)
 	if err != nil {
-		w.wr.Client.pool.dblog.Printf("Error deleting record: %s\n", err)
+		w.wr.parent.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
 	}
 	return nil
@@ -213,12 +213,12 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	_, err = stmt.Exec(bh, b.ID().String(), SiaCoinID, w.Parent().cr.clientID,
 		w.wr.workerID, "new", difficulty, timeStamp, SiaCoinAlgo)
 	if err != nil {
-        w.wr.Client.pool.dblog.Println(err)
+        w.wr.parent.pool.dblog.Println(err)
 		return err
 	}
 	err = tx.Commit()
 	if err != nil {
-        w.wr.Client.pool.dblog.Println(err)
+        w.wr.parent.pool.dblog.Println(err)
 		return err
 	}
 
@@ -251,12 +251,12 @@ func (s *Shift) SaveShift() error {
 		rows.Close()
 	}
 	if err != nil {
-		worker.wr.Client.pool.dblog.Println(buffer.String())
-		worker.wr.Client.pool.dblog.Println(err)
+		worker.wr.parent.pool.dblog.Println(buffer.String())
+		worker.wr.parent.pool.dblog.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
-			worker.wr.Client.pool.dblog.Println(buffer.String())
-			worker.wr.Client.pool.dblog.Println(err)
+			worker.wr.parent.pool.dblog.Println(buffer.String())
+			worker.wr.parent.pool.dblog.Println(err)
 			return err
 		}
 		rows2, err2 := pool.sqldb.Query(buffer.String())
@@ -264,7 +264,7 @@ func (s *Shift) SaveShift() error {
 			rows2.Close()
 		}
 		if err2 != nil {
-			worker.wr.Client.pool.dblog.Println(buffer.String())
+			worker.wr.parent.pool.dblog.Println(buffer.String())
 			return err2
 		}
 	}
