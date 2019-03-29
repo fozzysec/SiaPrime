@@ -6,7 +6,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/sasha-s/go-deadlock"
+    "sync"
+	//"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/persist"
 )
@@ -16,7 +17,7 @@ import (
 type Dispatcher struct {
 	handlers          map[string]*Handler
 	ln                net.Listener
-	mu                deadlock.RWMutex
+	mu                sync.RWMutex
 	p                 *Pool
 	log               *persist.Logger
 	connectionsOpened uint64
