@@ -69,6 +69,7 @@ func (h *Handler) setupNotifier() {
             err := h.handleRequest(&m)
             if err != nil {
                 h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
+                return
             }
         }
     }
