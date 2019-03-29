@@ -141,7 +141,7 @@ func (d *Dispatcher) ListenHandlers(port string) {
 func (d *Dispatcher) NotifyClients() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	d.log.Printf("Notifying %d clients\n", len(d.handlers))
+	d.log.Printf("Block changed, notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
         if len(h.notify) < numPendingNotifies {
 		    h.notify <- true
@@ -154,7 +154,7 @@ func (d *Dispatcher) NotifyClients() {
 func (d *Dispatcher) ClearJobAndNotifyClients() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	d.log.Printf("Clear jobs and Notifying %d clients\n", len(d.handlers))
+	d.log.Printf("Work on new block, clear jobs and notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
 		if h != nil && h.s != nil {
 			if h.s.CurrentWorker == nil {
