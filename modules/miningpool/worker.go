@@ -4,8 +4,8 @@ import (
 	"time"
     "unsafe"
 
+    "sync"
     "sync/atomic"
-	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/persist"
 )
@@ -21,7 +21,7 @@ type WorkerRecord struct {
 // A Worker is an instance of one miner.  A Client often represents a user and the
 // worker represents a single miner.  There is a one to many client worker relationship
 type Worker struct {
-	mu deadlock.RWMutex
+	mu sync.RWMutex
 	wr WorkerRecord
 	s  *Session
 	// utility

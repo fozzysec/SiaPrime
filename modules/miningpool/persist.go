@@ -3,10 +3,10 @@ package pool
 import (
 	"os"
     "unsafe"
+    "sync"
 	"path/filepath"
     "sync/atomic"
 
-	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/config"
 	"SiaPrime/modules"
@@ -16,7 +16,7 @@ import (
 
 // persistence is the data that is kept when the pool is restarted.
 type persistence struct {
-	mu deadlock.RWMutex
+	mu sync.RWMutex
 
 	// Consensus Tracking.
 	BlockHeight  types.BlockHeight         `json:"blockheight"`

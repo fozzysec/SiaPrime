@@ -8,7 +8,6 @@ import (
 
     "sync"
     "sync/atomic"
-	//"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/persist"
 )

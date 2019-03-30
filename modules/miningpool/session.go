@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/sasha-s/go-deadlock"
+    "sync"
 
 	"SiaPrime/build"
 	"SiaPrime/persist"
@@ -35,7 +35,7 @@ var (
 // closed.  A session is tied to a single client and has many jobs associated with it
 //
 type Session struct {
-	mu               deadlock.RWMutex
+	mu               sync.RWMutex
 	authorized       bool
 	SessionID        uint64
 	CurrentJobs      []*Job

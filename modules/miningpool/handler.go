@@ -17,8 +17,6 @@ import (
 
     "sync"
 
-    "github.com/sasha-s/go-deadlock"
-
     "SiaPrime/encoding"
     "SiaPrime/modules"
     "SiaPrime/persist"
@@ -31,7 +29,7 @@ const (
 
 // Handler represents the status (open/closed) of each connection
 type Handler struct {
-    mu     deadlock.RWMutex
+    mu     sync.RWMutex
     conn   net.Conn
     ready  chan bool
     closed chan bool

@@ -1,10 +1,10 @@
 package pool
 
 import (
+    "sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/sasha-s/go-deadlock"
 )
 
 // A Share is how we track each worker's submissions and their difficulty
@@ -24,7 +24,7 @@ type Share struct {
 // A Shift is a period over which a worker submits shares. At the end of the
 // period, we record those shares into the database.
 type Shift struct {
-	mu             deadlock.RWMutex
+	mu             sync.RWMutex
 	shiftID        uint64
 	pool           uint64
 	worker         *Worker

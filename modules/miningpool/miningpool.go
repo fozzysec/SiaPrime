@@ -17,8 +17,6 @@ import (
     "time"
     "sync"
 
-    "github.com/sasha-s/go-deadlock"
-
     "SiaPrime/build"
     "SiaPrime/config"
     "SiaPrime/crypto"
@@ -156,7 +154,7 @@ type Pool struct {
     dblog          *persist.Logger
     mu             sync.RWMutex //deadlock.RWMutex would cause deadlock error and abort the daemon when large number of miners subscribe to pool in short time
     blockFoundMu   sync.Mutex
-    dbConnectionMu deadlock.RWMutex
+    dbConnectionMu sync.RWMutex
     persistDir     string
     port           string
     tg             threadgroup.ThreadGroup
@@ -169,7 +167,7 @@ type Pool struct {
     clients        map[string]*Client //client name to client pointer mapping
 
     clientSetupMutex map[string]*sync.Mutex
-    runningMutex     deadlock.RWMutex
+    runningMutex     sync.RWMutex
     running          bool
 }
 
