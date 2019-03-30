@@ -2,6 +2,7 @@ package pool
 
 import (
 	"os"
+    "unsafe"
 	"path/filepath"
     "sync/atomic"
 
@@ -34,11 +35,11 @@ type persistence struct {
 }
 
 func (p *persistence) GetBlockHeight() types.BlockHeight {
-    return atomic.LoadUint64(&p.BlockHeight)
+    return atomic.LoadUint64((*uint64)(unsafe.Pointer(&p.BlockHeight)))
 }
 
 func (p *persistence) SetBlockHeight(bh types.BlockHeight) {
-    atomic.StoreUint64(&p.BlockHeight, bh)
+    atomic.StoreUint64((*uint64)(unsafe.Pointer(&p.BlockHeight, (uint64)(bh))))
 }
 
 func (p *persistence) GetRecentChange() modules.ConsensusChangeID {
