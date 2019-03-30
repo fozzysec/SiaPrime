@@ -76,15 +76,13 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	delete(d.handlers, addr)
 	//fmt.Printf("Exiting AddHandler, %d connections remaining\n", len(d.handlers))
 	d.mu.Unlock()
-    d.log.Println("handler release done")
 }
 
 func (d *Dispatcher) AddNotifier(h *Handler) {
-    d.log.Println("Notifier waiting for handler init.")
     //case <-h.closed no need, won't fail when setup handler
     select {
     case <-h.ready:
-        d.log.Println("Handler init done, Notifier spawning.")
+        d.log.Println("Handler done, Notifier spawning.")
         h.setupNotifier()
     }
 }
