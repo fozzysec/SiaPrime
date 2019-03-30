@@ -603,7 +603,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
         h.s.clearJobs()
         err = h.s.CurrentWorker.addFoundBlock(&b)
         if err != nil {
-            h.p.log.Printf("%s: Failed to update block in database: %s\n", h.s.Client.cr.name, err)
+            h.p.log.Printf("Failed to update block in database: %s\n", err)
         }
         h.p.shiftChan <- true
     }

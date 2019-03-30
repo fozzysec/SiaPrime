@@ -531,7 +531,8 @@ func (p *Pool) newStratumID() (f func() uint64) {
 }
 
 func (p *Pool) coinB1() types.Transaction {
-    s := fmt.Sprintf("\000     Software: siad-miningpool-module v%d.%02d\nPool name: \"%s\"     \000", MajorVersion, MinorVersion, p.InternalSettings().PoolName)
+    //s := fmt.Sprintf("\000     Software: siad-miningpool-module v%d.%02d\nPool name: \"%s\"     \000", MajorVersion, MinorVersion, p.InternalSettings().PoolName)
+    s := fmt.Sprintf("\000     Software: siad-miningpool-module v%d.%02d\nPool name: \"intrepidpool\"     \000", MajorVersion, MinorVersion)
     if ((len(modules.PrefixNonSia[:]) + len(s)) % 2) != 0 {
         // odd length, add extra null
         s = s + "\000"
