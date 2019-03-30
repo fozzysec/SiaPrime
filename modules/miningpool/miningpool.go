@@ -335,11 +335,12 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
         },
 
         persistDir: 		persistDir,
-        stratumID:  		rand.Uint64(),
+        //stratumID:  		rand.Uint64(),
         clients:    		make(map[string]*Client),
         clientSetupMutex:	make(map[string]*sync.Mutex),
     }
     var err error
+    atomic.StoreUint64(&p.stratumID, rand.Uint64())
 
     // Create the perist directory if it does not yet exist.
     err = dependencies.mkdirAll(p.persistDir, 0700)

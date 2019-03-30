@@ -93,7 +93,7 @@ func (p *Pool) AddClientDB(c *Client) error {
 	}
 	id, err := rs.LastInsertId()
 	p.dblog.Printf("User %s account id is %d\n", c.Name(), id)
-	c.cr.clientID = id
+	c.SetID(id)
 
 	return nil
 }
@@ -135,7 +135,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	var wallet types.UnlockHash
 	wallet.LoadString(Wallet)
 	c.SetWallet(wallet)
-	c.cr.clientID = clientID
+	c.SetID(clientID)
 
 	return c, nil
 }
@@ -150,7 +150,7 @@ func (w *Worker) deleteWorkerRecord() error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(w.wr.workerID)
+	_, err = stmt.Exec(w.GetID())
 	if err != nil {
 		w.wr.parent.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
@@ -209,8 +209,8 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	currentTarget, _ := pool.cs.ChildTarget(b.ID())
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
 	// TODO: figure out right difficulty_user
-	_, err = stmt.Exec(bh, b.ID().String(), SiaCoinID, w.Parent().cr.clientID,
-		w.wr.workerID, "new", difficulty, timeStamp, SiaCoinAlgo)
+	_, err = stmt.Exec(bh, b.ID().String(), SiaCoinID, w.Parent().GetID(),
+		w.GetID(), "new", difficulty, timeStamp, SiaCoinAlgo)
 	if err != nil {
         w.wr.parent.pool.dblog.Println(err)
 		return err
@@ -295,7 +295,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	defer stmt.Close()
 
 	startTime := time.Now()
-	rs, err := stmt.ExecContext(newCtx, c.cr.clientID, c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
+	rs, err := stmt.ExecContext(newCtx, c.GetID(), c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
 		c.pool.InternalSettings().PoolID, w.s.clientVersion, w.s.remoteAddr)
 	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
 		return ErrQueryTimeout

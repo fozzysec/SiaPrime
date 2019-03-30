@@ -379,7 +379,7 @@ func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
         return nil, err
     }
     h.s.log = w.log
-    w.log.Printf("Adding new worker: %s, %d\n", workerName, w.wr.workerID)
+    w.log.Printf("Adding new worker: %s, %d\n", workerName, w.GetID())
     h.log.Debugln("client = " + c.Name() + ", worker = " + workerName)
     return w, nil
 }

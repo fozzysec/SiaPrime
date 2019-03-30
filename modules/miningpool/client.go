@@ -3,6 +3,7 @@ package pool
 import (
 	//"github.com/sasha-s/go-deadlock"
 	"sync"
+    "sync/atomic"
 
 	"SiaPrime/persist"
 	"SiaPrime/types"
@@ -63,6 +64,14 @@ func (c *Client) SetName(n string) {
 	defer c.mu.Unlock()
 	c.cr.name = n
 
+}
+
+func (c *Client) SetID(id int64) {
+    atomic.StoreInt64(&c.cr.clientID, id)
+}
+
+func (c *Client) GetID() int64 {
+    return atomic.LoadInt64(&c.cr.clientID)
 }
 
 // Wallet returns the unlockhash associated with the client

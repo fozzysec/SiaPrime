@@ -48,7 +48,7 @@ func (w *Worker) printID() string {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	return ssPrintID(w.wr.workerID)
+	return ssPrintID(w.GetID())
 }
 
 // Name return the worker's name, typically a wallet address
@@ -68,6 +68,10 @@ func (w *Worker) SetName(n string) {
 
 func (w *Worker) SetID(id int64) {
     atomic.StoreInt64(&w.wr.workerID, id)
+}
+
+func (w *Worker) GetID() int64 {
+    return atomic.LoadInt64(&w.wr.workerID)
 }
 
 // Parent returns the worker's client
@@ -106,7 +110,7 @@ func (w *Worker) IncrementShares(sessionDifficulty float64, reward float64) {
 
 	share := &Share{
 		userid:          w.Parent().cr.clientID,
-		workerid:        w.wr.workerID,
+		workerid:        w.GetID(),
 		height:          int64(p.cs.Height()) + 1,
 		valid:           true,
 		difficulty:      sessionDifficulty,

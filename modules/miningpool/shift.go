@@ -82,7 +82,7 @@ func (s *Shift) IncrementInvalid() {
 	defer s.mu.Unlock()
 	share := &Share{
 		userid:   s.worker.Parent().cr.clientID,
-		workerid: s.worker.wr.workerID,
+		workerid: s.worker.GetID(),
 		valid:    false,
 		time:     time.Now(),
 	}

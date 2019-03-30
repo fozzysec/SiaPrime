@@ -24,7 +24,7 @@ func (p *Pool) blockForWorkWithoutDevFund() types.Block {
 		b.Timestamp = types.CurrentTimestamp()
 	}
 
-	payoutVal := b.CalculateSubsidy(p.persist.BlockHeight + 1)
+	payoutVal := b.CalculateSubsidy(p.persist.GetBlockHeight() + 1)
 	p.log.Printf("building a new source block, block id is: %s\n", b.ID())
 	p.log.Printf("miner fees cost: %s", b.CalculateMinerFees().String())
 	p.log.Printf("# transactions: %d", len(b.Transactions))
@@ -49,9 +49,9 @@ func (p *Pool) blockForWorkWithDevFund() types.Block {
 		b.Timestamp = types.CurrentTimestamp()
 	}
 
-	minerPayoutVal, subsidyPayoutVal := b.CalculateSubsidies(p.persist.BlockHeight + 1)
+	minerPayoutVal, subsidyPayoutVal := b.CalculateSubsidies(p.persist.GetBlockHeight() + 1)
 	subsidyUnlockHash := types.DevFundUnlockHash
-	if types.BurnAddressBlockHeight != types.BlockHeight(0) && (p.persist.BlockHeight+1) >= types.BurnAddressBlockHeight {
+	if types.BurnAddressBlockHeight != types.BlockHeight(0) && (p.persist.GetBlockHeight()+1) >= types.BurnAddressBlockHeight {
 		subsidyUnlockHash = types.BurnAddressUnlockHash
 	}
 	p.log.Printf("building a new source block, block id is: %s\n", b.ID())
@@ -72,7 +72,7 @@ func (p *Pool) blockForWorkWithDevFund() types.Block {
 // blockForWork returns a block that is ready for nonce grinding, including
 // correct miner payouts.
 func (p *Pool) blockForWork() types.Block {
-	if types.DevFundEnabled && p.persist.BlockHeight+1 >= types.DevFundInitialBlockHeight {
+	if types.DevFundEnabled && p.persist.GetBlockHeight()+1 >= types.DevFundInitialBlockHeight {
 		return p.blockForWorkWithDevFund()
 	}
 	return p.blockForWorkWithoutDevFund()
