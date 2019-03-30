@@ -82,7 +82,7 @@ func (w *Worker) SetParent(p *Client) {
 
 // Session returns the tcp session associated with the worker
 func (w *Worker) Session() *Session {
-    return (*Session)(atomic.LoadPointer((*unsafe.Pointer)unsafe.Pointer(&w.s)))
+    return (*Session)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&w.s))))
 }
 
 // SetSession sets the tcp session associated with the worker
