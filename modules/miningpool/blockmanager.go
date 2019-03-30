@@ -125,10 +125,7 @@ func (p *Pool) managedSubmitBlock(b types.Block) error {
 	}
 	// p.log.Debugf("Waiting to lock pool\n")
 	p.mu.Lock()
-	defer func() {
-		// p.log.Debugf("Unlocking pool\n")
-		p.mu.Unlock()
-	}()
+	defer p.mu.Unlock()
 
 	// Grab a new address for the miner. Call may fail if the wallet is locked
 	// or if the wallet addresses have been exhausted.
