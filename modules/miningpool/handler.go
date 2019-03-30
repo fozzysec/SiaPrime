@@ -78,8 +78,10 @@ func (h *Handler) setupNotifier() {
             err := h.handleRequest(&m)
 
             //connection already broken, giving up
-            if err != nil && h.s != nil && h.s.Client != nil {
-                h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
+            if err != nil {
+                if h.s != nil && h.s.Client != nil {
+                    h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
+                }
                 return
             }
         }
