@@ -56,7 +56,7 @@ func (h *Handler) setupNotifier() {
 		return
 	}
 
-    defer {
+    defer func() {
         h.p.tg.Done()
         h.closed <- true
         h.conn.Close()
@@ -64,7 +64,7 @@ func (h *Handler) setupNotifier() {
             // delete a worker record when a session disconnections
             h.s.CurrentWorker.deleteWorkerRecord()
         }
-    }
+    }()
 
     for {
         select {
