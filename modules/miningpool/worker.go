@@ -2,7 +2,9 @@ package pool
 
 import (
 	"time"
+    "unsafe"
 
+    "sync/atomic"
 	"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/persist"
@@ -35,11 +37,10 @@ func newWorker(c *Client, name string, s *Session) (*Worker, error) {
 			name:   name,
 			parent: c,
 		},
-		s: s,
 	}
+    w.SetSession(s)
 
     w.log = p.log
-
 	return w, nil
 }
 
@@ -65,34 +66,28 @@ func (w *Worker) SetName(n string) {
 	w.wr.name = n
 }
 
+func (w *Worker) SetID(id int64) {
+    atomic.StoreInt64(&w.wr.workerID, id)
+}
+
 // Parent returns the worker's client
 func (w *Worker) Parent() *Client {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-
-	return w.wr.parent
+	return (*Client)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&w.wr.parent))))
 }
 
 // SetParent sets the worker's client
 func (w *Worker) SetParent(p *Client) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.wr.parent = p
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&w.wr.parent)), unsafe.Pointer(p))
 }
 
 // Session returns the tcp session associated with the worker
 func (w *Worker) Session() *Session {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
-
-	return w.s
+    return (*Session)(atomic.LoadPointer((*unsafe.Pointer)unsafe.Pointer(&w.s)))
 }
 
 // SetSession sets the tcp session associated with the worker
 func (w *Worker) SetSession(s *Session) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.s = s
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&w.s)), unsafe.Pointer(s))
 }
 
 // IncrementShares creates a new share according to current session difficulty

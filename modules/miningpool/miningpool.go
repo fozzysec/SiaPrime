@@ -155,6 +155,7 @@ type Pool struct {
     log            *persist.Logger
     dblog          *persist.Logger
     mu             sync.RWMutex //deadlock.RWMutex would cause deadlock error and abort the daemon when large number of miners subscribe to pool in short time
+    blockFoundMu   sync.Mutex
     dbConnectionMu deadlock.RWMutex
     persistDir     string
     port           string
@@ -517,14 +518,13 @@ func (p *Pool) AddClient(c *Client) {
 // for more the unique IDs within the Stratum protocol
 func (p *Pool) newStratumID() (f func() uint64) {
     f = func() uint64 {
-        // p.log.Debugf("Waiting to lock pool\n")
-        p.mu.Lock()
-        defer func() {
-            // p.log.Debugf("Unlocking pool\n")
-            p.mu.Unlock()
-        }()
-        atomic.AddUint64(&p.stratumID, 1)
-        return p.stratumID
+        var i uint64
+        for {
+           i = atomic.LoadUint64(&p.stratumID)
+           if atomic.CompareAndSwapUint64(&p.stratumID, i, i+1) {
+               return i+1
+           }
+        }
     }
     return
 }

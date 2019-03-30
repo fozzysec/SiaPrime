@@ -65,10 +65,9 @@ func (p *Pool) newDbConnection() error {
 
 // AddClientDB add user into accounts
 func (p *Pool) AddClientDB(c *Client) error {
-	p.mu.Lock()
-	defer func() {
-		p.mu.Unlock()
-	}()
+    //lock not needed, already get client level lock on, mysql will procoess transaction locks for us
+	//p.mu.Lock()
+	//defer p.mu.Unlock()
 	tx, err := p.sqldb.Begin()
 	if err != nil {
 		return err
@@ -192,8 +191,8 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	bh := pool.persist.GetBlockHeight()
 	//w.log.Printf("New block to mine on %d\n", uint64(bh)+1)
 	// reward := b.CalculateSubsidy(bh).String()
-	pool.mu.Lock()
-	defer pool.mu.Unlock()
+	pool.blockFoundMu.Lock()
+	defer pool.blockFoundMu.Unlock()
 	timeStamp := time.Now().Unix()
 	// TODO: maybe add difficulty_user
 	stmt, err := tx.Prepare(`
@@ -274,8 +273,8 @@ func (s *Shift) SaveShift() error {
 
 // addWorkerDB inserts info to workers
 func (c *Client) addWorkerDB(w *Worker) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	//c.mu.Lock()
+	//defer c.mu.Unlock()
 
 	//c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
 	tx, err := c.pool.sqldb.Begin()
@@ -309,7 +308,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
 		return err
 	}
 
-	w.wr.workerID = id
+	w.SetID(id)
 
 	err = tx.Commit()
 	if err != nil {

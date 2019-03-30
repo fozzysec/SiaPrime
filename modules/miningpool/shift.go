@@ -50,18 +50,14 @@ func (p *Pool) newShift(w *Worker) *Shift {
 
 // ShiftID returns the shift's unique ID
 func (s *Shift) ShiftID() uint64 {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.shiftID
+    return atomic.LoadUint64(&s.shiftID)
 }
 
 // PoolID returns the pool's unique ID. Multiple stratum servers connecting to
 // the same database should use unique ids so that workers can be tracked as
 // belonging to which server.
 func (s *Shift) PoolID() uint64 {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.pool
+    return atomic.LoadUint64(&s.pool)
 }
 
 // Shares returns the slice of shares submitted during the shift

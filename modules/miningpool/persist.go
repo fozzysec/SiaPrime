@@ -3,6 +3,7 @@ package pool
 import (
 	"os"
 	"path/filepath"
+    "sync/atomic"
 
 	"github.com/sasha-s/go-deadlock"
 
@@ -33,15 +34,11 @@ type persistence struct {
 }
 
 func (p *persistence) GetBlockHeight() types.BlockHeight {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return p.BlockHeight
+    return atomic.LoadUint64(&p.BlockHeight)
 }
 
 func (p *persistence) SetBlockHeight(bh types.BlockHeight) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.BlockHeight = bh
+    atomic.StoreUint64(&p.BlockHeight, bh)
 }
 
 func (p *persistence) GetRecentChange() modules.ConsensusChangeID {
@@ -69,15 +66,11 @@ func (p *persistence) SetPublicKey(pk types.SiaPublicKey) {
 }
 
 func (p *persistence) GetRevisionNumber() uint64 {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return p.RevisionNumber
+    return atomic.LoadUint64(&p.RevisionNumber)
 }
 
 func (p *persistence) SetRevisionNumber(rn uint64) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.RevisionNumber = rn
+    atomic.StoreUint64(&p.RevisionNumber, rn)
 }
 
 func (p *persistence) GetSettings() modules.PoolInternalSettings {

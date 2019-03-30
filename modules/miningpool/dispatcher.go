@@ -7,6 +7,7 @@ import (
 	"time"
 
     "sync"
+    "sync/atomic"
 	//"github.com/sasha-s/go-deadlock"
 
 	"SiaPrime/persist"
@@ -33,24 +34,25 @@ func (d *Dispatcher) NumConnections() int {
 // NumConnectionsOpened returns the number of tcp connections that the pool
 // has ever opened
 func (d *Dispatcher) NumConnectionsOpened() uint64 {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	return d.connectionsOpened
+	return atomic.LoadUint64(&d.connectionsOpened)
 }
 
 // IncrementConnectionsOpened increments the number of tcp connections that the
 // pool has ever opened
 func (d *Dispatcher) IncrementConnectionsOpened() {
-	// XXX: this is causing a deadlock
-	/*
-		d.mu.Lock()
-		defer d.mu.Unlock()
-		d.connectionsOpened += 1
-	*/
+    atomic.AddUint64(&d.connectionsOpened, 1)
 }
 
 //AddHandler connects the incoming connection to the handler which will handle it
 func (d *Dispatcher) AddHandler(conn net.Conn) {
+    tcpconn := conn.(*net.TCPConn)
+    tcpconn.SetKeepAlive(true)
+    //tcpconn.SetKeepAlivePeriod(30 * time.Second)
+    tcpconn.SetKeepAlivePeriod(15 * time.Second)
+    tcpconn.SetNoDelay(true)
+    // maybe this will help with our disconnection problems
+    tcpconn.SetLinger(2)
+
 	addr := conn.RemoteAddr().String()
 	handler := &Handler{
 		conn:   conn,
@@ -98,7 +100,7 @@ func (d *Dispatcher) ListenHandlers(port string) {
 
 	d.ln, err = net.Listen("tcp", ":"+port)
 	if err != nil {
-		d.log.Println(err)
+		//d.log.Println(err)
 		panic(err)
 		// TODO: add error chan to report this
 		//return
@@ -121,20 +123,11 @@ func (d *Dispatcher) ListenHandlers(port string) {
 			conn, err = d.ln.Accept() // accept connection
 			d.IncrementConnectionsOpened()
 			if err != nil {
-				d.log.Println(err)
+				//d.log.Println(err)
 				continue
 			}
 		}
-
-		tcpconn := conn.(*net.TCPConn)
-		tcpconn.SetKeepAlive(true)
-		//tcpconn.SetKeepAlivePeriod(30 * time.Second)
-		tcpconn.SetKeepAlivePeriod(15 * time.Second)
-		tcpconn.SetNoDelay(true)
-		// maybe this will help with our disconnection problems
-		tcpconn.SetLinger(2)
-
-		go d.AddHandler(conn)
+        go d.AddHandler(conn)
 	}
 }
 
