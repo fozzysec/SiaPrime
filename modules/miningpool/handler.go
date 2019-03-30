@@ -56,7 +56,16 @@ func (h *Handler) setupNotifier() {
 		return
 	}
 
-    defer h.p.tg.Done()
+    defer func() {
+        h.p.tg.Done()
+        h.closed <- true
+        h.conn.Close()
+        if h.s != nil && h.s.CurrentWorker != nil {
+            // delete a worker record when a session disconnections
+            h.s.CurrentWorker.deleteWorkerRecord()
+        }
+    }()
+
     for {
         select {
         case <-h.p.tg.StopChan():
