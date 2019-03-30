@@ -71,10 +71,12 @@ func (d *Dispatcher) AddHandler(conn net.Conn) {
 	handler.Listen()
 
 	<-handler.closed // when connection closed, remove handler from handlers
+    d.log.Println("handler releasing")
 	d.mu.Lock()
 	delete(d.handlers, addr)
 	//fmt.Printf("Exiting AddHandler, %d connections remaining\n", len(d.handlers))
 	d.mu.Unlock()
+    d.log.Println("handler release done")
 }
 
 func (d *Dispatcher) AddNotifier(h *Handler) {
