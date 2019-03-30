@@ -56,7 +56,16 @@ func (h *Handler) setupNotifier() {
 		return
 	}
 
-    defer h.p.tg.Done()
+    defer {
+        h.p.tg.Done()
+        h.closed <- true
+        h.conn.Close()
+        if h.s != nil && h.s.CurrentWorker != nil {
+            // delete a worker record when a session disconnections
+            h.s.CurrentWorker.deleteWorkerRecord()
+        }
+    }
+
     for {
         select {
         case <-h.p.tg.StopChan():
@@ -210,22 +219,27 @@ func (h *Handler) Listen() {
     h.mu.Unlock()
     h.ready <- true
     for {
-        m, err := h.parseRequest()
-        h.conn.SetReadDeadline(time.Time{})
-        // if we timed out
-        if m == nil && err == nil {
-            continue
-            // else if we got a request
-        } else if m != nil {
-            err = h.handleRequest(m)
-            if err != nil {
-                h.log.Println(err)
+        select {
+        case <-h.closed:
+            return
+        default:
+            m, err := h.parseRequest()
+            h.conn.SetReadDeadline(time.Time{})
+            // if we timed out
+            if m == nil && err == nil {
+                continue
+                // else if we got a request
+            } else if m != nil {
+                err = h.handleRequest(m)
+                if err != nil {
+                    h.log.Println(err)
+                    return
+                }
+                // else if we got an error
+            } else if err != nil {
+                //h.log.Println(err)
                 return
             }
-            // else if we got an error
-        } else if err != nil {
-            //h.log.Println(err)
-            return
         }
     }
 }
