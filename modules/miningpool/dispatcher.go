@@ -151,8 +151,8 @@ func (d *Dispatcher) ClearJobAndNotifyClients() {
 	defer d.mu.Unlock()
 	d.log.Printf("Work on new block, clear jobs and notifying %d clients\n", len(d.handlers))
 	for _, h := range d.handlers {
-		if h != nil && h.s != nil {
-			if h.s.GetCurrentWorker() == nil {
+		if h != nil && h.GetSession() != nil {
+			if h.GetSession().GetCurrentWorker() == nil {
 				// this will happen when handler init, session init,
 				// no mining.authorize happen yet, so worker is nil,
 				// at this time, no stratum notify ever happen, no need to clear or notify
@@ -164,7 +164,7 @@ func (d *Dispatcher) ClearJobAndNotifyClients() {
 			//d.log.Printf("Clear jobs and Notifying client: handler or session nil\n")
 			continue
 		}
-		h.s.clearJobs()
+		h.GetSession().clearJobs()
         //with new notifier it is no longer needed to be that large(20), 5 is for sure that won't block for long
         if len(h.notify) < numPendingNotifies {
 		    h.notify <- true

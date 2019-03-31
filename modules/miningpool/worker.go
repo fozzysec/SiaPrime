@@ -97,7 +97,7 @@ func (w *Worker) SetSession(s *Session) {
 // IncrementShares creates a new share according to current session difficulty
 // for the worker to work on
 func (w *Worker) IncrementShares(sessionDifficulty float64, reward float64) {
-	p := w.s.GetClient().pool
+	p := w.Session().GetClient().pool
 	cbid := p.cs.CurrentBlock().ID()
 	blockTarget, _ := p.cs.ChildTarget(cbid)
 	blockDifficulty, _ := blockTarget.Difficulty().Uint64()
@@ -121,24 +121,24 @@ func (w *Worker) IncrementShares(sessionDifficulty float64, reward float64) {
 		time:            time.Now(),
 	}
 
-	w.s.Shift().IncrementShares(share)
+	w.Session().Shift().IncrementShares(share)
 }
 
 // IncrementInvalidShares adds a record of an invalid share submission
 func (w *Worker) IncrementInvalidShares() {
-	w.s.Shift().IncrementInvalid()
+	w.Session().Shift().IncrementInvalid()
 }
 
 // SetLastShareTime specifies the last time a share was submitted during the
 // current shift
 func (w *Worker) SetLastShareTime(t time.Time) {
-	w.s.Shift().SetLastShareTime(t)
+	w.Session().Shift().SetLastShareTime(t)
 }
 
 // LastShareTime returns the last time a share was submitted during the
 // current shift
 func (w *Worker) LastShareTime() time.Time {
-	return w.s.Shift().LastShareTime()
+	return w.Session().Shift().LastShareTime()
 }
 
 // CurrentDifficulty returns the average difficulty of all instances of this worker
@@ -150,8 +150,8 @@ func (w *Worker) CurrentDifficulty() float64 {
 	workerCount := uint64(0)
 	currentDiff := float64(0.0)
 	for _, h := range d.handlers {
-		if h.s.GetClient() != nil && h.s.GetClient().Name() == w.Parent().Name() && h.s.GetCurrentWorker().Name() == w.Name() {
-			currentDiff += h.s.CurrentDifficulty()
+		if h.GetSession().GetClient() != nil && h.GetSession().GetClient().Name() == w.Parent().Name() && h.GetSession().GetCurrentWorker().Name() == w.Name() {
+			currentDiff += h.GetSession().CurrentDifficulty()
 			workerCount++
 		}
 	}
@@ -163,5 +163,5 @@ func (w *Worker) CurrentDifficulty() float64 {
 
 // Online checks if the worker has a tcp session associated with it
 func (w *Worker) Online() bool {
-	return w.s != nil
+	return w.Session() != nil
 }

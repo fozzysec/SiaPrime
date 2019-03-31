@@ -229,16 +229,16 @@ func (p *Pool) monitorShifts() {
         p.dispatcher.mu.RLock()
         // TODO: switch to batched insert
         for _, h := range p.dispatcher.handlers {
-            h.mu.RLock()
-            s := h.s.Shift()
-            h.mu.RUnlock()
+            //h.mu.RLock()
+            s := h.GetSession().Shift()
+            //h.mu.RUnlock()
             go func(savingShift *Shift) {
                 if savingShift != nil {
                     savingShift.SaveShift()
                 }
             }(s)
-            sh := p.newShift(h.s.GetCurrentWorker())
-            h.s.addShift(sh)
+            sh := p.newShift(h.GetSession().GetCurrentWorker())
+            h.GetSession().addShift(sh)
         }
         p.dispatcher.mu.RUnlock()
     }

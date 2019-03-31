@@ -14,8 +14,10 @@ import (
     "strconv"
     "strings"
     "time"
+    "unsafe"
 
     "sync"
+    "sync/atomic"
 
     "SiaPrime/encoding"
     "SiaPrime/modules"
@@ -46,6 +48,14 @@ const (
     numPendingNotifies = 5
 )
 
+func (h *Handler) SetSession(s *Session) {
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&h.s)), unsafe.Pointer(s))
+}
+
+func (h *Handler) GetSession() *Session {
+    return (*Session)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&h.s))))
+}
+
 func (h *Handler) setupNotifier() {
     err := h.p.tg.Add()
 	if err != nil {
@@ -58,9 +68,9 @@ func (h *Handler) setupNotifier() {
         h.p.tg.Done()
         h.closed <- true
         h.conn.Close()
-        if h.s != nil && h.s.GetCurrentWorker() != nil {
+        if h.GetSession() != nil && h.GetSession().GetCurrentWorker() != nil {
             // delete a worker record when a session disconnections
-            h.s.GetCurrentWorker().deleteWorkerRecord()
+            h.GetSession().GetCurrentWorker().deleteWorkerRecord()
         }
     }()
 
@@ -77,8 +87,8 @@ func (h *Handler) setupNotifier() {
 
             //connection already broken, giving up
             if err != nil {
-                if h.s != nil && h.s.GetClient() != nil {
-                    h.log.Printf("%s: error notifying worker.\n", h.s.GetClient().cr.name)
+                if h.GetSession() != nil && h.GetSession().GetClient() != nil {
+                    h.log.Printf("%s: error notifying worker.\n", h.GetSession().GetClient().cr.name)
                 }
                 return
             }
@@ -88,7 +98,6 @@ func (h *Handler) setupNotifier() {
 
 func (h *Handler) parseRequest() (*types.StratumRequest, error) {
     var m types.StratumRequest
-    // fmt.Printf("%s: Setting timeout for %v\n", h.s.printID(), time.Now().Add(blockTimeout))
     h.conn.SetReadDeadline(time.Now().Add(blockTimeout))
     //dec := json.NewDecoder(h.conn)
     buf := bufio.NewReader(h.conn)
@@ -101,22 +110,20 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
         str, err := buf.ReadString('\n')
         // if we timeout
         if nerr, ok := err.(net.Error); ok && nerr.Timeout() {
-            // h.log.Printf("%s: Harmless timeout occurred\n", h.s.printID())
             //h.conn.SetReadDeadline(time.Time{})
             // check last job time and if over 25 seconds, send a new job.
             // if time.Now().Sub(h.s.lastJobTimestamp) > (time.Second * 25) {
             // 	m.Method = "mining.notify"
             // 	break
             // }
-            if h.s.DetectDisconnected() {
+            if h.GetSession().DetectDisconnected() {
                 return nil, errors.New("Non-responsive disconnect detected")
             }
 
-            // ratio := h.s.CurrentDifficulty() / h.s.HighestDifficulty()
             // h.log.Printf("Non-responsive disconnect ratio: %f\n", ratio)
 
-            if h.s.checkDiffOnNewShare() {
-                err = h.sendSetDifficulty(h.s.CurrentDifficulty())
+            if h.GetSession().checkDiffOnNewShare() {
+                err = h.sendSetDifficulty(h.GetSession().CurrentDifficulty())
                 if err != nil {
                     return nil, err
                 }
@@ -159,12 +166,11 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             }
         }
     }
-    // h.log.Printf("%s: Clearing timeout\n", h.s.printID())
     return &m, nil
 }
 
 func (h *Handler) handleRequest(m *types.StratumRequest) error {
-    h.s.SetHeartbeat()
+    h.GetSession().SetHeartbeat()
     var err error
     switch m.Method {
     case "mining.subscribe":
@@ -194,9 +200,9 @@ func (h *Handler) Listen() {
     defer func() {
         h.closed <- true // send to dispatcher, that connection is closed
         h.conn.Close()
-        if h.s != nil && h.s.GetCurrentWorker() != nil {
+        if h.GetSession() != nil && h.GetSession().GetCurrentWorker() != nil {
             // delete a worker record when a session disconnections
-            h.s.GetCurrentWorker().deleteWorkerRecord()
+            h.GetSession().GetCurrentWorker().deleteWorkerRecord()
             // when we shut down the pool we get an error here because the log
             // is already closed... TODO
         }
@@ -209,9 +215,8 @@ func (h *Handler) Listen() {
     }
     defer h.p.tg.Done()
 
-    h.mu.Lock()
-    h.s, _ = newSession(h.p, h.conn.RemoteAddr().String())
-    h.mu.Unlock()
+    s, _ := newSession(h.p, h.conn.RemoteAddr().String())
+    h.SetSession(s)
     h.ready <- true
     for {
         m, err := h.parseRequest()
@@ -272,28 +277,28 @@ func (h *Handler) sendRequest(r types.StratumRequest) error {
 func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
     if len(m.Params) > 0 {
         //h.log.Printf("Client subscribe name:%s", m.Params[0].(string))
-        h.s.SetClientVersion(m.Params[0].(string))
+        h.GetSession().SetClientVersion(m.Params[0].(string))
     }
 
     if len(m.Params) > 0 && m.Params[0].(string) == "sgminer/4.4.2" {
-        h.s.SetHighestDifficulty(11500)
-        h.s.SetCurrentDifficulty(11500)
-        h.s.SetDisableVarDiff(true)
+        h.GetSession().SetHighestDifficulty(11500)
+        h.GetSession().SetCurrentDifficulty(11500)
+        h.GetSession().SetDisableVarDiff(true)
     }
     if len(m.Params) > 0 && m.Params[0].(string) == "cgminer/4.9.0" {
-        h.s.SetHighestDifficulty(1024)
-        h.s.SetCurrentDifficulty(1024)
-        h.s.SetDisableVarDiff(true)
+        h.GetSession().SetHighestDifficulty(1024)
+        h.GetSession().SetCurrentDifficulty(1024)
+        h.GetSession().SetDisableVarDiff(true)
     }
     if len(m.Params) > 0 && m.Params[0].(string) == "cgminer/4.10.0" {
-        h.s.SetHighestDifficulty(700)
-        h.s.SetCurrentDifficulty(700)
-        h.s.SetDisableVarDiff(true)
+        h.GetSession().SetHighestDifficulty(700)
+        h.GetSession().SetCurrentDifficulty(700)
+        h.GetSession().SetDisableVarDiff(true)
     }
     if len(m.Params) > 0 && m.Params[0].(string) == "gominer" {
-        h.s.SetHighestDifficulty(0.03)
-        h.s.SetCurrentDifficulty(0.03)
-        h.s.SetDisableVarDiff(true)
+        h.GetSession().SetHighestDifficulty(0.03)
+        h.GetSession().SetCurrentDifficulty(0.03)
+        h.GetSession().SetDisableVarDiff(true)
     }
     if len(m.Params) > 0 && m.Params[0].(string) == "NiceHash/1.0.0" {
         r := types.StratumResponse{ID: m.ID}
@@ -304,8 +309,7 @@ func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
 
     r := types.StratumResponse{ID: m.ID}
     r.Method = m.Method
-    /*
-    if !h.s.Authorized() {
+    /*if !h.s.Authorized() {
         r.Result = false
         r.Error = interfaceify([]string{"Session not authorized - authorize before subscribe"})
         return h.sendResponse(r)
@@ -319,8 +323,8 @@ func (h *Handler) handleStratumSubscribe(m *types.StratumRequest) error {
     binary.LittleEndian.PutUint64(tb, t)
     diff := hex.EncodeToString(tb)
     //notify := "ae6812eb4cd7735a302a8a9dd95cf71f"
-    notify := h.s.printID()
-    extranonce1 := h.s.printNonce()
+    notify := h.GetSession().printID()
+    extranonce1 := h.GetSession().printNonce()
     extranonce2 := extraNonce2Size
     raw := fmt.Sprintf(`[ [ ["mining.set_difficulty", "%s"], ["mining.notify", "%s"]], "%s", %d]`, diff, notify, extranonce1, extranonce2)
     r.Result = json.RawMessage(raw)
@@ -371,7 +375,7 @@ func (h *Handler) setupClient(client, worker string) (*Client, error) {
 }
 
 func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
-    w, err := newWorker(c, workerName, h.s)
+    w, err := newWorker(c, workerName, h.GetSession())
     if err != nil {
         c.log.Printf("Failed to add worker: %s\n", err)
         return nil, err
@@ -382,7 +386,7 @@ func (h *Handler) setupWorker(c *Client, workerName string) (*Worker, error) {
         c.log.Printf("Failed to add worker: %s\n", err)
         return nil, err
     }
-    h.s.log = w.log
+    h.GetSession().log = w.log
     w.log.Printf("Adding new worker: %s, %d\n", workerName, w.GetID())
     h.log.Debugln("client = " + c.Name() + ", worker = " + workerName)
     return w, nil
@@ -433,15 +437,15 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
     }
 
     // if everything is fine, setup the client and send a response and difficulty
-    h.s.addClient(c)
-    h.s.addWorker(w)
-    h.s.addShift(h.p.newShift(h.s.GetCurrentWorker()))
-    h.s.SetAuthorized(true)
+    h.GetSession().addClient(c)
+    h.GetSession().addWorker(w)
+    h.GetSession().addShift(h.p.newShift(h.GetSession().GetCurrentWorker()))
+    h.GetSession().SetAuthorized(true)
     err = h.sendResponse(r)
     if err != nil {
         return err
     }
-    err = h.sendSetDifficulty(h.s.CurrentDifficulty())
+    err = h.sendSetDifficulty(h.GetSession().CurrentDifficulty())
     if err != nil {
         return err
     }
@@ -463,7 +467,6 @@ func (h *Handler) handleStratumNonceSubscribe(m *types.StratumRequest) error {
 
 // request is sent as [name, jobid, extranonce2, nTime, nonce]
 func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
-    // fmt.Printf("%s: %s Handle submit\n", time.Now(), h.s.printID())
     r := types.StratumResponse{ID: m.ID}
     r.Method = "mining.submit"
     r.Result = true
@@ -482,7 +485,6 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     extraNonce2 := m.Params[2].(string)
     nTime := m.Params[3].(string)
     nonce := m.Params[4].(string)
-    // h.s.log.Printf("Submit jobid:%d nonce: %s, extraNonce2: %s", jobID, nonce, extraNonce2)
 
     needNewJob := false
     defer func() {
@@ -491,36 +493,29 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
         }
     }()
 
-    if h.s.GetCurrentWorker() == nil {
+    if h.GetSession().GetCurrentWorker() == nil {
         // worker failed to authorize
         r.Result = false
         r.Error = interfaceify([]string{"24", "Unauthorized worker"})
-        if h.s.GetClient() != nil {
-            h.log.Printf("%s: Unauthorized worker\n", h.s.GetClient().Name())
+        if h.GetSession().GetClient() != nil {
+            h.log.Printf("%s: Unauthorized worker\n", h.GetSession().GetClient().Name())
         }
         return h.sendResponse(r)
         return errors.New("Worker failed to authorize - dropping")
     }
 
-    h.s.SetLastShareTimestamp(time.Now())
-    sessionPoolDifficulty := h.s.CurrentDifficulty()
-    if h.s.checkDiffOnNewShare() {
-        h.sendSetDifficulty(h.s.CurrentDifficulty())
+    h.GetSession().SetLastShareTimestamp(time.Now())
+    sessionPoolDifficulty := h.GetSession().CurrentDifficulty()
+    if h.GetSession().checkDiffOnNewShare() {
+        h.sendSetDifficulty(h.GetSession().CurrentDifficulty())
         needNewJob = true
     }
 
-    // h.log.Debugln("name = " + name + ", jobID = " + fmt.Sprintf("%X", jobID) + ", extraNonce2 = " + extraNonce2 + ", nTime = " + nTime + ", nonce = " + nonce)
-    if h.s.log != nil {
-        // h.s.log.Debugln("name = " + name + ", jobID = " + fmt.Sprintf("%X", jobID) + ", extraNonce2 = " + extraNonce2 + ", nTime = " + nTime + ", nonce = " + nonce)
-    } else {
-        h.log.Debugln("session log not ready")
-    }
-
-    j, err := h.s.getJob(jobID, nonce)
+    j, err := h.GetSession().getJob(jobID, nonce)
     if err != nil {
         r.Result = false
         r.Error = interfaceify([]string{"21", err.Error()}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.s.GetCurrentWorker().IncrementInvalidShares()
+        h.GetSession().GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
     var b types.Block
@@ -531,10 +526,10 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     if len(b.MinerPayouts) == 0 {
         r.Result = false
         r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["22","Stale - old/unknown job"]`)
-        if h.s.GetClient() != nil {
-            h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.GetClient().Name(), h.s.GetCurrentWorker().Name())
+        if h.GetSession().GetClient() != nil {
+            h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.GetSession().GetClient().Name(), h.GetSession().GetCurrentWorker().Name())
         }
-        h.s.GetCurrentWorker().IncrementInvalidShares()
+        h.GetSession().GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
@@ -544,7 +539,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     b.Timestamp = types.Timestamp(encoding.DecUint64(tb))
 
     cointxn := h.p.coinB1()
-    ex1, _ := hex.DecodeString(h.s.printNonce())
+    ex1, _ := hex.DecodeString(h.GetSession().printNonce())
     ex2, _ := hex.DecodeString(extraNonce2)
     cointxn.ArbitraryData[0] = append(cointxn.ArbitraryData[0], ex1...)
     cointxn.ArbitraryData[0] = append(cointxn.ArbitraryData[0], ex2...)
@@ -561,18 +556,18 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     if bytes.Compare(sessionPoolTarget[:], blockHash[:]) < 0 {
         r.Result = false
         r.Error = interfaceify([]string{"23", "Low difficulty share"}) //23 - Low difficulty share
-        if h.s.GetClient() != nil {
-            h.p.log.Printf("%s.%s: Low difficulty share\n", h.s.GetClient().Name(), h.s.GetCurrentWorker().Name())
+        if h.GetSession().GetClient() != nil {
+            h.p.log.Printf("%s.%s: Low difficulty share\n", h.GetSession().GetClient().Name(), h.GetSession().GetCurrentWorker().Name())
         }
-        h.s.GetCurrentWorker().IncrementInvalidShares()
+        h.GetSession().GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
     t := h.p.persist.GetTarget()
     // printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
     if bytes.Compare(t[:], blockHash[:]) < 0 {
-        h.s.GetCurrentWorker().IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[1].Value))
-        h.s.GetCurrentWorker().SetLastShareTime(time.Now())
+        h.GetSession().GetCurrentWorker().IncrementShares(h.GetSession().CurrentDifficulty(), currencyToAmount(b.MinerPayouts[1].Value))
+        h.GetSession().GetCurrentWorker().SetLastShareTime(time.Now())
         return h.sendResponse(r)
     }
     err = h.p.managedSubmitBlock(b)
@@ -582,17 +577,17 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
         //panic(fmt.Sprintf("Failed to SubmitBlock(): %v\n", err))
         r.Result = false //json.RawMessage(`false`)
         r.Error = interfaceify([]string{"20", "Stale share"})
-        h.s.GetCurrentWorker().IncrementInvalidShares()
+        h.GetSession().GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
-    h.s.GetCurrentWorker().IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
-    h.s.GetCurrentWorker().SetLastShareTime(time.Now())
+    h.GetSession().GetCurrentWorker().IncrementShares(h.GetSession().CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
+    h.GetSession().GetCurrentWorker().SetLastShareTime(time.Now())
 
     if err == nil {
         h.p.log.Println("Yay!!! Solved a block!!")
-        h.s.clearJobs()
-        err = h.s.GetCurrentWorker().addFoundBlock(&b)
+        h.GetSession().clearJobs()
+        err = h.GetSession().GetCurrentWorker().addFoundBlock(&b)
         if err != nil {
             h.p.log.Printf("Failed to update block in database: %s\n", err)
         }
@@ -620,7 +615,7 @@ func (h *Handler) sendStratumNotify(cleanJobs bool) error {
     r.Method = "mining.notify"
     r.ID = 0 // gominer requires notify to use an id of 0
     job, _ := newJob(h.p)
-    h.s.addJob(job)
+    h.GetSession().addJob(job)
     jobid := job.printID()
     var b types.Block
     h.p.persist.mu.Lock()
