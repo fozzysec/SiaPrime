@@ -546,7 +546,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     for i := range b.Nonce { // there has to be a better way to do this in golang
         b.Nonce[i] = bhNonce[i]
     }*/
-    b.Nonce = bhNonce
+    copy(b.Nonce[:], bhNonce[0:8])
     tb, _ := hex.DecodeString(nTime)
     b.Timestamp = types.Timestamp(encoding.DecUint64(tb))
 
