@@ -97,7 +97,7 @@ func (w *Worker) SetSession(s *Session) {
 // IncrementShares creates a new share according to current session difficulty
 // for the worker to work on
 func (w *Worker) IncrementShares(sessionDifficulty float64, reward float64) {
-	p := w.s.Client.pool
+	p := w.s.GetClient().pool
 	cbid := p.cs.CurrentBlock().ID()
 	blockTarget, _ := p.cs.ChildTarget(cbid)
 	blockDifficulty, _ := blockTarget.Difficulty().Uint64()
@@ -150,7 +150,7 @@ func (w *Worker) CurrentDifficulty() float64 {
 	workerCount := uint64(0)
 	currentDiff := float64(0.0)
 	for _, h := range d.handlers {
-		if h.s.Client != nil && h.s.Client.Name() == w.Parent().Name() && h.s.CurrentWorker.Name() == w.Name() {
+		if h.s.GetClient() != nil && h.s.GetClient().Name() == w.Parent().Name() && h.s.GetCurrentWorker().Name() == w.Name() {
 			currentDiff += h.s.CurrentDifficulty()
 			workerCount++
 		}

@@ -63,10 +63,7 @@ func (s *Session) checkDiffOnNewShare() bool {
 	s.lastVardiffRetarget = time.Now()
 
 	unsubmitDuration, historyDuration := s.ShareDurationAverage()
-	if s.disableVarDiff {
-		if s.log != nil {
-			//s.log.Printf("HistoryDuration: %f, var diff disabled, current diff: %f\n", historyDuration, s.currentDifficulty)
-		}
+	if s.GetDisableVarDiff() {
 		return false
 	}
 
@@ -75,9 +72,6 @@ func (s *Session) checkDiffOnNewShare() bool {
 			s.SetCurrentDifficulty(s.CurrentDifficulty() * 3 / 4)
 		} else {
 			s.SetCurrentDifficulty(s.CurrentDifficulty() * 1 / 2)
-		}
-		if s.log != nil {
-			//s.log.Printf("UnsubmitDuration too long: %f, Set new difficulty to: %v\n", unsubmitDuration, s.currentDifficulty)
 		}
 		return true
 	}
@@ -115,12 +109,6 @@ func (s *Session) checkDiffOnNewShare() bool {
 		//s.log.Printf("HistoryDuration: %f Delta %f\n", historyDuration, deltaDiff)
 	}
 
-	if s.log != nil {
-		//s.log.Printf("Old difficulty was %v\n", s.currentDifficulty)
-	}
 	s.SetCurrentDifficulty(s.CurrentDifficulty() * deltaDiff)
-	if s.log != nil {
-		//s.log.Printf("Set new difficulty to %v\n", s.currentDifficulty)
-	}
 	return true
 }

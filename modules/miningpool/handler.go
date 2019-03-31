@@ -58,9 +58,9 @@ func (h *Handler) setupNotifier() {
         h.p.tg.Done()
         h.closed <- true
         h.conn.Close()
-        if h.s != nil && h.s.CurrentWorker != nil {
+        if h.s != nil && h.s.GetCurrentWorker() != nil {
             // delete a worker record when a session disconnections
-            h.s.CurrentWorker.deleteWorkerRecord()
+            h.s.GetCurrentWorker().deleteWorkerRecord()
         }
     }()
 
@@ -77,8 +77,8 @@ func (h *Handler) setupNotifier() {
 
             //connection already broken, giving up
             if err != nil {
-                if h.s != nil && h.s.Client != nil {
-                    h.log.Printf("%s: error notifying worker.\n", h.s.Client.cr.name)
+                if h.s != nil && h.s.GetClient() != nil {
+                    h.log.Printf("%s: error notifying worker.\n", h.s.GetClient().cr.name)
                 }
                 return
             }
@@ -109,7 +109,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             // 	break
             // }
             if h.s.DetectDisconnected() {
-                //h.log.Printf("%s: Non-responsive disconnect detected!\n", h.s.SessionID)
                 return nil, errors.New("Non-responsive disconnect detected")
             }
 
@@ -119,12 +118,10 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             if h.s.checkDiffOnNewShare() {
                 err = h.sendSetDifficulty(h.s.CurrentDifficulty())
                 if err != nil {
-                    //h.log.Printf("%s: Error sending SetDifficulty\n", h.s.SessionID)
                     return nil, err
                 }
                 err = h.sendStratumNotify(true)
                 if err != nil {
-                    //h.log.Printf("%s: Error sending stratum notify\n", h.s.SessionID)
                     return nil, err
                 }
             }
@@ -135,7 +132,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             if err == io.EOF {
                 //h.log.Println("End connection")
             } else {
-                //h.log.Printf("%s: Unusual error\n", h.s.SessionID)
                 //h.log.Println(err)
                 //reset by peer
             }
@@ -155,7 +151,6 @@ func (h *Handler) parseRequest() (*types.StratumRequest, error) {
             dec := json.NewDecoder(strings.NewReader(str))
             err = dec.Decode(&m)
             if err != nil {
-                //h.log.Printf("%s: Decode error\n", h.s.SessionID)
                 //h.log.Println(err)
                 //h.log.Println(str)
                 //return nil, err
@@ -199,9 +194,9 @@ func (h *Handler) Listen() {
     defer func() {
         h.closed <- true // send to dispatcher, that connection is closed
         h.conn.Close()
-        if h.s != nil && h.s.CurrentWorker != nil {
+        if h.s != nil && h.s.GetCurrentWorker() != nil {
             // delete a worker record when a session disconnections
-            h.s.CurrentWorker.deleteWorkerRecord()
+            h.s.GetCurrentWorker().deleteWorkerRecord()
             // when we shut down the pool we get an error here because the log
             // is already closed... TODO
         }
@@ -440,7 +435,7 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
     // if everything is fine, setup the client and send a response and difficulty
     h.s.addClient(c)
     h.s.addWorker(w)
-    h.s.addShift(h.p.newShift(h.s.CurrentWorker))
+    h.s.addShift(h.p.newShift(h.s.GetCurrentWorker()))
     h.s.SetAuthorized(true)
     err = h.sendResponse(r)
     if err != nil {
@@ -496,12 +491,12 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
         }
     }()
 
-    if h.s.CurrentWorker == nil {
+    if h.s.GetCurrentWorker() == nil {
         // worker failed to authorize
         r.Result = false
         r.Error = interfaceify([]string{"24", "Unauthorized worker"})
-        if h.s.Client != nil {
-            h.log.Printf("%s: Unauthorized worker\n", h.s.Client.Name())
+        if h.s.GetClient() != nil {
+            h.log.Printf("%s: Unauthorized worker\n", h.s.GetClient().Name())
         }
         return h.sendResponse(r)
         return errors.New("Worker failed to authorize - dropping")
@@ -521,31 +516,29 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
         h.log.Debugln("session log not ready")
     }
 
-    var b types.Block
     j, err := h.s.getJob(jobID, nonce)
     if err != nil {
         r.Result = false
         r.Error = interfaceify([]string{"21", err.Error()}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.s.CurrentWorker.IncrementInvalidShares()
+        h.s.GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
+    var b types.Block
     if j != nil {
         encoding.Unmarshal(j.MarshalledBlock, &b)
     }
 
     if len(b.MinerPayouts) == 0 {
         r.Result = false
-        r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.Client.Name(), h.s.CurrentWorker.Name())
-        h.s.CurrentWorker.IncrementInvalidShares()
+        r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["22","Stale - old/unknown job"]`)
+        if h.s.GetClient() != nil {
+            h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.GetClient().Name(), h.s.GetCurrentWorker().Name())
+        }
+        h.s.GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
     bhNonce, err := hex.DecodeString(nonce)
-    /*
-    for i := range b.Nonce { // there has to be a better way to do this in golang
-        b.Nonce[i] = bhNonce[i]
-    }*/
     copy(b.Nonce[:], bhNonce[0:8])
     tb, _ := hex.DecodeString(nTime)
     b.Timestamp = types.Timestamp(encoding.DecUint64(tb))
@@ -562,56 +555,51 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
     sessionPoolTarget, _ := difficultyToTarget(sessionPoolDifficulty)
 
-    // h.s.CurrentWorker.log.Printf("session diff: %f, block version diff: %s",
     // 	sessionPoolDifficulty, printWithSuffix(sessionPoolTarget.Difficulty()))
 
     // need to checkout the block hashrate reach pool target or not
-    // h.s.CurrentWorker.log.Printf("Submit target: %064x\n", bh)
-    // h.s.CurrentWorker.log.Printf("Session target:   %064x\n", sessionPoolTarget.Int())
     if bytes.Compare(sessionPoolTarget[:], blockHash[:]) < 0 {
         r.Result = false
-        r.Error = interfaceify([]string{"23", "Submit nonce not reach pool diff target"}) //23 - Low difficulty share
-        h.p.log.Printf("%s.%s: Submit nonce not reach pool diff target\n", h.s.Client.Name(), h.s.CurrentWorker.Name())
-        h.s.CurrentWorker.IncrementInvalidShares()
+        r.Error = interfaceify([]string{"23", "Low difficulty share"}) //23 - Low difficulty share
+        if h.s.GetClient() != nil {
+            h.p.log.Printf("%s.%s: Low difficulty share\n", h.s.GetClient().Name(), h.s.GetCurrentWorker().Name())
+        }
+        h.s.GetCurrentWorker().IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
     t := h.p.persist.GetTarget()
-    // h.s.CurrentWorker.log.Printf("Submit block hash is   %064x\n", bh)
-    // h.s.CurrentWorker.log.Printf("Chain block target is  %064x\n", t.Int())
-    // h.s.CurrentWorker.log.Printf("Difficulty %s/%s\n",
     // printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
     if bytes.Compare(t[:], blockHash[:]) < 0 {
-        // h.s.CurrentWorker.log.Printf("Block hash is greater than block target\n")
-        h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
-        h.s.CurrentWorker.SetLastShareTime(time.Now())
+        h.s.GetCurrentWorker().IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[1].Value))
+        h.s.GetCurrentWorker().SetLastShareTime(time.Now())
         return h.sendResponse(r)
     }
     err = h.p.managedSubmitBlock(b)
     if err != nil && err != modules.ErrBlockUnsolved {
         h.log.Printf("Failed to SubmitBlock(): %v\n", err)
         h.log.Printf(sPrintBlock(b))
-        panic(fmt.Sprintf("Failed to SubmitBlock(): %v\n", err))
-        /*r.Result = false //json.RawMessage(`false`)
+        //panic(fmt.Sprintf("Failed to SubmitBlock(): %v\n", err))
+        r.Result = false //json.RawMessage(`false`)
         r.Error = interfaceify([]string{"20", "Stale share"})
-        h.s.CurrentWorker.IncrementInvalidShares()
-        return h.sendResponse(r)*/
+        h.s.GetCurrentWorker().IncrementInvalidShares()
+        return h.sendResponse(r)
     }
 
-    h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
-    h.s.CurrentWorker.SetLastShareTime(time.Now())
+    h.s.GetCurrentWorker().IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
+    h.s.GetCurrentWorker().SetLastShareTime(time.Now())
 
-    // TODO: why not err == nil ?
-    if err != modules.ErrBlockUnsolved {
+    if err == nil {
         h.p.log.Println("Yay!!! Solved a block!!")
-        // h.s.CurrentWorker.log.Printf("Yay!!! Solved a block!!\n")
         h.s.clearJobs()
-        err = h.s.CurrentWorker.addFoundBlock(&b)
+        err = h.s.GetCurrentWorker().addFoundBlock(&b)
         if err != nil {
             h.p.log.Printf("Failed to update block in database: %s\n", err)
         }
         h.p.shiftChan <- true
     }
+
+    //else block unsolved
     return h.sendResponse(r)
 }
 

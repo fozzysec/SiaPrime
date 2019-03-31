@@ -5,8 +5,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"time"
+    "math"
+    "unsafe"
 
     "sync"
+    "sync/atomic"
 
 	"SiaPrime/build"
 	"SiaPrime/persist"
@@ -35,28 +38,31 @@ var (
 // closed.  A session is tied to a single client and has many jobs associated with it
 //
 type Session struct {
-	mu               sync.RWMutex
-	authorized       bool
-	SessionID        uint64
-	CurrentJobs      []*Job
-	lastJobTimestamp time.Time
-	Client           *Client
-	CurrentWorker    *Worker
-	CurrentShift     *Shift
-	ExtraNonce1      uint32
-	// vardiff
-	currentDifficulty     float64
-	highestDifficulty     float64
+	ExtraNonce1           uint32
+	//authorized          bool
+    authorized            uint32
+	//disableVarDiff      bool
+    disableVarDiff        uint64
+	SessionID             uint64
+	//currentDifficulty   float64
+	currentDifficulty     uint64
+	//highestDifficulty   float64
+	highestDifficulty     uint64
 	vardiff               Vardiff
 	lastShareSpot         uint64
+	Client                *Client
+	CurrentWorker         *Worker
+	CurrentShift          *Shift
+	log                   *persist.Logger
+	CurrentJobs           []*Job
+	lastJobTimestamp      time.Time
 	shareTimes            [numSharesToAverage]time.Time
 	lastVardiffRetarget   time.Time
 	lastVardiffTimestamp  time.Time
 	sessionStartTimestamp time.Time
 	lastHeartbeat         time.Time
-	// utility
-	log            *persist.Logger
-	disableVarDiff bool
+	mu                    sync.RWMutex
+
 	clientVersion  string
 	remoteAddr     string
 }
@@ -64,16 +70,20 @@ type Session struct {
 func newSession(p *Pool, ip string) (*Session, error) {
 	id := p.newStratumID()
 	s := &Session{
-		SessionID:            id(),
+		//SessionID:            id(),
 		ExtraNonce1:          uint32(id() & 0xffffffff),
-		currentDifficulty:    initialDifficulty,
-		highestDifficulty:    initialDifficulty,
+		//currentDifficulty:    initialDifficulty,
+		//highestDifficulty:    initialDifficulty,
 		lastVardiffRetarget:  time.Now(),
 		lastVardiffTimestamp: time.Now(),
-		disableVarDiff:       false,
+		//disableVarDiff:       false,
 		remoteAddr:           ip,
 	}
 
+    s.SetID(id())
+    s.SetHighestDifficulty(initialDifficulty)
+    s.SetCurrentDifficulty(initialDifficulty)
+    s.SetDisableVarDiff(false)
 	s.vardiff = *s.newVardiff()
 
 	s.sessionStartTimestamp = time.Now()
@@ -83,16 +93,18 @@ func newSession(p *Pool, ip string) (*Session, error) {
 }
 
 func (s *Session) addClient(c *Client) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.Client = c
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&s.Client)), unsafe.Pointer(c))
+}
+func (s *Session) GetClient() *Client {
+    return (*Client)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&s.Client))))
 }
 
 func (s *Session) addWorker(w *Worker) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.CurrentWorker = w
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&s.CurrentWorker)), unsafe.Pointer(w))
 	w.SetSession(s)
+}
+func (s *Session) GetCurrentWorker() *Worker {
+    return (*Worker)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&s.CurrentWorker))))
 }
 
 func (s *Session) addJob(j *Job) {
@@ -104,16 +116,6 @@ func (s *Session) addJob(j *Job) {
 	}
 
 	s.CurrentJobs = append(s.CurrentJobs, j)
-	if s.log != nil && s.CurrentJobs != nil {
-		if j != nil {
-			//s.log.Printf("after new job len:%d, (id: %d)\n", len(s.CurrentJobs), j.JobID)
-		}
-		//l := ""
-		//for i, j := range s.CurrentJobs {
-			//l += fmt.Sprintf("%d,%d;", i, j.JobID)
-		//}
-		//s.log.Println(l)
-	}
 	s.lastJobTimestamp = time.Now()
 }
 
@@ -138,36 +140,34 @@ func (s *Session) getJob(jobID uint64, nonce string) (*Job, error) {
 func (s *Session) clearJobs() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.log != nil && s.CurrentJobs != nil {
-		//s.log.Printf("Before job clear:%d\n-----------Job clear---------\n", len(s.CurrentJobs))
-	}
 	s.CurrentJobs = nil
 }
 
 func (s *Session) addShift(shift *Shift) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.CurrentShift = shift
+    atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&s.CurrentShift)), unsafe.Pointer(shift))
 }
 
 // Shift returns the current Shift associated with a session
 func (s *Session) Shift() *Shift {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.CurrentShift
+    return (*Shift)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&s.CurrentShift))))
+}
+
+func (s *Session) GetID() uint64 {
+    return atomic.LoadUint64(&s.SessionID)
+}
+
+func (s *Session) SetID(id uint64) {
+    atomic.StoreUint64(&s.SessionID, id)
 }
 
 func (s *Session) printID() string {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return sPrintID(s.SessionID)
+    return sPrintID(atomic.LoadUint64(&s.SessionID))
 }
 
 func (s *Session) printNonce() string {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+    extranonce1 := atomic.LoadUint32(&s.ExtraNonce1)
 	ex1 := make([]byte, 4)
-	binary.LittleEndian.PutUint32(ex1, s.ExtraNonce1)
+	binary.LittleEndian.PutUint32(ex1, extranonce1)
 	return hex.EncodeToString(ex1)
 }
 
@@ -176,9 +176,6 @@ func (s *Session) SetLastShareTimestamp(t time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.log != nil {
-		//s.log.Printf("Shares index: %d %s\n", s.lastShareSpot, t)
-	}
 	s.shareTimes[s.lastShareSpot] = t
 	s.lastShareSpot++
 	if s.lastShareSpot == s.vardiff.bufSize {
@@ -236,32 +233,30 @@ func (s *Session) IsStable() bool {
 	if s.shareTimes[s.vardiff.bufSize-1].IsZero() {
 		return false
 	}
-	//s.log.Printf("is stable!")
 	return true
 }
 
 // CurrentDifficulty returns the session's current difficulty
 func (s *Session) CurrentDifficulty() float64 {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.currentDifficulty
+    return math.Float64frombits(atomic.LoadUint64(&s.currentDifficulty))
+}
+
+// HighestDifficulty returns the highest difficulty the session has seen
+func (s *Session) HighestDifficulty() float64 {
+    return math.Float64frombits(atomic.LoadUint64(&s.highestDifficulty))
 }
 
 // SetHighestDifficulty records the highest difficulty the session has seen
 func (s *Session) SetHighestDifficulty(d float64) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.highestDifficulty = d
+    atomic.StoreUint64(&s.highestDifficulty, math.Float64bits(d))
 }
 
 // SetCurrentDifficulty sets the current difficulty for the session
 func (s *Session) SetCurrentDifficulty(d float64) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if d > s.highestDifficulty {
-		s.highestDifficulty = d
-	}
-	s.currentDifficulty = d
+    if d > s.HighestDifficulty() {
+        d = s.HighestDifficulty()
+    }
+    atomic.StoreUint64(&s.currentDifficulty, math.Float64bits(d))
 }
 
 // SetClientVersion sets the current client version for the session
@@ -273,16 +268,19 @@ func (s *Session) SetClientVersion(v string) {
 
 // SetDisableVarDiff sets the disable var diff flag for the session
 func (s *Session) SetDisableVarDiff(flag bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.disableVarDiff = flag
+    if flag {
+        atomic.StoreUint64(&s.disableVarDiff, 1)
+    } else {
+        atomic.StoreUint64(&s.disableVarDiff, 0)
+    }
 }
 
-// HighestDifficulty returns the highest difficulty the session has seen
-func (s *Session) HighestDifficulty() float64 {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	return s.highestDifficulty
+func (s *Session) GetDisableVarDiff() bool {
+    flag := atomic.LoadUint64(&s.disableVarDiff)
+    if flag == 1 {
+        return true
+    }
+    return false
 }
 
 // DetectDisconnected checks to see if we haven't heard from a client for too
@@ -304,7 +302,7 @@ func (s *Session) DetectDisconnected() bool {
 		return true
 	}
 	// disconnect if the worker's difficulty has dropped too far from it's historical diff
-	if (s.currentDifficulty / s.highestDifficulty) < maxDifficultyDropRatio {
+	if (s.CurrentDifficulty() / s.HighestDifficulty()) < maxDifficultyDropRatio {
 		return true
 	}
 	return false
@@ -312,16 +310,20 @@ func (s *Session) DetectDisconnected() bool {
 
 // SetAuthorized specifies whether or not the session has been authorized
 func (s *Session) SetAuthorized(b bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.authorized = b
+    if b {
+        atomic.StoreUint32(&s.authorized, 1)
+    } else {
+        atomic.StoreUint32(&s.authorized, 0)
+    }
 }
 
 // Authorized returns whether or not the session has been authorized
 func (s *Session) Authorized() bool {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.authorized
+    flag := atomic.LoadUint32(&s.authorized)
+    if flag == 1 {
+        return true
+    }
+    return false
 }
 
 // SetHeartbeat indicates that we just received a share submission

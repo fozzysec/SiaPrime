@@ -237,7 +237,7 @@ func (p *Pool) monitorShifts() {
                     savingShift.SaveShift()
                 }
             }(s)
-            sh := p.newShift(h.s.CurrentWorker)
+            sh := p.newShift(h.s.GetCurrentWorker())
             h.s.addShift(sh)
         }
         p.dispatcher.mu.RUnlock()
