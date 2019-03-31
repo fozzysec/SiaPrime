@@ -498,7 +498,12 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
 
     if h.s.CurrentWorker == nil {
         // worker failed to authorize
-        h.log.Printf("%s: Worker failed to authorize - dropping\n", h.s.Client.cr.name)
+        r.Result = false
+        r.Error = interfaceify([]string{"24", "Unauthorized worker"})
+        if h.s.Client != nil {
+            h.log.Printf("%s: Unauthorized worker\n", h.s.Client.Name())
+        }
+        return h.sendResponse(r)
         return errors.New("Worker failed to authorize - dropping")
     }
 
@@ -520,7 +525,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     j, err := h.s.getJob(jobID, nonce)
     if err != nil {
         r.Result = false
-        r.Error = interfaceify([]string{"23", err.Error()}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
+        r.Error = interfaceify([]string{"21", err.Error()}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
         h.s.CurrentWorker.IncrementInvalidShares()
         return h.sendResponse(r)
     }
@@ -531,15 +536,17 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     if len(b.MinerPayouts) == 0 {
         r.Result = false
         r.Error = interfaceify([]string{"22", "Stale - old/unknown job"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.Client.cr.name, h.s.CurrentWorker.wr.name)
+        h.p.log.Printf("%s.%s: Stale Share rejected - old/unknown job\n", h.s.Client.Name(), h.s.CurrentWorker.Name())
         h.s.CurrentWorker.IncrementInvalidShares()
         return h.sendResponse(r)
     }
 
     bhNonce, err := hex.DecodeString(nonce)
+    /*
     for i := range b.Nonce { // there has to be a better way to do this in golang
         b.Nonce[i] = bhNonce[i]
-    }
+    }*/
+    b.Nonce = bhNonce
     tb, _ := hex.DecodeString(nTime)
     b.Timestamp = types.Timestamp(encoding.DecUint64(tb))
 
@@ -563,8 +570,8 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     // h.s.CurrentWorker.log.Printf("Session target:   %064x\n", sessionPoolTarget.Int())
     if bytes.Compare(sessionPoolTarget[:], blockHash[:]) < 0 {
         r.Result = false
-        r.Error = interfaceify([]string{"22", "Submit nonce not reach pool diff target"}) //json.RawMessage(`["21","Stale - old/unknown job"]`)
-        h.p.log.Printf("%s.%s: Submit nonce not reach pool diff target\n", h.s.Client.cr.name, h.s.CurrentWorker.wr.name)
+        r.Error = interfaceify([]string{"23", "Submit nonce not reach pool diff target"}) //23 - Low difficulty share
+        h.p.log.Printf("%s.%s: Submit nonce not reach pool diff target\n", h.s.Client.Name(), h.s.CurrentWorker.Name())
         h.s.CurrentWorker.IncrementInvalidShares()
         return h.sendResponse(r)
     }
@@ -573,7 +580,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     // h.s.CurrentWorker.log.Printf("Submit block hash is   %064x\n", bh)
     // h.s.CurrentWorker.log.Printf("Chain block target is  %064x\n", t.Int())
     // h.s.CurrentWorker.log.Printf("Difficulty %s/%s\n",
-    // 		printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
+    // printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
     if bytes.Compare(t[:], blockHash[:]) < 0 {
         // h.s.CurrentWorker.log.Printf("Block hash is greater than block target\n")
         h.s.CurrentWorker.IncrementShares(h.s.CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
