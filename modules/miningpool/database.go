@@ -84,13 +84,13 @@ func (p *Pool) newDbConnection() error {
 
 // AddClientDB add user into accounts
 func (p *Pool) AddClientDB(c *Client) error {
-    id := p.newStratumID()
-    err := p.redisdb["accounts"].Set(c.Name(), id(), 0).Err()
+    id := p.newStratumID()()
+    err := p.redisdb["accounts"].Set(c.Name(), id, 0).Err()
 	if err != nil {
 		return err
 	}
 
-	p.dblog.Printf("User %s account id is %d\n", c.Name(), id())
+	p.dblog.Printf("User %s account id is %d\n", c.Name(), id)
 	c.SetID(id)
 
 	return nil
@@ -98,11 +98,11 @@ func (p *Pool) AddClientDB(c *Client) error {
 
 // addWorkerDB inserts info to workers
 func (c *Client) addWorkerDB(w *Worker) error {
-    id := c.pool.newStratumID()
-    c.pool.redisdb["workers"].HMSet(
+    id := c.pool.newStratumID()()
+    err := c.pool.redisdb["workers"].HMSet(
         fmt.Sprintf("%s.%s", c.Name(), w.Name()),
-        map[string]string{
-            "id":       id(),
+        map[string]interface {
+            "id":       id,
             "time":     time.Now().Unix(),
             "pid":      c.pool.InternalSettings().PoolID,
             "version":  w.Session().clientVersion,
@@ -129,7 +129,10 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
     if err == redis.Nil {
         return nil, ErrNoUsernameInDatabase
     }
-    clientID = strconv.ParseInt(id, 10, 64)
+    clientID, err = strconv.ParseInt(id, 10, 64)
+    if err != nil {
+        return nil, err
+    }
 	// client was in database but not in memory -
 	// find workers and connect them to the in memory copy
 	c, err = newClient(p, name)
@@ -185,7 +188,7 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 
     err := pool.redisdb["blocks"].HMSet(
         strconv.FormatInt(bh, 10),
-        map[string]string{
+        map[string]interface {
             "blockhash":    b.ID().String(),
             "user":         w.Parent().Name(),
             "worker":       w.Name(),
@@ -211,7 +214,7 @@ func (s *Shift) SaveShift() error {
     for i, share := range s.Shares() {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
-            map[string]string{
+            map[string]interface {
                 "valid":            share.valid,
                 "difficulty":       share.difficulty,
                 "reward":           share.reward,
@@ -228,7 +231,7 @@ func (s *Shift) SaveShift() error {
             }
             err2 := redisdb.HMSet(
                 fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
-                map[string]string{
+                map[string]interface {
                     "valid":            share.valid,
                     "difficulty":       share.difficulty,
                     "reward":           share.reward,

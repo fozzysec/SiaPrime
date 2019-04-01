@@ -5,7 +5,6 @@ package pool
 
 import (
     "bytes"
-    "database/sql"
     "encoding/binary"
     "encoding/hex"
     "errors"
