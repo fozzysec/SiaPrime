@@ -42,7 +42,7 @@ func (p *Pool) newDbConnection() error {
 
     i := 0
     for _, conn := range p.redisdb {
-        err = conn.Ping().Err()
+        _, err = conn.Ping().Result()
         if err == nil {
             i++
         }
@@ -61,7 +61,7 @@ func (p *Pool) newDbConnection() error {
                 DB:         index,
             })
 
-            err = p.redisdb[s].Ping().Err()
+            _, err = p.redisdb[s].Ping().Result()
             if err != nil {
                 fmt.Println(err)
                 time.Sleep(sqlRetryDelay * time.Second)
@@ -73,7 +73,7 @@ func (p *Pool) newDbConnection() error {
     }
 
     for _, conn := range p.redisdb {
-        err = conn.Ping().Err()
+        _, err = conn.Ping().Result()
         if err == nil {
             i++
         }
