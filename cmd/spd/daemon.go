@@ -200,11 +200,10 @@ func readFileConfig(config Config) error {
 		redisAddress := poolViper.GetString("redisaddress")
 		redisPort := poolViper.GetString("redisport")
 		redisPass := poolViper.GetString("redispass")
-		redisConnection := map[string]interface{}{
-			"addr": redisAddress,
-			"port": redisPort,
-			"pass": redisPass,
-		    }
+		redisConnection := make(map[string]interface{})
+        redisConnection["addr"] = redisAddress
+        redisConnection["port"] = redisPort
+        redisConnection["pass"] = redisPass
 		poolConfig := fileConfig.MiningPoolConfig{
 			PoolNetworkPort:  int(poolViper.GetInt("networkport")),
 			PoolName:         poolViper.GetString("name"),
