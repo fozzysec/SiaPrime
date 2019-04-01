@@ -26,7 +26,7 @@ const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
 	sqlQueryTimeout    = 5
-	confirmedButUnpaid = "Confirmed but unpaid"
+	//confirmedButUnpaid = "Confirmed but unpaid"
 )
 
 func (p *Pool) newDbConnection() error {
@@ -103,8 +103,13 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	var clientID int64
 	var Name, Wallet string
 	var coinid int
-        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
+    newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
 	defer cancel()
+	c := p.Client(Name)
+	// if it's in memory, just return a pointer to the copy in memory
+	if c != nil {
+		return c, nil
+	}
 	startTime := time.Now()
 	err := p.sqldb.QueryRowContext(newCtx, "SELECT id, username, username, coinid FROM accounts WHERE username = ?", name).Scan(&clientID, &Name, &Wallet, &coinid)
 	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
@@ -120,11 +125,6 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 	}
 	// if we're here, we found the client in the database
 	// try looking for the client in memory
-	c := p.Client(Name)
-	// if it's in memory, just return a pointer to the copy in memory
-	if c != nil {
-		return c, nil
-	}
 	// client was in database but not in memory -
 	// find workers and connect them to the in memory copy
 	c, err = newClient(p, name)
@@ -283,7 +283,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
 	}
 	defer tx.Rollback()
 	// TODO: add ip etc info
-        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
+    newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
 	defer cancel()
 	stmt, err := tx.PrepareContext(newCtx, `
 		INSERT INTO workers (userid, name, worker, algo, time, pid, version, ip)
