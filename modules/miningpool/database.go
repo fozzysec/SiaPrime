@@ -214,6 +214,14 @@ func (s *Shift) SaveShift() error {
     for i, share := range s.Shares() {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+            map[string]string {
+                "valid":            strconv.FormatBool(share.valid),
+                "difficulty":       strconv.FormatFloat(share.difficulty, 'e', -1, 64),
+                "reward":           strconv.FormatFloat(share.reward, 'e', -1, 64),
+                "block_difficulty": strconv.Itoa(share.blockDifficulty),
+                "share_reward":     strconv.FormatFloat(share.shareReward, 'e', -1, 64),
+                "share_diff":       strconv.FormatFloat(share.shareDifficulty, 'e', -1, 64),
+            }).Err()
         if err != nil {
             worker.wr.parent.pool.dblog.Println(err)
             err = pool.newDbConnection()
