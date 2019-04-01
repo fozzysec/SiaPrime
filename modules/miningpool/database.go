@@ -63,6 +63,7 @@ func (p *Pool) newDbConnection() error {
 
             err = p.redisdb[s].Ping().Err()
             if err != nil {
+                fmt.Println(err)
                 time.Sleep(sqlRetryDelay * time.Second)
                 continue
             }
