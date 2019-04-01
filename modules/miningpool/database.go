@@ -224,7 +224,7 @@ func (s *Shift) SaveShift() error {
     redisdb := client.Pool().redisdb["shares"]
     for _, share := range s.Shares() {
         err := redisdb.HMSet(
-            fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+            fmt.Sprintf("%d.%d.%d", client.GetID(), worker.GetID(), share.time.Unix()),
             map[string]interface{} {
                 "valid":            share.valid,
                 "difficulty":       share.difficulty,
@@ -241,7 +241,7 @@ func (s *Shift) SaveShift() error {
                 return err
             }
             err2 := redisdb.HMSet(
-                fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+                fmt.Sprintf("%d.%d.%d", client.GetID(), worker.GetID(), share.time.Unix()),
                 map[string]interface{} {
                     "valid":            share.valid,
                     "difficulty":       share.difficulty,
