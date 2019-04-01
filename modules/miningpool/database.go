@@ -102,8 +102,8 @@ func (c *Client) addWorkerDB(w *Worker) error {
     err := c.pool.redisdb["workers"].HMSet(
         fmt.Sprintf("%s.%s", c.Name(), w.Name()),
         map[string]string {
-            "id":       strconv.Itoa(id),
-            "time":     strconv.Itoa(time.Now().Unix()),
+            "id":       strconv.FormatUint(id, 10),
+            "time":     strconv.FormatInt(time.Now().Unix(), 10),
             "pid":      strconv.Itoa(c.pool.InternalSettings().PoolID),
             "version":  w.Session().clientVersion,
             "ip":       w.Session().remoteAddr,
@@ -187,14 +187,14 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
 
     err := pool.redisdb["blocks"].HMSet(
-        strconv.Itoa(bh),
+        strconv.ParseUint(bh, 10),
         map[string]string {
             "blockhash":    b.ID().String(),
             "user":         w.Parent().Name(),
             "worker":       w.Name(),
             "category":     "new",
-            "difficulty":   strconv.Itoa(difficulty),
-            "time":         strconv.Itoa(timeStamp),
+            "difficulty":   strconv.ParseUint(difficulty, 10),
+            "time":         strconv.ParseInt(timeStamp, 10),
         }).Err()
 	if err != nil {
 		return err
@@ -218,7 +218,7 @@ func (s *Shift) SaveShift() error {
                 "valid":            strconv.FormatBool(share.valid),
                 "difficulty":       strconv.FormatFloat(share.difficulty, 'e', -1, 64),
                 "reward":           strconv.FormatFloat(share.reward, 'e', -1, 64),
-                "block_difficulty": strconv.Itoa(share.blockDifficulty),
+                "block_difficulty": strconv.ParseUint(share.blockDifficulty, 10),
                 "share_reward":     strconv.FormatFloat(share.shareReward, 'e', -1, 64),
                 "share_diff":       strconv.FormatFloat(share.shareDifficulty, 'e', -1, 64),
             }).Err()
@@ -235,7 +235,7 @@ func (s *Shift) SaveShift() error {
                     "valid":            strconv.FormatBool(share.valid),
                     "difficulty":       strconv.FormatFloat(share.difficulty, 'e', -1, 64),
                     "reward":           strconv.FormatFloat(share.reward, 'e', -1, 64),
-                    "block_difficulty": strconv.Itoa(share.blockDifficulty),
+                    "block_difficulty": strconv.ParseUint(share.blockDifficulty, 10),
                     "share_reward":     strconv.FormatFloat(share.shareReward, 'e', -1, 64),
                     "share_diff":       strconv.FormatFloat(share.shareDifficulty, 'e', -1, 64),
                 }).Err()
