@@ -152,8 +152,8 @@ func (api *API) parsePoolSettings(req *http.Request) (modules.PoolInternalSettin
 		settings.PoolID = uint64(x)
 	}
 	if req.FormValue("dbconnection") != "" {
-        settings.PoolDBConnection = map[string]interface{}
-        json.Unmarshal(json.req.FormValue("dbconnection"), &settings.PoolDBConnection)
+        settings.PoolDBConnection = make(map[string]string)
+        //json.Unmarshal(json.req.FormValue("dbconnection"), &settings.PoolDBConnection)
 	}
 	err := api.pool.SetInternalSettings(settings)
 	return settings, err

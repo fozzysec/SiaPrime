@@ -47,7 +47,7 @@ func (p *Pool) newDbConnection() error {
 		}
 	}
     i := 0
-    for _, conn := p.redisdb {
+    for _, conn := range p.redisdb {
         err = conn.Ping()
         if err == nil {
             i++
@@ -62,8 +62,8 @@ func (p *Pool) newDbConnection() error {
         for i := 0; i < sqlReconnectRetry; i++ {
             fmt.Printf("try to connect redis: %s\n", s)
             p.redisdb[s], err = redis.NewClient(&redis.Options{
-                Addr:       dbc['addr'],
-                Password:   dbc['pass'],
+                Addr:       dbc["addr"],
+                Password:   dbc["pass"],
                 DB:         index,
             })
             if err != nil {
@@ -81,7 +81,7 @@ func (p *Pool) newDbConnection() error {
         }
     }
 
-    for _, conn := p.redisdb {
+    for _, conn := range p.redisdb {
         err = conn.Ping()
         if err == nil {
             i++
@@ -98,7 +98,7 @@ func (p *Pool) newDbConnection() error {
 // AddClientDB add user into accounts
 func (p *Pool) AddClientDB(c *Client) error {
     id := p.newStratumID()
-    err := p.redisdb['accounts'].Set(c.Name(), id).Err()
+    err := p.redisdb["accounts"].Set(c.Name(), id).Err()
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func (p *Pool) AddClientDB(c *Client) error {
 // addWorkerDB inserts info to workers
 func (c *Client) addWorkerDB(w *Worker) error {
     id := c.pool.newStratumID()
-    c.pool.redisdb['workers'].HMSet(
+    c.pool.redisdb["workers"].HMSet(
         fmt.Sprintf("%s.%s", c.Name(), w.Name()),
         map[string]string{
             "id":       id,
@@ -139,7 +139,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 		return c, nil
 	}
 
-    id, err := p.redisdb['accounts'].Get(name).Result()
+    id, err := p.redisdb["accounts"].Get(name).Result()
     if err == redis.Nil {
         return nil, ErrNoUsernameInDatabase
     }
@@ -161,7 +161,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 
 func (w *Worker) deleteWorkerRecord() error {
 
-    err := w.Parent().pool.redisdb['workers'].Del(
+    err := w.Parent().pool.redisdb["workers"].Del(
         fmt.Sprintf(
             "%s.%s",
             w.Parent().Name(),
@@ -179,7 +179,7 @@ func (w *Worker) deleteWorkerRecord() error {
 // This should be used on pool startup and shutdown to ensure the database
 // is clean and isn't storing any worker records for non-connected workers.
 func (p *Pool) DeleteAllWorkerRecords() error {
-    err := w.Parent().pool.redisdb['workers'].FlushDB().Err()
+    err := w.Parent().pool.redisdb["workers"].FlushDB().Err()
 	if err != nil {
 		p.dblog.Printf("Error deleting records: %s\n", err)
 		return err
@@ -199,7 +199,7 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	currentTarget, _ := pool.cs.ChildTarget(b.ID())
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
 
-    err := pool.redisdb['blocks'].HMSet(
+    err := pool.redisdb["blocks"].HMSet(
         strconv.FormatInt(bh, 10),
         map[string]string{
             "blockhash":    b.ID().String(),
@@ -224,7 +224,7 @@ func (s *Shift) SaveShift() error {
 
 	worker := s.worker
 	client := worker.Parent()
-	redisdb := client.Pool().redisdb['shares']
+	redisdb := client.Pool().redisdb["shares"]
 	for i, share := range s.Shares() {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
