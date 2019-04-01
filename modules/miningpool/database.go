@@ -1,7 +1,6 @@
 package pool
 
 import (
-	"bytes"
 	//"database/sql"
     "github.com/go-redis/redis"
 	//"context"
@@ -23,14 +22,13 @@ var (
 	ErrCreateClient = errors.New("Error when creating a new client")
 	ErrQueryTimeout = errors.New("DB query timeout")
     ErrConnectDB = errors.New("error in connecting redis")
+    DB = []string{"accounts", "workers", "shares", "blocks"}
 )
 
 const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
 	sqlQueryTimeout    = 5
-
-    DB = []string{"accounts", "workers", "shares", "blocks"}
 )
 
 func (p *Pool) newDbConnection() error {
@@ -39,16 +37,9 @@ func (p *Pool) newDbConnection() error {
 	defer p.dbConnectionMu.Unlock()
 	var err error
 
-	// to prevent other goroutine reconnect
-	if p.redisdb != nil {
-		err = p.redisdb.Ping()
-		if err == nil {
-			return nil
-		}
-	}
     i := 0
     for _, conn := range p.redisdb {
-        err = conn.Ping()
+        err = conn.Ping().Err()
         if err == nil {
             i++
         }
@@ -61,17 +52,13 @@ func (p *Pool) newDbConnection() error {
     for index, s := range DB {
         for i := 0; i < sqlReconnectRetry; i++ {
             fmt.Printf("try to connect redis: %s\n", s)
-            p.redisdb[s], err = redis.NewClient(&redis.Options{
+            p.redisdb[s] = redis.NewClient(&redis.Options{
                 Addr:       dbc["addr"],
                 Password:   dbc["pass"],
                 DB:         index,
             })
-            if err != nil {
-                time.Sleep(sqlRetryDelay * time.Second)
-                continue
-            }
 
-            err = p.redisdb.Ping()
+            err = p.redisdb[s].Ping().Err()
             if err != nil {
                 time.Sleep(sqlRetryDelay * time.Second)
                 continue
@@ -82,7 +69,7 @@ func (p *Pool) newDbConnection() error {
     }
 
     for _, conn := range p.redisdb {
-        err = conn.Ping()
+        err = conn.Ping().Err()
         if err == nil {
             i++
         }
@@ -98,12 +85,12 @@ func (p *Pool) newDbConnection() error {
 // AddClientDB add user into accounts
 func (p *Pool) AddClientDB(c *Client) error {
     id := p.newStratumID()
-    err := p.redisdb["accounts"].Set(c.Name(), id).Err()
+    err := p.redisdb["accounts"].Set(c.Name(), id(), 0).Err()
 	if err != nil {
 		return err
 	}
 
-	p.dblog.Printf("User %s account id is %d\n", c.Name(), id)
+	p.dblog.Printf("User %s account id is %d\n", c.Name(), id())
 	c.SetID(id)
 
 	return nil
@@ -115,7 +102,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
     c.pool.redisdb["workers"].HMSet(
         fmt.Sprintf("%s.%s", c.Name(), w.Name()),
         map[string]string{
-            "id":       id,
+            "id":       id(),
             "time":     time.Now().Unix(),
             "pid":      c.pool.InternalSettings().PoolID,
             "version":  w.Session().clientVersion,
