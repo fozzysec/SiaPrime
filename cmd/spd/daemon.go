@@ -188,34 +188,33 @@ func readFileConfig(config Config) error {
 		poolViper.SetDefault("operatorpercentage", 0.0)
 		poolViper.SetDefault("operatorwallet", "")
 		poolViper.SetDefault("networkport", 3355)
-		poolViper.SetDefault("dbaddress", "127.0.0.1")
-		poolViper.SetDefault("dbport", "6379")
-		poolViper.SetDefault("dbpass", "")
+		poolViper.SetDefault("redisaddress", "127.0.0.1")
+		poolViper.SetDefault("redisport", "6379")
+		poolViper.SetDefault("redispass", "")
 		if !poolViper.IsSet("poolwallet") {
 			return errors.New("Must specify a poolwallet")
 		}
 		/*if !poolViper.IsSet("dbuser") {
 			return errors.New("Must specify a dbuser")
 		}*/
-		//dbUser := poolViper.GetString("dbuser")
-		dbPass := poolViper.GetString("dbpass")
-		dbAddress := poolViper.GetString("dbaddress")
-		dbPort := poolViper.GetString("dbport")
-		//dbName := poolViper.GetString("dbname")
-		//dbConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbAddress, dbPort, dbName)
-        dbConnection := make(map[string]interface{})
-        dbConnection['addr'] = dbAddress
-        dbConnection['port'] = int(dbPort)
-        dbConnection['pass'] = dbPass
+		redisAddress := poolViper.GetString("redisaddress")
+		redisPort := poolViper.GetString("redisport")
+		redisPass := poolViper.GetString("redispass")
+		redisConnection := map[string]interface{}{
+			"addr": redisAddress,
+			"port": redisPort,
+			"pass": redisPass,
+		    }
 		poolConfig := fileConfig.MiningPoolConfig{
 			PoolNetworkPort:  int(poolViper.GetInt("networkport")),
 			PoolName:         poolViper.GetString("name"),
 			PoolID:           uint64(poolViper.GetInt("id")),
-			PoolDBConnection: dbConnection,
+			PoolRedisConnection: redisConnection,
 			PoolWallet:       poolViper.GetString("poolwallet"),
 		}
 		globalConfig.MiningPoolConfig = poolConfig
 	}
+
 	if strings.Contains(config.Siad.Modules, "i") {
 		err := viper.ReadInConfig() // Find and read the config file
 		if err != nil {             // Handle errors reading the config file
@@ -223,23 +222,23 @@ func readFileConfig(config Config) error {
 		}
 		poolViper := viper.Sub("index")
 		poolViper.SetDefault("dbaddress", "127.0.0.1")
-        poolViper.SetDefault("dbname", "siablocks")
+		poolViper.SetDefault("dbname", "siablocks")
 		poolViper.SetDefault("dbport", "3306")
-        if !poolViper.IsSet("dbuser") {
-            return errors.New("Must specify a dbuser")
-        }
-        if !poolViper.IsSet("dbpass") {
-            return errors.New("Must specify a dbpass")
-        }
-        dbUser := poolViper.GetString("dbuser")
+		if !poolViper.IsSet("dbuser") {
+		    return errors.New("Must specify a dbuser")
+		}
+		if !poolViper.IsSet("dbpass") {
+		    return errors.New("Must specify a dbpass")
+		}
+		dbUser := poolViper.GetString("dbuser")
 		dbPass := poolViper.GetString("dbpass")
 		dbAddress := poolViper.GetString("dbaddress")
 		dbPort := poolViper.GetString("dbport")
-        dbName := poolViper.GetString("dbname")
-        dbConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbAddress, dbPort, dbName)
-		globalConfig.IndexConfig = fileConfig.IndexConfig{
-			PoolDBConnection: dbConnection,
-		}
+		dbName := poolViper.GetString("dbname")
+		dbConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbAddress, dbPort, dbName)
+			globalConfig.IndexConfig = fileConfig.IndexConfig{
+				PoolDBConnection: dbConnection,
+			}
 	}
 	return nil
 }

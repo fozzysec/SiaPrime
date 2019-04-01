@@ -400,7 +400,7 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
 
     p.tg.OnStop(func() error {
         p.DeleteAllWorkerRecords()
-        p.sqldb.Close()
+        p.closeAllDB()
         return nil
     })
 

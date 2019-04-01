@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+    "encoding/json"
 
 	"github.com/julienschmidt/httprouter"
 	"SiaPrime/modules"
@@ -19,12 +20,13 @@ type (
 	}
 	// MiningPoolConfig contains the parameters you can set to config your pool
 	MiningPoolConfig struct {
-		NetworkPort    int                  `json:"networkport"`
-		DBConnection   map[string]string    `json:"dbconnection"`
-		Name           string               `json:"name"`
-		PoolID         uint64               `json:"poolid"`
-		PoolWallet     types.UnlockHash     `json:"poolwallet"`
-		OperatorWallet types.UnlockHash     `json:"operatorwallet"`
+		NetworkPort     int                      `json:"networkport"`
+		DBConnection    string                   `json:"dbconnection"`
+        RedisConnection map[string]interface{}   `json:"redisconnection"`
+		Name            string                   `json:"name"`
+		PoolID          uint64                   `json:"poolid"`
+		PoolWallet      types.UnlockHash         `json:"poolwallet"`
+		OperatorWallet  types.UnlockHash         `json:"operatorwallet"`
 	}
 	// MiningPoolClientsInfo returns the stats are return after a GET request
 	// to /pool/clients
@@ -106,11 +108,12 @@ func (api *API) poolConfigHandler(w http.ResponseWriter, req *http.Request, _ ht
 		return
 	}
 	pg := MiningPoolConfig{
-		Name:         settings.PoolName,
-		NetworkPort:  settings.PoolNetworkPort,
-		DBConnection: settings.PoolDBConnection,
-		PoolID:       settings.PoolID,
-		PoolWallet:   settings.PoolWallet,
+		Name:            settings.PoolName,
+		NetworkPort:     settings.PoolNetworkPort,
+		DBConnection:    settings.PoolDBConnection,
+        RedisConnection: settings.PoolRedisConnection,
+		PoolID:          settings.PoolID,
+		PoolWallet:      settings.PoolWallet,
 	}
 	WriteJSON(w, pg)
 }
@@ -151,9 +154,11 @@ func (api *API) parsePoolSettings(req *http.Request) (modules.PoolInternalSettin
 		settings.PoolID = uint64(x)
 	}
 	if req.FormValue("dbconnection") != "" {
-        settings.PoolDBConnection = make(map[string]string)
-        //json.Unmarshal(json.req.FormValue("dbconnection"), &settings.PoolDBConnection)
+        settings.PoolDBConnection = req.FormValue("dbconnection")
 	}
+    if req.FormValue("redisconnection") != "" {
+        json.Unmarshal([]byte(req.FormValue("redisconnection")), settings.PoolRedisConnection)
+    }
 	err := api.pool.SetInternalSettings(settings)
 	return settings, err
 }
