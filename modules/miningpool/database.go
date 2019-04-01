@@ -101,10 +101,10 @@ func (c *Client) addWorkerDB(w *Worker) error {
     id := c.pool.newStratumID()()
     err := c.pool.redisdb["workers"].HMSet(
         fmt.Sprintf("%s.%s", c.Name(), w.Name()),
-        map[string]interface {
-            "id":       id,
-            "time":     time.Now().Unix(),
-            "pid":      c.pool.InternalSettings().PoolID,
+        map[string]string {
+            "id":       strconv.Itoa(id),
+            "time":     strconv.Itoa(time.Now().Unix()),
+            "pid":      strconv.Itoa(c.pool.InternalSettings().PoolID),
             "version":  w.Session().clientVersion,
             "ip":       w.Session().remoteAddr,
         }).Err()
@@ -187,14 +187,14 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
 
     err := pool.redisdb["blocks"].HMSet(
-        strconv.FormatInt(bh, 10),
-        map[string]interface {
+        strconv.Itoa(bh),
+        map[string]string {
             "blockhash":    b.ID().String(),
             "user":         w.Parent().Name(),
             "worker":       w.Name(),
             "category":     "new",
-            "difficulty":   difficulty,
-            "time":         timeStamp,
+            "difficulty":   strconv.Itoa(difficulty),
+            "time":         strconv.Itoa(timeStamp),
         }).Err()
 	if err != nil {
 		return err
@@ -214,14 +214,6 @@ func (s *Shift) SaveShift() error {
     for i, share := range s.Shares() {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
-            map[string]interface {
-                "valid":            share.valid,
-                "difficulty":       share.difficulty,
-                "reward":           share.reward,
-                "block_difficulty": share.blockDifficulty,
-                "share_reward":     share.shareReward,
-                "share_diff":       share.shareDifficulty,
-            }).Err()
         if err != nil {
             worker.wr.parent.pool.dblog.Println(err)
             err = pool.newDbConnection()
@@ -231,13 +223,13 @@ func (s *Shift) SaveShift() error {
             }
             err2 := redisdb.HMSet(
                 fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
-                map[string]interface {
-                    "valid":            share.valid,
-                    "difficulty":       share.difficulty,
-                    "reward":           share.reward,
-                    "block_difficulty": share.blockDifficulty,
-                    "share_reward":     share.shareReward,
-                    "share_diff":       share.shareDifficulty,
+                map[string]string {
+                    "valid":            strconv.FormatBool(share.valid),
+                    "difficulty":       strconv.FormatFloat(share.difficulty, 'e', -1, 64),
+                    "reward":           strconv.FormatFloat(share.reward, 'e', -1, 64),
+                    "block_difficulty": strconv.Itoa(share.blockDifficulty),
+                    "share_reward":     strconv.FormatFloat(share.shareReward, 'e', -1, 64),
+                    "share_diff":       strconv.FormatFloat(share.shareDifficulty, 'e', -1, 64),
                 }).Err()
             if err2 != nil {
                 worker.wr.parent.pool.dblog.Println(err2)
