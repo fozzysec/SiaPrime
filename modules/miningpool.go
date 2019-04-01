@@ -22,7 +22,7 @@ type (
 		PoolNetworkPort  int                            `json:"networkport"`
 		PoolName         string                         `json:"name"`
 		PoolID           uint64                         `json:"poolid"`
-		PoolDBConnection map[string]interface{}         `json:"dbconnection"`
+		PoolDBConnection map[string]string              `json:"dbconnection"`
 		PoolWallet       types.UnlockHash               `json:"poolwallet"`
 	}
 

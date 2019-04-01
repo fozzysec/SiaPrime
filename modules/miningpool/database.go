@@ -120,8 +120,7 @@ func (c *Client) addWorkerDB(w *Worker) error {
             "pid":      c.pool.InternalSettings().PoolID,
             "version":  w.Session().clientVersion,
             "ip":       w.Session().remoteAddr,
-        }
-    ).Err()
+        }).Err()
 	if err != nil {
 		return err
 	}
@@ -166,8 +165,7 @@ func (w *Worker) deleteWorkerRecord() error {
             "%s.%s",
             w.Parent().Name(),
             w.Name()
-        )
-    ).Err()
+        )).Err()
 	if err != nil {
 		w.wr.parent.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
@@ -208,8 +206,7 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
             "category":     "new",
             "difficulty":   difficulty,
             "time":         timeStamp,
-        }
-        ).Err()
+        }).Err()
 	if err != nil {
 		return err
 	}
@@ -235,8 +232,7 @@ func (s *Shift) SaveShift() error {
                 "block_difficulty": share.blockDifficulty,
                 "share_reward":     share.shareReward,
                 "share_diff":       share.shareDifficulty,
-            }
-        ).Err()
+            }).Err()
 	if err != nil {
 		worker.wr.parent.pool.dblog.Println(err)
 		err = pool.newDbConnection()
@@ -253,8 +249,7 @@ func (s *Shift) SaveShift() error {
                 "block_difficulty": share.blockDifficulty,
                 "share_reward":     share.shareReward,
                 "share_diff":       share.shareDifficulty,
-            }
-        ).Err()
+            }).Err()
 		if err2 != nil {
 			worker.wr.parent.pool.dblog.Println(err2)
 			return err2
