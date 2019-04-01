@@ -164,8 +164,7 @@ func (w *Worker) deleteWorkerRecord() error {
         fmt.Sprintf(
             "%s.%s",
             w.Parent().Name(),
-            w.Name()
-        )).Err()
+            w.Name())).Err()
 	if err != nil {
 		w.wr.parent.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
