@@ -212,6 +212,7 @@ func readFileConfig(config Config) error {
 			PoolWallet:       poolViper.GetString("poolwallet"),
 		}
 		globalConfig.MiningPoolConfig = poolConfig
+        fmt.Println("settings configuration done from siaprime.yaml")
 	}
 
 	if strings.Contains(config.Siad.Modules, "i") {
