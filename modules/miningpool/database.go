@@ -56,7 +56,7 @@ func (p *Pool) newDbConnection() error {
         for i := 0; i < sqlReconnectRetry; i++ {
             fmt.Printf("try to connect redis: %s\n", s)
             p.redisdb[s] = redis.NewClient(&redis.Options{
-                Addr:       fmt.Sprintf("%s:%d", dbc["addr"].(string), dbc["port"].(string)),
+                Addr:       fmt.Sprintf("%s:%s", dbc["addr"].(string), dbc["port"].(string)),
                 Password:   dbc["pass"].(string),
                 DB:         index,
             })
@@ -64,6 +64,7 @@ func (p *Pool) newDbConnection() error {
             _, err = p.redisdb[s].Ping().Result()
             if err != nil {
                 fmt.Println(err)
+                fmt.Println()
                 time.Sleep(sqlRetryDelay * time.Second)
                 continue
             }
