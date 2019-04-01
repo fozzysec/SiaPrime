@@ -36,6 +36,7 @@ func (p *Pool) newDbConnection() error {
 	p.dbConnectionMu.Lock()
 	defer p.dbConnectionMu.Unlock()
     fmt.Printf("Setting up Redis connection, addr: %s, port: %s, passwd: %s\n", dbc["addr"].(string), dbc["port"].(string), dbc["pass"].(string))
+    fmt.Printf("Setting up Redis connection, addr: %s, port: %s\n", dbc["addr"].(string), dbc["port"].(string))
 	var err error
 
     i := 0
