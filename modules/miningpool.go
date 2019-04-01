@@ -23,7 +23,7 @@ type (
 		PoolName            string                         `json:"name"`
 		PoolID              uint64                         `json:"poolid"`
 		PoolDBConnection    string                         `json:"dbconnection"`
-        PoolRedisConnection map[string]interface{}         `json:"redisconnection"`
+        PoolRedisConnection *map[string]interface{}         `json:"redisconnection"`
 		PoolWallet          types.UnlockHash               `json:"poolwallet"`
 	}
 

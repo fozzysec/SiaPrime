@@ -176,7 +176,8 @@ func (mp *Pool) setPoolSettings(initConfig config.MiningPoolConfig) error {
 		PoolNetworkPort:  initConfig.PoolNetworkPort,
 		PoolName:         initConfig.PoolName,
 		PoolID:           initConfig.PoolID,
-		PoolDBConnection: initConfig.PoolDBConnection,
+        PoolRedisConnection:    initConfig.PoolRedisConnection,
+		//PoolDBConnection: initConfig.PoolDBConnection,
 		PoolWallet:       poolWallet,
 	}
 	mp.persist.SetSettings(internalSettings)

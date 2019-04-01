@@ -205,11 +205,11 @@ func readFileConfig(config Config) error {
         redisConnection["port"] = redisPort
         redisConnection["pass"] = redisPass
 		poolConfig := fileConfig.MiningPoolConfig{
-			PoolNetworkPort:  int(poolViper.GetInt("networkport")),
-			PoolName:         poolViper.GetString("name"),
-			PoolID:           uint64(poolViper.GetInt("id")),
-			PoolRedisConnection: redisConnection,
-			PoolWallet:       poolViper.GetString("poolwallet"),
+			PoolNetworkPort:        int(poolViper.GetInt("networkport")),
+			PoolName:               poolViper.GetString("name"),
+			PoolID:                 uint64(poolViper.GetInt("id")),
+			PoolRedisConnection:    &redisConnection,
+			PoolWallet:             poolViper.GetString("poolwallet"),
 		}
 		globalConfig.MiningPoolConfig = poolConfig
         fmt.Println("settings configuration done from siaprime.yaml")

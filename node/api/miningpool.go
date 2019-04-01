@@ -22,7 +22,7 @@ type (
 	MiningPoolConfig struct {
 		NetworkPort     int                      `json:"networkport"`
 		DBConnection    string                   `json:"dbconnection"`
-        RedisConnection map[string]interface{}   `json:"redisconnection"`
+        RedisConnection *map[string]interface{}  `json:"redisconnection"`
 		Name            string                   `json:"name"`
 		PoolID          uint64                   `json:"poolid"`
 		PoolWallet      types.UnlockHash         `json:"poolwallet"`

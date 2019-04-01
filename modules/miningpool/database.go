@@ -32,11 +32,12 @@ const (
 )
 
 func (p *Pool) newDbConnection() error {
-	dbc := p.InternalSettings().PoolRedisConnection
+	dbc := *p.InternalSettings().PoolRedisConnection
 	p.dbConnectionMu.Lock()
 	defer p.dbConnectionMu.Unlock()
-    fmt.Printf("Setting up Redis connection, addr: %s, port: %s, passwd: %s\n", dbc["addr"].(string), dbc["port"].(string), dbc["pass"].(string))
-    fmt.Printf("Setting up Redis connection, addr: %s, port: %s\n", dbc["addr"].(string), dbc["port"].(string))
+    for key, value := range dbc {
+        fmt.Printf("%s: %s\n", key, value.(string))
+    }
 	var err error
 
     i := 0
