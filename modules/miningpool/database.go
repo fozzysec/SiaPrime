@@ -214,14 +214,14 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 
 // SaveShift periodically saves the shares for a given worker to the db
 func (s *Shift) SaveShift() error {
-	if len(s.Shares()) == 0 {
-		return nil
-	}
+    if len(s.Shares()) == 0 {
+        return nil
+    }
 
-	worker := s.worker
-	client := worker.Parent()
-	redisdb := client.Pool().redisdb["shares"]
-	for i, share := range s.Shares() {
+    worker := s.worker
+    client := worker.Parent()
+    redisdb := client.Pool().redisdb["shares"]
+    for i, share := range s.Shares() {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
             map[string]string{
@@ -232,27 +232,28 @@ func (s *Shift) SaveShift() error {
                 "share_reward":     share.shareReward,
                 "share_diff":       share.shareDifficulty,
             }).Err()
-	if err != nil {
-		worker.wr.parent.pool.dblog.Println(err)
-		err = pool.newDbConnection()
-		if err != nil {
-			worker.wr.parent.pool.dblog.Println(err)
-			return err
-		}
-        err2 := redisdb.HMSet(
-            fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
-            map[string]string{
-                "valid":            share.valid,
-                "difficulty":       share.difficulty,
-                "reward":           share.reward,
-                "block_difficulty": share.blockDifficulty,
-                "share_reward":     share.shareReward,
-                "share_diff":       share.shareDifficulty,
-            }).Err()
-		if err2 != nil {
-			worker.wr.parent.pool.dblog.Println(err2)
-			return err2
-		}
-	}
-	return nil
+        if err != nil {
+            worker.wr.parent.pool.dblog.Println(err)
+            err = pool.newDbConnection()
+            if err != nil {
+                worker.wr.parent.pool.dblog.Println(err)
+                return err
+            }
+            err2 := redisdb.HMSet(
+                fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+                map[string]string{
+                    "valid":            share.valid,
+                    "difficulty":       share.difficulty,
+                    "reward":           share.reward,
+                    "block_difficulty": share.blockDifficulty,
+                    "share_reward":     share.shareReward,
+                    "share_diff":       share.shareDifficulty,
+                }).Err()
+            if err2 != nil {
+                worker.wr.parent.pool.dblog.Println(err2)
+                return err2
+            }
+        }
+    }
+    return nil
 }
