@@ -19,12 +19,11 @@ type (
 
 	// PoolInternalSettings contains a list of settings that can be changed.
 	PoolInternalSettings struct {
-		PoolNetworkPort  int              `json:"networkport"`
-		PoolName         string           `json:"name"`
-		PoolID           uint64           `json:"poolid"`
-		PoolDBConnection string           `json:"dbconnection"`
-		PoolDBName       string           `json:"dbname"`
-		PoolWallet       types.UnlockHash `json:"poolwallet"`
+		PoolNetworkPort  int                            `json:"networkport"`
+		PoolName         string                         `json:"name"`
+		PoolID           uint64                         `json:"poolid"`
+		PoolDBConnection map[string]interface{}         `json:"dbconnection"`
+		PoolWallet       types.UnlockHash               `json:"poolwallet"`
 	}
 
 	// PoolClient contains summary info for a mining client

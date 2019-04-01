@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+    "encoding/json"
 
 	"github.com/julienschmidt/httprouter"
 	"SiaPrime/modules"
@@ -19,12 +20,12 @@ type (
 	}
 	// MiningPoolConfig contains the parameters you can set to config your pool
 	MiningPoolConfig struct {
-		NetworkPort    int              `json:"networkport"`
-		DBConnection   string           `json:"dbconnection"`
-		Name           string           `json:"name"`
-		PoolID         uint64           `json:"poolid"`
-		PoolWallet     types.UnlockHash `json:"poolwallet"`
-		OperatorWallet types.UnlockHash `json:"operatorwallet"`
+		NetworkPort    int                  `json:"networkport"`
+		DBConnection   map[string]string    `json:"dbconnection"`
+		Name           string               `json:"name"`
+		PoolID         uint64               `json:"poolid"`
+		PoolWallet     types.UnlockHash     `json:"poolwallet"`
+		OperatorWallet types.UnlockHash     `json:"operatorwallet"`
 	}
 	// MiningPoolClientsInfo returns the stats are return after a GET request
 	// to /pool/clients
@@ -151,7 +152,8 @@ func (api *API) parsePoolSettings(req *http.Request) (modules.PoolInternalSettin
 		settings.PoolID = uint64(x)
 	}
 	if req.FormValue("dbconnection") != "" {
-		settings.PoolDBConnection = req.FormValue("dbconnection")
+        settings.PoolDBConnection = map[string]interface{}
+        json.Unmarshal(json.req.FormValue("dbconnection"), &settings.PoolDBConnection)
 	}
 	err := api.pool.SetInternalSettings(settings)
 	return settings, err

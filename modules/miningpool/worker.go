@@ -13,7 +13,7 @@ import (
 // A WorkerRecord is used to track worker information in memory
 type WorkerRecord struct {
 	name            string
-	workerID        int64
+	workerID        uint64
 	shareDifficulty float64
 	parent          *Client
 }
@@ -66,12 +66,12 @@ func (w *Worker) SetName(n string) {
 	w.wr.name = n
 }
 
-func (w *Worker) SetID(id int64) {
-    atomic.StoreInt64(&w.wr.workerID, id)
+func (w *Worker) SetID(id uint64) {
+    atomic.StoreUint64(&w.wr.workerID, id)
 }
 
-func (w *Worker) GetID() int64 {
-    return atomic.LoadInt64(&w.wr.workerID)
+func (w *Worker) GetID() uint64 {
+    return atomic.LoadUint64(&w.wr.workerID)
 }
 
 // Parent returns the worker's client

@@ -9,13 +9,13 @@ import (
 
 // A Share is how we track each worker's submissions and their difficulty
 type Share struct {
-	userid          int64
-	workerid        int64
-	height          int64
 	valid           bool
+	height          int64
+	userid          uint64
+	workerid        uint64
+	blockDifficulty uint64
 	difficulty      float64
 	reward          float64
-	blockDifficulty uint64
 	shareReward     float64
 	shareDifficulty float64
 	time            time.Time

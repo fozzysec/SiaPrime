@@ -13,7 +13,8 @@ import (
 // A ClientRecord represents the persistent data portion of the Client record
 //
 type ClientRecord struct {
-	clientID int64
+	//clientID int64
+	clientID uint64
 	name     string
 	wallet   types.UnlockHash
 }
@@ -66,12 +67,12 @@ func (c *Client) SetName(n string) {
 
 }
 
-func (c *Client) SetID(id int64) {
-    atomic.StoreInt64(&c.cr.clientID, id)
+func (c *Client) SetID(id uint64) {
+    atomic.StoreUint64(&c.cr.clientID, id)
 }
 
-func (c *Client) GetID() int64 {
-    return atomic.LoadInt64(&c.cr.clientID)
+func (c *Client) GetID() uint64 {
+    return atomic.LoadUint64(&c.cr.clientID)
 }
 
 // Wallet returns the unlockhash associated with the client

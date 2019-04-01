@@ -31,7 +31,7 @@ func sPrintID(id uint64) string {
 	return fmt.Sprintf("%016x", id)
 }
 
-func ssPrintID(id int64) string {
+func ssPrintID(id uint64) string {
 	return fmt.Sprintf("%d", id)
 }
 

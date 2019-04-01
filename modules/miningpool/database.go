@@ -2,10 +2,12 @@ package pool
 
 import (
 	"bytes"
-	"database/sql"
-	"context"
+	//"database/sql"
+    "github.com/go-redis/redis"
+	//"context"
 	"errors"
 	"fmt"
+    "strconv"
 	"time"
 
 	"SiaPrime/types"
@@ -14,19 +16,21 @@ import (
 var (
 	// ErrDuplicateUserInDifferentCoin is an error when a address used in
 	// different coin
-	ErrDuplicateUserInDifferentCoin = errors.New("duplicate user in different coin, you need use a different address")
+	//ErrDuplicateUserInDifferentCoin = errors.New("duplicate user in different coin, you need use a different address")
 	// ErrNoUsernameInDatabase is an error when can't find a username in db
 	ErrNoUsernameInDatabase = errors.New("user is not found in db")
 	// ErrCreateClient is an error when can't create a new client
 	ErrCreateClient = errors.New("Error when creating a new client")
 	ErrQueryTimeout = errors.New("DB query timeout")
+    ErrConnectDB = errors.New("error in connecting redis")
 )
 
 const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
 	sqlQueryTimeout    = 5
-	confirmedButUnpaid = "Confirmed but unpaid"
+
+    DB = []string{"accounts", "workers", "shares", "blocks"}
 )
 
 func (p *Pool) newDbConnection() error {
@@ -36,95 +40,110 @@ func (p *Pool) newDbConnection() error {
 	var err error
 
 	// to prevent other goroutine reconnect
-	if p.sqldb != nil {
-		err = p.sqldb.Ping()
+	if p.redisdb != nil {
+		err = p.redisdb.Ping()
 		if err == nil {
 			return nil
 		}
 	}
+    i := 0
+    for _, conn := p.redisdb {
+        err = conn.Ping()
+        if err == nil {
+            i++
+        }
+    }
 
-	for i := 0; i < sqlReconnectRetry; i++ {
-		fmt.Printf("try to connect mysql: %d\n", i)
-		p.sqldb, err = sql.Open("mysql", dbc)
-		if err != nil {
-			time.Sleep(sqlRetryDelay * time.Second)
-			continue
-		}
+    if i == len(DB) {
+        return nil
+    }
 
-		err = p.sqldb.Ping()
-		if err != nil {
-			time.Sleep(sqlRetryDelay * time.Second)
-			continue
-		}
-		fmt.Printf("success\n")
-		return nil
-	}
+    for index, s := range DB {
+        for i := 0; i < sqlReconnectRetry; i++ {
+            fmt.Printf("try to connect redis: %s\n", s)
+            p.redisdb[s], err = redis.NewClient(&redis.Options{
+                Addr:       dbc['addr'],
+                Password:   dbc['pass'],
+                DB:         index,
+            })
+            if err != nil {
+                time.Sleep(sqlRetryDelay * time.Second)
+                continue
+            }
 
-	return fmt.Errorf("sql reconnect retry time exceeded: %d", sqlReconnectRetry)
+            err = p.redisdb.Ping()
+            if err != nil {
+                time.Sleep(sqlRetryDelay * time.Second)
+                continue
+            }
+            fmt.Println("Connection successful.")
+            break
+        }
+    }
+
+    for _, conn := p.redisdb {
+        err = conn.Ping()
+        if err == nil {
+            i++
+        }
+    }
+
+    if i == len(DB) {
+        return nil
+    }
+
+    return ErrConnectDB
 }
 
 // AddClientDB add user into accounts
 func (p *Pool) AddClientDB(c *Client) error {
-    //lock not needed, already get client level lock on, mysql will procoess transaction locks for us
-	//p.mu.Lock()
-	//defer p.mu.Unlock()
-	tx, err := p.sqldb.Begin()
+    id := p.newStratumID()
+    err := p.redisdb['accounts'].Set(c.Name(), id).Err()
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
 
-	stmt, err := tx.Prepare(`
-		INSERT INTO accounts (coinid, username, coinsymbol)
-		VALUES (?, ?, ?);
-	`)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	rs, err := stmt.Exec(SiaCoinID, c.cr.name, SiaCoinSymbol)
-	if err != nil {
-		return err
-	}
-	err = tx.Commit()
-	if err != nil {
-		return err
-	}
-	id, err := rs.LastInsertId()
 	p.dblog.Printf("User %s account id is %d\n", c.Name(), id)
 	c.SetID(id)
 
 	return nil
 }
 
+// addWorkerDB inserts info to workers
+func (c *Client) addWorkerDB(w *Worker) error {
+    id := c.pool.newStratumID()
+    c.pool.redisdb['workers'].HMSet(
+        fmt.Sprintf("%s.%s", c.Name(), w.Name()),
+        map[string]string{
+            "id":       id,
+            "time":     time.Now().Unix(),
+            "pid":      c.pool.InternalSettings().PoolID,
+            "version":  w.Session().clientVersion,
+            "ip":       w.Session().remoteAddr,
+        }
+    ).Err()
+	if err != nil {
+		return err
+	}
+	w.SetID(id)
+	return nil
+}
+
 // FindClientDB find user in accounts
 func (p *Pool) FindClientDB(name string) (*Client, error) {
-	var clientID int64
-	var Name, Wallet string
-	var coinid int
-        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
-	defer cancel()
-	startTime := time.Now()
-	err := p.sqldb.QueryRowContext(newCtx, "SELECT id, username, username, coinid FROM accounts WHERE username = ?", name).Scan(&clientID, &Name, &Wallet, &coinid)
-	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
-		return nil, ErrQueryTimeout
-	}
-	if err != nil {
-		return nil, ErrNoUsernameInDatabase
-	}
-	//p.yiilog.Debugf("Account %s found: %d \n", Name, clientID)
-	if coinid != SiaCoinID {
-		p.dblog.Debugf(ErrDuplicateUserInDifferentCoin.Error(), Name)
-		return nil, ErrDuplicateUserInDifferentCoin
-	}
-	// if we're here, we found the client in the database
-	// try looking for the client in memory
-	c := p.Client(Name)
+	var clientID uint64
+    var err error
+	c := p.Client(name)
 	// if it's in memory, just return a pointer to the copy in memory
 	if c != nil {
 		return c, nil
 	}
+
+    id, err := p.redisdb['accounts'].Get(name).Result()
+    if err == redis.Nil {
+        return nil, ErrNoUsernameInDatabase
+    }
+    clientID = strconv.ParseInt(id, 10, 64)
 	// client was in database but not in memory -
 	// find workers and connect them to the in memory copy
 	c, err = newClient(p, name)
@@ -133,7 +152,7 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 		return nil, ErrCreateClient
 	}
 	var wallet types.UnlockHash
-	wallet.LoadString(Wallet)
+	wallet.LoadString(name)
 	c.SetWallet(wallet)
 	c.SetID(clientID)
 
@@ -141,16 +160,14 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 }
 
 func (w *Worker) deleteWorkerRecord() error {
-	stmt, err := w.Parent().pool.sqldb.Prepare(`
-		DELETE FROM workers
-		WHERE id = ?
-	`)
-	if err != nil {
-		w.wr.parent.pool.dblog.Printf("Error preparing to update worker: %s\n", err)
-		return err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec(w.GetID())
+
+    err := w.Parent().pool.redisdb['workers'].Del(
+        fmt.Sprintf(
+            "%s.%s",
+            w.Parent().Name(),
+            w.Name()
+        )
+    ).Err()
 	if err != nil {
 		w.wr.parent.pool.dblog.Printf("Error deleting record: %s\n", err)
 		return err
@@ -162,16 +179,7 @@ func (w *Worker) deleteWorkerRecord() error {
 // This should be used on pool startup and shutdown to ensure the database
 // is clean and isn't storing any worker records for non-connected workers.
 func (p *Pool) DeleteAllWorkerRecords() error {
-	stmt, err := p.sqldb.Prepare(`
-		DELETE FROM workers
-		WHERE pid = ?
-	`)
-	if err != nil {
-		p.dblog.Printf("Error preparing to delete all workers: %s\n", err)
-		return err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec(p.InternalSettings().PoolID)
+    err := w.Parent().pool.redisdb['workers'].FlushDB().Err()
 	if err != nil {
 		p.dblog.Printf("Error deleting records: %s\n", err)
 		return err
@@ -182,45 +190,29 @@ func (p *Pool) DeleteAllWorkerRecords() error {
 // addFoundBlock add founded block to yiimp blocks table
 func (w *Worker) addFoundBlock(b *types.Block) error {
 	pool := w.Parent().Pool()
-	tx, err := pool.sqldb.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
 	bh := pool.persist.GetBlockHeight()
 	//w.log.Printf("New block to mine on %d\n", uint64(bh)+1)
 	// reward := b.CalculateSubsidy(bh).String()
 	pool.blockFoundMu.Lock()
 	defer pool.blockFoundMu.Unlock()
 	timeStamp := time.Now().Unix()
-	// TODO: maybe add difficulty_user
-	stmt, err := tx.Prepare(`
-		INSERT INTO blocks
-		(height, blockhash, coin_id, userid, workerid, category, difficulty, time, algo)
-		VALUES
-		(?, ?, ?, ?, ?, ?, ?, ?, ?)
-		`)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
 	currentTarget, _ := pool.cs.ChildTarget(b.ID())
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
-	// TODO: figure out right difficulty_user
-	_, err = stmt.Exec(bh, b.ID().String(), SiaCoinID, w.Parent().GetID(),
-		w.GetID(), "new", difficulty, timeStamp, SiaCoinAlgo)
-	if err != nil {
-        w.wr.parent.pool.dblog.Println(err)
-		return err
-	}
-	err = tx.Commit()
-	if err != nil {
-        w.wr.parent.pool.dblog.Println(err)
-		return err
-	}
 
+    err := pool.redisdb['blocks'].HMSet(
+        strconv.FormatInt(bh, 10),
+        map[string]string{
+            "blockhash":    b.ID().String(),
+            "user":         w.Parent().Name(),
+            "worker":       w.Name(),
+            "category":     "new",
+            "difficulty":   difficulty,
+            "time":         timeStamp,
+        }
+        ).Err()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -232,88 +224,41 @@ func (s *Shift) SaveShift() error {
 
 	worker := s.worker
 	client := worker.Parent()
-	pool := client.Pool()
-	var buffer bytes.Buffer
-	buffer.WriteString("INSERT INTO shares(userid, workerid, coinid, valid, difficulty, time, algo, reward, block_difficulty, status, height, share_reward, share_diff) VALUES ")
+	redisdb := client.Pool().redisdb['shares']
 	for i, share := range s.Shares() {
-		if i != 0 {
-			buffer.WriteString(",")
-		}
-		buffer.WriteString(fmt.Sprintf("(%d, %d, %d, %t, %f, %d, '%s', %f, %d, %d, %d, %f, %f)",
-			share.userid, share.workerid, SiaCoinID, share.valid, share.difficulty, share.time.Unix(),
-			SiaCoinAlgo, share.reward, share.blockDifficulty, 0, share.height, share.shareReward, share.shareDifficulty))
-	}
-	buffer.WriteString(";")
-
-	rows, err := pool.sqldb.Query(buffer.String())
-	if rows != nil {
-		rows.Close()
-	}
+        err := redisdb.HMSet(
+            fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+            map[string]string{
+                "valid":            share.valid,
+                "difficulty":       share.difficulty,
+                "reward":           share.reward,
+                "block_difficulty": share.blockDifficulty,
+                "share_reward":     share.shareReward,
+                "share_diff":       share.shareDifficulty,
+            }
+        ).Err()
 	if err != nil {
-		worker.wr.parent.pool.dblog.Println(buffer.String())
 		worker.wr.parent.pool.dblog.Println(err)
 		err = pool.newDbConnection()
 		if err != nil {
-			worker.wr.parent.pool.dblog.Println(buffer.String())
 			worker.wr.parent.pool.dblog.Println(err)
 			return err
 		}
-		rows2, err2 := pool.sqldb.Query(buffer.String())
-		if rows2 != nil {
-			rows2.Close()
-		}
+        err2 := redisdb.HMSet(
+            fmt.Sprintf("%d.%d.%d", worker.GetID(), client.GetID(), share.time.Unix()),
+            map[string]string{
+                "valid":            share.valid,
+                "difficulty":       share.difficulty,
+                "reward":           share.reward,
+                "block_difficulty": share.blockDifficulty,
+                "share_reward":     share.shareReward,
+                "share_diff":       share.shareDifficulty,
+            }
+        ).Err()
 		if err2 != nil {
-			worker.wr.parent.pool.dblog.Println(buffer.String())
+			worker.wr.parent.pool.dblog.Println(err2)
 			return err2
 		}
 	}
-
-	return nil
-}
-
-// addWorkerDB inserts info to workers
-func (c *Client) addWorkerDB(w *Worker) error {
-	//c.mu.Lock()
-	//defer c.mu.Unlock()
-
-	//c.log.Printf("Adding client %s worker %s to database\n", c.cr.name, w.Name())
-	tx, err := c.pool.sqldb.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-	// TODO: add ip etc info
-        newCtx, cancel := context.WithTimeout(context.Background(), sqlQueryTimeout*time.Second)
-	defer cancel()
-	stmt, err := tx.PrepareContext(newCtx, `
-		INSERT INTO workers (userid, name, worker, algo, time, pid, version, ip)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-	`)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	startTime := time.Now()
-	rs, err := stmt.ExecContext(newCtx, c.GetID(), c.cr.name, w.wr.name, SiaCoinAlgo, time.Now().Unix(),
-		c.pool.InternalSettings().PoolID, w.Session().clientVersion, w.Session().remoteAddr)
-	if d := time.Since(startTime); d > sqlQueryTimeout*time.Second {
-		return ErrQueryTimeout
-	} else if err != nil {
-		return err
-	}
-
-	id, err := rs.LastInsertId()
-	if err != nil {
-		return err
-	}
-
-	w.SetID(id)
-
-	err = tx.Commit()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

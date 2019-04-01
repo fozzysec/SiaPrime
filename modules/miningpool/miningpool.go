@@ -26,7 +26,8 @@ import (
     "gitlab.com/NebulousLabs/threadgroup"
 
     // blank to load the sql driver for mysql
-    _ "github.com/go-sql-driver/mysql"
+    //_ "github.com/go-sql-driver/mysql"
+    "github.com/go-redis/redis"
 )
 
 var (
@@ -148,7 +149,8 @@ type Pool struct {
     connectabilityStatus modules.PoolConnectabilityStatus
 
     // Utilities.
-    sqldb          *sql.DB
+    //sqldb          *sql.DB
+    redisdb        map[string]*redis.Client
     listener       net.Listener
     log            *persist.Logger
     dblog          *persist.Logger
@@ -335,6 +337,7 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
         persistDir: 		persistDir,
         //stratumID:  		rand.Uint64(),
         clients:    		make(map[string]*Client),
+        redisdb:            make(map[string]*redis.Client),
         clientSetupMutex:	make(map[string]*sync.Mutex),
     }
     var err error

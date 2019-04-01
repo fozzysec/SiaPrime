@@ -5,7 +5,7 @@ type MiningPoolConfig struct {
 	PoolNetworkPort  int
 	PoolName         string
 	PoolID           uint64
-	PoolDBConnection string
+	PoolDBConnection map[string]string
 	PoolWallet       string
 }
 
