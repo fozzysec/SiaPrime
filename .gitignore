@@ -17,3 +17,6 @@ sia.iml
 
 # Mac
 .DS_Store
+
+go.mod
+go.sum
