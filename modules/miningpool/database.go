@@ -109,7 +109,7 @@ func (p *Pool) AddClientDB(c *Client) error {
 func (c *Client) addWorkerDB(w *Worker) error {
     id := c.Pool().newStratumID()()
     err := c.Pool().redisdb["workers"].HMSet(
-        fmt.Sprintf("%d.%d", c.GetID(), w.GetID()),
+        fmt.Sprintf("%d.%d", c.GetID(), id),
         map[string]interface{} {
             "wallet":   c.Name(),
             "worker":   w.Name(),
