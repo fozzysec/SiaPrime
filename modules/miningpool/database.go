@@ -52,13 +52,13 @@ func (p *Pool) newDbConnection() error {
         return nil
     }
 
-    for index, s := range DB {
+    for _, s := range DB {
         for i := 0; i < sqlReconnectRetry; i++ {
             fmt.Printf("try to connect redis: %s\n", s)
             p.redisdb[s] = redis.NewClient(&redis.Options{
                 Addr:       fmt.Sprintf("%s:%s", dbc["addr"].(string), dbc["port"].(string)),
                 Password:   dbc["pass"].(string),
-                DB:         index,
+                DB:         dbc["tables"].(map[string]interface{})[s].(int),
             })
 
             _, err = p.redisdb[s].Ping().Result()
@@ -73,6 +73,7 @@ func (p *Pool) newDbConnection() error {
         }
     }
 
+    i = 0
     for _, conn := range p.redisdb {
         _, err = conn.Ping().Result()
         if err == nil {

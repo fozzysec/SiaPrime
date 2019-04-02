@@ -200,10 +200,22 @@ func readFileConfig(config Config) error {
 		redisAddress := poolViper.GetString("redisaddress")
 		redisPort := poolViper.GetString("redisport")
 		redisPass := poolViper.GetString("redispass")
+        redisViper := poolViper.Sub("tables")
+        if !(redisViper.IsSet("accounts") && redisViper.IsSet("workers") && redisViper.IsSet("shares") && redisViper.IsSet("blocks")) {
+            return errors.New("Must specify redis tables")
+        }
 		redisConnection := make(map[string]interface{})
+        redisStruct := make(map[string]interface{})
         redisConnection["addr"] = redisAddress
         redisConnection["port"] = redisPort
         redisConnection["pass"] = redisPass
+
+        redisStruct["accounts"] = int(redisViper.GetInt("accounts"))
+        redisStruct["workers"] = int(redisViper.GetInt("workers"))
+        redisStruct["shares"] = int(redisViper.GetInt("shares"))
+        redisStruct["blocks"] = int(redisViper.GetInt("blocks"))
+
+        redisConnection["tables"] = redisStruct
 		poolConfig := fileConfig.MiningPoolConfig{
 			PoolNetworkPort:        int(poolViper.GetInt("networkport")),
 			PoolName:               poolViper.GetString("name"),
