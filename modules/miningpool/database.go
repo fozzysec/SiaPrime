@@ -35,9 +35,6 @@ func (p *Pool) newDbConnection() error {
 	dbc := *p.InternalSettings().PoolRedisConnection
 	p.dbConnectionMu.Lock()
 	defer p.dbConnectionMu.Unlock()
-    for key, value := range dbc {
-        fmt.Printf("%s: %s\n", key, value.(string))
-    }
 	var err error
 
     i := 0
