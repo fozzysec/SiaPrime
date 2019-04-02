@@ -109,9 +109,10 @@ func (p *Pool) AddClientDB(c *Client) error {
 func (c *Client) addWorkerDB(w *Worker) error {
     id := c.Pool().newStratumID()()
     err := c.Pool().redisdb["workers"].HMSet(
-        fmt.Sprintf("%s.%s", c.Name(), w.Name()),
+        fmt.Sprintf("%d.%d", c.GetID(), w.GetID()),
         map[string]interface{} {
-            "id":       id,
+            "wallet":   c.Name(),
+            "worker":   w.Name(),
             "time":     time.Now().Unix(),
             "pid":      c.pool.InternalSettings().PoolID,
             "version":  w.Session().clientVersion,
@@ -161,9 +162,9 @@ func (w *Worker) deleteWorkerRecord() error {
 
     err := w.Parent().Pool().redisdb["workers"].Del(
         fmt.Sprintf(
-            "%s.%s",
-            w.Parent().Name(),
-            w.Name())).Err()
+            "%d.%d",
+            w.Parent().GetID(),
+            w.GetID())).Err()
 	if err != nil {
 		w.Parent().Pool().dblog.Printf("Error deleting record: %s\n", err)
 		return err
