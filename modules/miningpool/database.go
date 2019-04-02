@@ -29,7 +29,7 @@ const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
 	sqlQueryTimeout    = 5
-    redisExpireTime    = 48 * 60 * 60
+    redisExpireTime    = 48 * 60 * 60 * time.Second
 )
 
 func (p *Pool) newDbConnection() error {
