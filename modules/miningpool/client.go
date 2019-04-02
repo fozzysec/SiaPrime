@@ -3,6 +3,7 @@ package pool
 import (
 	//"github.com/sasha-s/go-deadlock"
 	"sync"
+    "unsafe"
     "sync/atomic"
 
 	"SiaPrime/persist"
@@ -77,10 +78,7 @@ func (c *Client) GetID() uint64 {
 
 // Wallet returns the unlockhash associated with the client
 func (c *Client) Wallet() *types.UnlockHash {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	return &c.cr.wallet
+    return (*types.UnlockHash)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&c.cr.wallet))))
 }
 
 // SetWallet sets the unlockhash associated with the client
@@ -91,8 +89,7 @@ func (c *Client) SetWallet(w types.UnlockHash) {
 }
 
 // Pool returns the client's pool
+//no lock needed, a client's pool won't change
 func (c *Client) Pool() *Pool {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.pool
+    return (*Pool)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&c.pool))))
 }

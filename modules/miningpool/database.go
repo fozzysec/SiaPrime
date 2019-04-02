@@ -29,6 +29,7 @@ const (
 	sqlReconnectRetry  = 6
 	sqlRetryDelay      = 10
 	sqlQueryTimeout    = 5
+    redisExpireTime    = 48 * 60 * 60
 )
 
 func (p *Pool) newDbConnection() error {
@@ -118,6 +119,8 @@ func (c *Client) addWorkerDB(w *Worker) error {
             "version":  w.Session().clientVersion,
             "ip":       w.Session().remoteAddr,
         }).Err()
+        err = c.Pool().redisdb["workers"].Persist(
+            fmt.Sprintf("%d.%d", c.GetID(), id)).Err()
 	if err != nil {
 		return err
 	}
@@ -160,13 +163,11 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 
 func (w *Worker) deleteWorkerRecord() error {
 
-    err := w.Parent().Pool().redisdb["workers"].Del(
-        fmt.Sprintf(
-            "%d.%d",
-            w.Parent().GetID(),
-            w.GetID())).Err()
+    err := w.Parent().Pool().redisdb["workers"].Expire(
+        fmt.Sprintf("%d.%d", w.Parent().GetID(), w.GetID()),
+        redisExpireTime).Err()
 	if err != nil {
-		w.Parent().Pool().dblog.Printf("Error deleting record: %s\n", err)
+		w.Parent().Pool().dblog.Printf("Error setting redis worker expire: %s\n", err)
 		return err
 	}
 	return nil
