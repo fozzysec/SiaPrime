@@ -26,7 +26,7 @@ const (
 	// SiaCoinAlgo is the algo used by yiimp to associate various records
 	// with blake2b mining
 	SiaCoinAlgo = "blake2b"
-    PoolName = "IntrepidPool"
+    //PoolName = "IntrepidPool"
 )
 
 var (

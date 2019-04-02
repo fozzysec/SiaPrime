@@ -74,15 +74,16 @@ func (p *persistence) SetRevisionNumber(rn uint64) {
     atomic.StoreUint64(&p.RevisionNumber, rn)
 }
 
+//no on-the-fly pool modification yet, settings won't change after pool startup, no locks needed
 func (p *persistence) GetSettings() modules.PoolInternalSettings {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
+	/*p.mu.RLock()
+	defer p.mu.RUnlock()*/
 	return p.Settings
 }
 
 func (p *persistence) SetSettings(s modules.PoolInternalSettings) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
+	/*p.mu.Lock()
+	defer p.mu.Unlock()*/
 	p.Settings = s
 }
 
