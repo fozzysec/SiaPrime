@@ -162,7 +162,6 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
 }
 
 func (w *Worker) deleteWorkerRecord() error {
-
     err := w.Parent().Pool().redisdb["workers"].Expire(
         fmt.Sprintf("%d.%d", w.Parent().GetID(), w.GetID()),
         redisExpireTime).Err()
@@ -173,9 +172,37 @@ func (w *Worker) deleteWorkerRecord() error {
 	return nil
 }
 
+func (p *Pool) DeleteAllWorkerRecords() error {
+    conn := p.redisdb["workers"]
+    var cursor uint64
+    match := "*"
+    count := int64(10)
+    for {
+        var keys []string
+        var err error
+        keys, cursor, err = conn.Scan(cursor, match, count).Result()
+        if err != nil {
+            fmt.Println(err)
+            return err
+        }
+        for _, key := range keys {
+            if conn.TTL(key).Val() < 0 {
+                err = conn.Expire(key, redisExpireTime).Err()
+                if err != nil {
+                    return err
+                }
+            }
+        }
+        if cursor == 0 {
+            break
+        }
+    }
+    return nil
+}
 // DeleteAllWorkerRecords deletes all worker records associated with a pool.
 // This should be used on pool startup and shutdown to ensure the database
 // is clean and isn't storing any worker records for non-connected workers.
+/*
 func (p *Pool) DeleteAllWorkerRecords() error {
     err := p.redisdb["workers"].FlushDB().Err()
 	if err != nil {
@@ -183,7 +210,7 @@ func (p *Pool) DeleteAllWorkerRecords() error {
 		return err
 	}
 	return nil
-}
+}*/
 
 // addFoundBlock add founded block to yiimp blocks table
 func (w *Worker) addFoundBlock(b *types.Block) error {
