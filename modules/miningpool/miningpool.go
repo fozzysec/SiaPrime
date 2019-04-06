@@ -149,7 +149,7 @@ type Pool struct {
 
     // Utilities.
     //sqldb          *sql.DB
-    redisdb        map[string]*redis.Client
+    redisdb        map[string]*redis.ClusterClient
     listener       net.Listener
     log            *persist.Logger
     dblog          *persist.Logger
@@ -336,7 +336,7 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
         persistDir: 		persistDir,
         //stratumID:  		rand.Uint64(),
         clients:    		make(map[string]*Client),
-        redisdb:            make(map[string]*redis.Client),
+        redisdb:            make(map[string]*redis.ClusterClient),
         clientSetupMutex:	make(map[string]*sync.Mutex),
     }
     var err error

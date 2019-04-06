@@ -56,9 +56,8 @@ func (p *Pool) newDbConnection() error {
             p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
                 Addrs:      dbc["addrs"].([]string),
                 Password:   dbc["pass"].(string),
-                DB:         dbc["tables"].(map[string]interface{})[s].(int),
             })
-
+            p.redisdb[s].Do("select", dbc["tables"].(map[string]interface{})[s].(int))
             _, err = p.redisdb[s].Ping().Result()
             if err != nil {
                 fmt.Println(err)
