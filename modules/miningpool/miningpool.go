@@ -384,7 +384,7 @@ func newPool(dependencies dependencies, cs modules.ConsensusSet, tpool modules.T
         err = p.saveSync()
         p.mu.Unlock()
         if err != nil {
-            p.log.Println("Could not save pool upon shutdown:", err)
+            fmt.Println("Could not save pool upon shutdown:", err)
         }
         return err
     })
