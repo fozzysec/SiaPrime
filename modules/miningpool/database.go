@@ -57,7 +57,7 @@ func (p *Pool) newDbConnection() error {
         }
 
         fmt.Printf("try to connect redis: %s\n", s)
-        p.redisdb[s], err = redis.NewClusterClient(&redis.ClusterOptions{
+        p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
             Addrs:      hosts,
             Password:   dbc["pass"].(string),
         })
@@ -229,7 +229,11 @@ func (w *Worker) addFoundBlock(b *types.Block) error {
 	timeStamp := time.Now().Unix()
 	currentTarget, _ := pool.cs.ChildTarget(b.ID())
 	difficulty, _ := currentTarget.Difficulty().Uint64() // TODO: maybe should use parent ChildTarget
-
+    exists := pool.redisdb["blocks"].Exists(strconv.FormatUint(uint64(bh), 10)).Val()
+    if exists == 1 {
+        pool.dblog.Printf("orphan block %s found, at height %d\n", b.ID().String(), uint64(bh))
+        return nil
+    }
     err := pool.redisdb["blocks"].HMSet(
         strconv.FormatUint(uint64(bh), 10),
         map[string]interface{} {
