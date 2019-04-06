@@ -253,6 +253,7 @@ func (s *Shift) SaveShift() error {
         err := redisdb.HMSet(
             fmt.Sprintf("%d.%d.%d", client.GetID(), worker.GetID(), share.time.Unix()),
             map[string]interface{} {
+                "height":           share.height,
                 "valid":            share.valid,
                 "difficulty":       share.difficulty,
                 "reward":           share.reward,
@@ -270,6 +271,7 @@ func (s *Shift) SaveShift() error {
             err2 := redisdb.HMSet(
                 fmt.Sprintf("%d.%d.%d", client.GetID(), worker.GetID(), share.time.Unix()),
                 map[string]interface{} {
+                    "height":           share.height,
                     "valid":            share.valid,
                     "difficulty":       share.difficulty,
                     "reward":           share.reward,
