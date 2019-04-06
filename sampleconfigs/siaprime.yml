@@ -7,10 +7,10 @@ miningpool:
   dbuser: YOUR_DB_USER
   dbpass: YOUR_DB_PASS
   dbname: YOUR_DB_NAME
-  redis-servers: [127.0.0.1:6379]
+  redis-hosts: [127.0.0.1]
   redis-pass: ""
   tables:
-    accounts: 0
-    workers: 1
-    shares: 2
-    blocks: 3
+    accounts: 6379
+    workers: 6380
+    shares: 6381
+    blocks: 6382

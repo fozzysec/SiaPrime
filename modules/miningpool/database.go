@@ -51,27 +51,21 @@ func (p *Pool) newDbConnection() error {
     }
 
     for _, s := range DB {
-        for i := 0; i < sqlReconnectRetry; i++ {
-            fmt.Printf("try to connect redis: %s\n", s)
-            p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
-                Addrs:      dbc["addrs"].([]string),
-                Password:   dbc["pass"].(string),
-            })
-            err = p.redisdb[s].Do("select", dbc["tables"].(map[string]interface{})[s].(int)).Err()
-            if err != nil {
-                fmt.Println(err)
-                return err
-            }
-            _, err = p.redisdb[s].Ping().Result()
-            if err != nil {
-                fmt.Println(err)
-                fmt.Println()
-                time.Sleep(sqlRetryDelay * time.Second)
-                continue
-            }
-            fmt.Println("Connection successful.")
-            break
+        hosts := []string{}
+        for host := range dbc["hosts"].([]string) {
+            hosts = append(hosts, fmt.Sprintf("%s:%d", host, dbc["tables"].(map[string]interface{})[s].(int)))
         }
+
+        fmt.Printf("try to connect redis: %s\n", s)
+        p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
+            Addrs:      hosts,
+            Password:   dbc["pass"].(string),
+        })
+        _, err = p.redisdb[s].Ping().Result()
+        if err != nil {
+            fmt.Println(err)
+        }
+        fmt.Println("Connection successful.")
     }
 
     i = 0
@@ -144,7 +138,11 @@ func (p *Pool) FindClientDB(name string) (*Client, error) {
     id, err := p.redisdb["accounts"].Get(name).Result()
     if err == redis.Nil {
         return nil, ErrNoUsernameInDatabase
+    } else if err != nil {
+        fmt.Println(err)
+        return nil, err
     }
+    
     clientID, err = strconv.ParseUint(id, 10, 64)
     if err != nil {
         return nil, err

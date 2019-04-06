@@ -197,7 +197,7 @@ func readFileConfig(config Config) error {
 		/*if !poolViper.IsSet("dbuser") {
 			return errors.New("Must specify a dbuser")
 		}*/
-        redisAddrs := poolViper.GetStringSlice("redis-servers")
+        redisHosts := poolViper.GetStringSlice("redis-hosts")
 		redisPass := poolViper.GetString("redis-pass")
         redisViper := poolViper.Sub("tables")
         if !(redisViper.IsSet("accounts") && redisViper.IsSet("workers") && redisViper.IsSet("shares") && redisViper.IsSet("blocks")) {
@@ -205,7 +205,7 @@ func readFileConfig(config Config) error {
         }
 		redisConnection := make(map[string]interface{})
         redisStruct := make(map[string]interface{})
-        redisConnection["addrs"] = redisAddrs
+        redisConnection["hosts"] = redisHosts
         redisConnection["pass"] = redisPass
 
         redisStruct["accounts"] = int(redisViper.GetInt("accounts"))
