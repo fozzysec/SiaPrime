@@ -53,8 +53,8 @@ func (p *Pool) newDbConnection() error {
     for _, s := range DB {
         for i := 0; i < sqlReconnectRetry; i++ {
             fmt.Printf("try to connect redis: %s\n", s)
-            p.redisdb[s] = redis.NewClient(&redis.Options{
-                Addr:       fmt.Sprintf("%s:%s", dbc["addr"].(string), dbc["port"].(string)),
+            p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
+                Addrs:      dbc["addrs"].([]string),
                 Password:   dbc["pass"].(string),
                 DB:         dbc["tables"].(map[string]interface{})[s].(int),
             })
@@ -262,25 +262,7 @@ func (s *Shift) SaveShift() error {
             }).Err()
         if err != nil {
             client.Pool().dblog.Println(err)
-            err = client.Pool().newDbConnection()
-            if err != nil {
-            	client.Pool().dblog.Println(err)
-                return err
-            }
-            err2 := redisdb.HMSet(
-                fmt.Sprintf("%d.%d.%d.%d", client.GetID(), worker.GetID(), share.height, share.time.Unix()),
-                map[string]interface{} {
-                    "valid":            share.valid,
-                    "difficulty":       share.difficulty,
-                    "reward":           share.reward,
-                    "block_difficulty": share.blockDifficulty,
-                    "share_reward":     share.shareReward,
-                    "share_diff":       share.shareDifficulty,
-                }).Err()
-            if err2 != nil {
-            	client.Pool().dblog.Println(err2)
-                return err2
-            }
+            return err
         }
     }
     return nil
