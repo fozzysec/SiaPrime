@@ -57,7 +57,11 @@ func (p *Pool) newDbConnection() error {
                 Addrs:      dbc["addrs"].([]string),
                 Password:   dbc["pass"].(string),
             })
-            p.redisdb[s].Do("select", dbc["tables"].(map[string]interface{})[s].(int))
+            err = p.redisdb[s].Do("select", dbc["tables"].(map[string]interface{})[s].(int)).Err()
+            if err != nil {
+                fmt.Println(err)
+                return err
+            }
             _, err = p.redisdb[s].Ping().Result()
             if err != nil {
                 fmt.Println(err)
