@@ -566,7 +566,7 @@ func (h *Handler) handleStratumSubmit(m *types.StratumRequest) error {
     t := h.p.persist.GetTarget()
     // printWithSuffix(types.IntToTarget(bh).Difficulty()), printWithSuffix(t.Difficulty()))
     if bytes.Compare(t[:], blockHash[:]) < 0 {
-        h.GetSession().GetCurrentWorker().IncrementShares(h.GetSession().CurrentDifficulty(), currencyToAmount(b.MinerPayouts[1].Value))
+        h.GetSession().GetCurrentWorker().IncrementShares(h.GetSession().CurrentDifficulty(), currencyToAmount(b.MinerPayouts[0].Value))
         h.GetSession().GetCurrentWorker().SetLastShareTime(time.Now())
         return h.sendResponse(r)
     }
