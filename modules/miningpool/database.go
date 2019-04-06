@@ -52,18 +52,23 @@ func (p *Pool) newDbConnection() error {
 
     for _, s := range DB {
         hosts := []string{}
-        for host := range dbc["hosts"].([]string) {
+        for _, host := range dbc["hosts"].([]string) {
             hosts = append(hosts, fmt.Sprintf("%s:%d", host, dbc["tables"].(map[string]interface{})[s].(int)))
         }
 
         fmt.Printf("try to connect redis: %s\n", s)
-        p.redisdb[s] = redis.NewClusterClient(&redis.ClusterOptions{
+        p.redisdb[s], err = redis.NewClusterClient(&redis.ClusterOptions{
             Addrs:      hosts,
             Password:   dbc["pass"].(string),
         })
+        if err != nil {
+            fmt.Println(err)
+            return err
+        }
         _, err = p.redisdb[s].Ping().Result()
         if err != nil {
             fmt.Println(err)
+            return err
         }
         fmt.Println("Connection successful.")
     }
