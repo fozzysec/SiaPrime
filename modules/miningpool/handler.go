@@ -402,11 +402,31 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
     r.Result = true
     r.Error = nil
     clientName := m.Params[0].(string)
+    passwordField := m.Params[1].(string)
     workerName := ""
     if strings.Contains(clientName, ".") {
         s := strings.SplitN(clientName, ".", -1)
         clientName = s[0]
         workerName = s[1]
+    }
+    //custom difficulty, format: x,d=1024
+    if strings.Contains(passwordField, ",") {
+        s1 := strings.SplitN(passwordField, ",", -1)
+        difficultyStr := s1[1]
+        if strings.Contains(difficultyStr, "=") {
+            difficultyVals := strings.SplitN(difficultyStr, "=", 2)
+            difficulty, err := strconv.ParseFloat(difficultyVals[1], 64)
+            if err != nil {
+                r.Result = false
+                r.Error = interfaceify([]string{"Invalid difficulty value"})
+                err = errors.New("Invalid custom difficulty value")
+                h.sendResponse(r)
+                return err
+            }
+            h.GetSession().SetHighestDifficulty(difficulty)
+            h.GetSession().SetCurrentDifficulty(difficulty)
+            h.GetSession().SetDisableVarDiff(true)
+        }
     }
 
     // load wallet and check validity
