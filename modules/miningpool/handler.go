@@ -411,9 +411,10 @@ func (h *Handler) handleStratumAuthorize(m *types.StratumRequest) error {
     }
     //custom difficulty, format: x,d=1024
     if strings.Contains(passwordField, ",") {
-        s1 := strings.SplitN(passwordField, ",", -1)
+        s1 := strings.SplitN(passwordField, ",", 2)
         difficultyStr := s1[1]
         if strings.Contains(difficultyStr, "=") {
+            //when processing ill-formed data, ParseFloat will return non-nil err it will handle as expected
             difficultyVals := strings.SplitN(difficultyStr, "=", 2)
             difficulty, err := strconv.ParseFloat(difficultyVals[1], 64)
             if err != nil {
